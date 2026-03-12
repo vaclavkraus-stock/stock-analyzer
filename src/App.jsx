@@ -285,8 +285,27 @@ const DCFCard = ({label,value,big,color,tip}) => {
   </div>;
 };
 
+const EXCHANGES = [
+  {code:"US",   flag:"🇺🇸", label:"USA",          hint:"NYSE / NASDAQ",        example:"AAPL, NVDA, MSFT"},
+  {code:"LSE",  flag:"🇬🇧", label:"Londýn",       hint:"London Stock Exchange", example:"SHEL, HSBA, BP"},
+  {code:"XETRA",flag:"🇩🇪", label:"Frankfurt",    hint:"XETRA / Frankfurt",     example:"SAP, BMW, SIE"},
+  {code:"EURONEXT",flag:"🇫🇷",label:"Euronext",   hint:"Paris / Amsterdam",     example:"LVMH, ASML, TTE"},
+  {code:"TSE",  flag:"🇯🇵", label:"Tokio",        hint:"Tokyo Stock Exchange",  example:"7203, 6758, 9984"},
+  {code:"SSE",  flag:"🇨🇳", label:"Šanghaj",      hint:"Shanghai / Shenzhen",   example:"600519, 000858"},
+  {code:"HKEX", flag:"🇭🇰", label:"Hongkong",     hint:"Hong Kong Exchange",    example:"700, 9988, 1299"},
+  {code:"KRX",  flag:"🇰🇷", label:"Soul",         hint:"Korea Exchange",        example:"005930, 000660"},
+  {code:"BSE",  flag:"🇮🇳", label:"Bombaj",       hint:"BSE / NSE India",       example:"RELIANCE, TCS"},
+  {code:"PSE",  flag:"🇨🇿", label:"Praha",        hint:"Prague Stock Exchange", example:"CEZ, KOMB, MONET"},
+  {code:"GPW",  flag:"🇵🇱", label:"Varšava",      hint:"Warsaw Stock Exchange", example:"PKN, PKO, CDR"},
+  {code:"TSX",  flag:"🇨🇦", label:"Toronto",      hint:"Toronto Stock Exchange",example:"SHOP, RY, TD"},
+  {code:"ASX",  flag:"🇦🇺", label:"Sydney",       hint:"Australian Securities", example:"BHP, CBA, CSL"},
+  {code:"BOVESPA",flag:"🇧🇷",label:"São Paulo",   hint:"B3 / Bovespa",          example:"PETR4, VALE3"},
+  {code:"MOEX", flag:"🇷🇺", label:"Moskva",       hint:"Moscow Exchange",       example:"GAZP, SBER, LKOH"},
+];
+
 export default function App() {
   const [ticker,setTicker]=useState("");
+  const [exchange,setExchange]=useState("US");
   const [loading,setLoading]=useState(false);
   const [data,setData]=useState(null);
   const [error,setError]=useState(null);
@@ -309,8 +328,10 @@ export default function App() {
     try{ localStorage.setItem("wl2",JSON.stringify(next)); }catch{}
   };
 
-  const analyze = async (override) => {
+  const analyze = async (override, overrideExchange) => {
     const t=(override||ticker).trim().toUpperCase();
+    const exch = overrideExchange || exchange;
+    const exchInfo = EXCHANGES.find(e=>e.code===exch)||EXCHANGES[0];
     if(!t) return;
     if(override) setTicker(override);
     setLoading(true); setError(null); setData(null); setFinTab("revenue"); setNewsFilter("all");
@@ -321,7 +342,7 @@ export default function App() {
           model:"claude-sonnet-4-20250514",
           max_tokens:3500,
           tools:[{type:"web_search_20250305",name:"web_search"}],
-          messages:[{role:"user",content:`Search the web for "${t}" stock and fill ALL fields with real numbers. Do 3 searches: 1) "${t} stock price market cap EPS P/E ratio revenue 2024 2025" 2) "${t} analyst price target earnings date 2026" 3) "${t} stock news 2026 site:reuters.com OR site:bloomberg.com OR site:cnbc.com OR site:finance.yahoo.com". Return ONLY raw JSON. Today is March 2026. Every numeric field must have a real non-zero value. IMPORTANT: For each news item you MUST provide the full direct URL to the specific article (not just homepage) - e.g. "https://www.reuters.com/markets/us/microsoft-beats-earnings-2026-01-15/" - use the actual URLs from your web search results.
+          messages:[{role:"user",content:`Search the web for "${t}" stock on ${exchInfo.label} stock exchange (${exchInfo.hint}) and fill ALL fields with real numbers. Do 3 searches: 1) "${t} ${exchInfo.hint} stock price market cap EPS P/E ratio revenue 2024 2025" 2) "${t} ${exchInfo.label} analyst price target earnings date 2026" 3) "${t} stock news 2026 site:reuters.com OR site:bloomberg.com OR site:cnbc.com OR site:finance.yahoo.com". Return ONLY raw JSON. Today is March 2026. Every numeric field must have a real non-zero value. IMPORTANT: For each news item you MUST provide the full direct URL to the specific article (not just homepage) - use the actual URLs from your web search results.
 
 {"name":"","ticker":"${t}","exchange":"","sector":"","currency":"USD","description":"2 věty česky","price":{"current":0,"changePct":0,"marketCap":"","w52High":0,"w52Low":0,"volume":""},"metrics":{"pe":0,"eps":0,"netMargin":0,"grossMargin":0,"roe":0,"beta":0,"dividendYield":0,"debtEquity":0,"freeCashFlowB":0,"revenueGrowthPct":0},"radarScores":{"valuation":5,"growth":5,"profitability":5,"financialHealth":5,"momentum":5,"dividend":5},"annuals":[{"year":"2022","revB":0,"niB":0,"eps":0},{"year":"2023","revB":0,"niB":0,"eps":0},{"year":"2024","revB":0,"niB":0,"eps":0},{"year":"2025","revB":0,"niB":0,"eps":0}],"quarters":[{"q":"Q3 2025","revB":0,"niB":0,"eps":0,"yoy":0},{"q":"Q4 2025","revB":0,"niB":0,"eps":0,"yoy":0},{"q":"Q1 2026","revB":0,"niB":0,"eps":0,"yoy":0}],"peHistory":[{"year":"2022","pe":0},{"year":"2023","pe":0},{"year":"2024","pe":0},{"year":"2025","pe":0}],"history":[{"date":"Kvě '24","price":0,"sp500":0},{"date":"Srp '24","price":0,"sp500":0},{"date":"Lis '24","price":0,"sp500":0},{"date":"Úno '25","price":0,"sp500":0},{"date":"Čer '25","price":0,"sp500":0},{"date":"Bře '26","price":0,"sp500":0}],"analysts":{"buy":0,"hold":0,"sell":0,"avgTarget":0,"lowTarget":0,"highTarget":0},"dcf":{"intrinsicValue":0,"upside":0,"wacc":0},"technicals":{"ma50":0,"ma200":0,"rsi":0,"support":0,"resistance":0},"earningsCalendar":{"nextDate":"","quarter":"","estimatedEPS":0,"estimatedRevB":0,"lastSurprisePct":0},"earningsHistory":[{"quarter":"Q4 2025","date":"","estimatedEPS":0,"actualEPS":0,"estimatedRevB":0,"actualRevB":0},{"quarter":"Q3 2025","date":"","estimatedEPS":0,"actualEPS":0,"estimatedRevB":0,"actualRevB":0},{"quarter":"Q2 2025","date":"","estimatedEPS":0,"actualEPS":0,"estimatedRevB":0,"actualRevB":0},{"quarter":"Q1 2025","date":"","estimatedEPS":0,"actualEPS":0,"estimatedRevB":0,"actualRevB":0}],"buffettChecklist":[{"criterion":"ROE > 15%","passed":true,"note":""},{"criterion":"Nízký dluh","passed":true,"note":""},{"criterion":"Růst zisku","passed":true,"note":""},{"criterion":"Silný FCF","passed":true,"note":""},{"criterion":"Ekonomický příkop","passed":true,"note":""},{"criterion":"Srozumitelné podnikání","passed":true,"note":""},{"criterion":"Management vlastní akcie","passed":false,"note":""},{"criterion":"P/E pod průměrem","passed":false,"note":""}],"insiders":[{"name":"","role":"","type":"buy","shares":0,"valueM":0,"date":""}],"competitors":[{"ticker":"","name":"","pe":0,"revGrowthPct":0,"netMarginPct":0,"marketCapB":0},{"ticker":"","name":"","pe":0,"revGrowthPct":0,"netMarginPct":0,"marketCapB":0}],"macro":{"fedRate":0,"inflation":0,"sectorYtdPct":0,"sp500YtdPct":0,"outlook":"","sectorFearGreed":50,"sectorFearGreedLabel":"Sentiment sektoru neutrální","sectorTopStocks":["","",""]},"news":[{"title":"","summary":"česky","sentiment":"positive","date":"","source":"","url":"https://"},{"title":"","summary":"česky","sentiment":"negative","date":"","source":"","url":"https://"},{"title":"","summary":"česky","sentiment":"neutral","date":"","source":"","url":"https://"},{"title":"","summary":"česky","sentiment":"positive","date":"","source":"","url":"https://"},{"title":"","summary":"česky","sentiment":"neutral","date":"","source":"","url":"https://"}],"risks":["","",""],"catalysts":["",""],"verdict":"KOUPIT","score":7,"targetPrice":0,"investmentThesis":"5 vět česky","pros":["",""],"cons":["",""]}`}]
         })
@@ -363,9 +384,21 @@ export default function App() {
         <h1 style={{color:C.text,fontSize:34,fontWeight:900,margin:"0 0 8px",letterSpacing:-1.5,background:`linear-gradient(135deg,${C.text},${C.blue})`,WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent"}}>Stock Analyzer Pro</h1>
         <p style={{color:C.muted,fontSize:14,margin:0}}>Live data · DCF · Buffett checklist · Insider · Fair Value · AI analýza</p>
       </div>
-      <div style={{background:`linear-gradient(135deg,${C.card},${C.card2})`,border:`1px solid ${C.border}`,borderRadius:22,padding:30,width:"100%",maxWidth:440,boxShadow:"0 20px 60px #00000060"}}>
+      <div style={{background:`linear-gradient(135deg,${C.card},${C.card2})`,border:`1px solid ${C.border}`,borderRadius:22,padding:30,width:"100%",maxWidth:500,boxShadow:"0 20px 60px #00000060"}}>
+        <label style={{color:C.muted,fontSize:11,display:"block",marginBottom:8,textTransform:"uppercase",letterSpacing:1}}>Burza</label>
+        <div style={{display:"grid",gridTemplateColumns:"repeat(5,1fr)",gap:5,marginBottom:14}}>
+          {EXCHANGES.map(ex=>(
+            <button key={ex.code} onClick={()=>setExchange(ex.code)} title={`${ex.label} – ${ex.hint}\nPř: ${ex.example}`} style={{background:exchange===ex.code?C.blue+"30":"transparent",border:`1px solid ${exchange===ex.code?C.blue:C.border}`,borderRadius:8,padding:"5px 4px",cursor:"pointer",display:"flex",flexDirection:"column",alignItems:"center",gap:2,transition:"all .15s"}}>
+              <span style={{fontSize:16}}>{ex.flag}</span>
+              <span style={{color:exchange===ex.code?C.blue:C.muted,fontSize:9,fontWeight:700,letterSpacing:0.3}}>{ex.code==="EURONEXT"?"EU":ex.code==="BOVESPA"?"BRA":ex.code==="XETRA"?"DE":ex.code}</span>
+            </button>
+          ))}
+        </div>
+        <div style={{color:C.muted,fontSize:10,marginBottom:12,textAlign:"center"}}>
+          {EXCHANGES.find(e=>e.code===exchange)?.flag} <span style={{color:C.text,fontWeight:700}}>{EXCHANGES.find(e=>e.code===exchange)?.label}</span> – {EXCHANGES.find(e=>e.code===exchange)?.hint} · <span style={{color:C.muted}}>Př: {EXCHANGES.find(e=>e.code===exchange)?.example}</span>
+        </div>
         <label style={{color:C.muted,fontSize:11,display:"block",marginBottom:8,textTransform:"uppercase",letterSpacing:1}}>Ticker Symbol</label>
-        <input value={ticker} onChange={e=>setTicker(e.target.value.toUpperCase())} onKeyDown={e=>e.key==="Enter"&&analyze()} placeholder="AAPL · NVDA · MSFT · CEZ.PR" style={{width:"100%",background:C.bg,border:`2px solid ${C.border}`,borderRadius:12,color:C.text,fontSize:22,fontWeight:900,padding:"13px 16px",letterSpacing:3,marginBottom:14,transition:"border .2s"}}/>
+        <input value={ticker} onChange={e=>setTicker(e.target.value.toUpperCase())} onKeyDown={e=>e.key==="Enter"&&analyze()} placeholder={EXCHANGES.find(e=>e.code===exchange)?.example||"AAPL"} style={{width:"100%",background:C.bg,border:`2px solid ${C.border}`,borderRadius:12,color:C.text,fontSize:22,fontWeight:900,padding:"13px 16px",letterSpacing:3,marginBottom:14,transition:"border .2s"}}/>
         <button onClick={()=>analyze()} style={{width:"100%",background:`linear-gradient(135deg,${C.blue},#6366f1)`,border:"none",borderRadius:12,color:"#fff",fontSize:16,fontWeight:700,padding:"14px 0",boxShadow:`0 4px 20px ${C.blue}40`}}>
           Analyzovat →
         </button>
@@ -452,7 +485,25 @@ export default function App() {
               <SectionTitle icon="🕸️" title="Celkové Skóre" sub="Hodnocení 0–10 v klíčových kategoriích"/>
               <button onClick={()=>setShowScoreLegend(true)} style={{background:C.blue+"20",border:`1px solid ${C.blue}40`,borderRadius:7,padding:"3px 9px",fontSize:10,color:C.blue,fontWeight:700}}>? Legenda</button>
             </div>
-            <ResponsiveContainer width="100%" height={195}>
+            {/* Big score display */}
+            <div style={{display:"flex",alignItems:"center",justifyContent:"center",gap:20,marginBottom:8,padding:"10px 0"}}>
+              <div style={{textAlign:"center"}}>
+                <div style={{fontSize:64,fontWeight:900,lineHeight:1,color:vc(data.verdict),textShadow:`0 0 40px ${vc(data.verdict)}60`}}>{(data.score||5).toFixed(1)}</div>
+                <div style={{color:C.muted,fontSize:11,marginTop:4}}>z 10 bodů</div>
+              </div>
+              <div style={{display:"flex",flexDirection:"column",gap:6}}>
+                <div style={{background:vc(data.verdict)+"20",border:`1px solid ${vc(data.verdict)}40`,borderRadius:10,padding:"6px 14px",color:vc(data.verdict),fontWeight:900,fontSize:16,textAlign:"center"}}>{data.verdict||"DRŽET"}</div>
+                <div style={{color:C.muted,fontSize:11,textAlign:"center",lineHeight:1.5}}>
+                  {(data.score||5)>=8?"Top 20% akcií":((data.score||5)>=6?"Nadprůměrná kvalita":((data.score||5)>=4?"Průměr trhu":"Podprůměrná"))}
+                </div>
+                <div style={{display:"flex",gap:4}}>
+                  {[1,2,3,4,5,6,7,8,9,10].map(n=>(
+                    <div key={n} style={{flex:1,height:5,borderRadius:3,background:n<=(data.score||5)?vc(data.verdict):C.border,transition:"all .3s"}}/>
+                  ))}
+                </div>
+              </div>
+            </div>
+            <ResponsiveContainer width="100%" height={180}>
               <RadarChart data={_radarData} margin={{top:8,right:36,left:36,bottom:8}}>
                 <PolarGrid stroke={C.border}/>
                 <PolarAngleAxis dataKey="subject" tick={{fill:C.muted,fontSize:10}}/>
@@ -461,6 +512,15 @@ export default function App() {
                 <Tooltip content={<Tip/>}/>
               </RadarChart>
             </ResponsiveContainer>
+            {/* Category breakdown */}
+            <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:5,marginTop:6}}>
+              {_radarData.map(d=>(
+                <div key={d.subject} style={{background:C.card2,borderRadius:8,padding:"6px 8px",textAlign:"center"}}>
+                  <div style={{color:C.muted,fontSize:9,marginBottom:2}}>{d.subject}</div>
+                  <div style={{color:d.score>=7?C.green:d.score>=4?C.yellow:C.red,fontWeight:800,fontSize:13}}>{d.score}<span style={{color:C.muted,fontSize:9}}>/10</span></div>
+                </div>
+              ))}
+            </div>
           </Card>
           <Card>
             <SectionTitle icon="🌍" title="Makro Kontext"/>
@@ -600,10 +660,44 @@ export default function App() {
           <Card>
             <SectionTitle icon="⚖️" title="DCF Valuace" sub="Discounted Cash Flow – ocenění na základě budoucích peněžních toků"/>
             <div style={{display:"grid",gridTemplateColumns:isMobile?"1fr":"1fr 1fr",gap:8,marginBottom:12}}>
-              {[{l:"Vnitřní hodnota",v:`${ccy} ${fmt(dcf.intrinsicValue)}`,big:true,tip:"Odhadovaná férová cena akcie dle DCF modelu"},{l:"Upside/Downside",v:pct(dcf.upside),big:true,c:clr(dcf.upside||0),tip:"Rozdíl mezi vnitřní hodnotou a aktuální cenou. Kladné = podhodnocená."},{l:"WACC",v:`${fmt(dcf.wacc)}%`,tip:"Průměrné náklady kapitálu. Nižší WACC = vyšší vnitřní hodnota."},{l:"Verdict",v:dcf.upside>15?"Podhodnocená":dcf.upside<-15?"Nadhodnocená":"Férová cena",c:dcf.upside>15?C.green:dcf.upside<-15?C.red:C.yellow}].map(({l,v,big,c,tip})=>(
+              {[{l:"Vnitřní hodnota",v:`${ccy} ${fmt(dcf.intrinsicValue)}`,big:true,tip:"Odhadovaná férová cena akcie dle DCF modelu – součet všech budoucích cash flow diskontovaných na dnešní hodnotu."},{l:"Upside/Downside",v:pct(dcf.upside),big:true,c:clr(dcf.upside||0),tip:"Rozdíl mezi vnitřní hodnotou a aktuální cenou. Kladné = akcie je podhodnocená."},{l:"WACC",v:`${fmt(dcf.wacc)}%`,tip:"Průměrné náklady kapitálu. Čím nižší WACC, tím vyšší vnitřní hodnota – firma levněji financuje růst."},{l:"Verdict",v:dcf.upside>15?"Podhodnocená":dcf.upside<-15?"Nadhodnocená":"Férová cena",c:dcf.upside>15?C.green:dcf.upside<-15?C.red:C.yellow}].map(({l,v,big,c,tip})=>(
                 <DCFCard key={l} label={l} value={v} big={big} color={c} tip={tip}/>
               ))}
             </div>
+            {/* Visual price vs intrinsic value bar */}
+            {dcf.intrinsicValue>0&&pr.current>0&&(()=>{
+              const lo = Math.min(pr.current,dcf.intrinsicValue)*0.88;
+              const hi = Math.max(pr.current,dcf.intrinsicValue)*1.12;
+              const range = hi-lo;
+              const curPct = ((pr.current-lo)/range*100).toFixed(1);
+              const intrPct = ((dcf.intrinsicValue-lo)/range*100).toFixed(1);
+              const undervalued = dcf.intrinsicValue>pr.current;
+              return <div style={{marginBottom:12}}>
+                <div style={{color:C.muted,fontSize:10,textTransform:"uppercase",letterSpacing:1,marginBottom:10}}>Aktuální cena vs. vnitřní hodnota</div>
+                <div style={{position:"relative",height:8,borderRadius:4,background:C.card2,marginBottom:24}}>
+                  <div style={{position:"absolute",left:`${Math.min(parseFloat(curPct),parseFloat(intrPct))}%`,width:`${Math.abs(parseFloat(intrPct)-parseFloat(curPct))}%`,height:"100%",background:undervalued?C.green+"40":C.red+"40",borderRadius:4}}/>
+                  {/* Current price pin */}
+                  <div style={{position:"absolute",left:`${curPct}%`,top:"50%",transform:"translate(-50%,-50%)"}}>
+                    <div style={{width:14,height:14,borderRadius:"50%",background:C.blue,border:"2px solid #fff",boxShadow:`0 0 8px ${C.blue}80`}}/>
+                    <div style={{position:"absolute",top:16,left:"50%",transform:"translateX(-50%)",whiteSpace:"nowrap",textAlign:"center"}}>
+                      <div style={{color:C.blue,fontSize:10,fontWeight:800}}>{ccy} {fmt(pr.current)}</div>
+                      <div style={{color:C.muted,fontSize:9}}>Aktuální</div>
+                    </div>
+                  </div>
+                  {/* Intrinsic value pin */}
+                  <div style={{position:"absolute",left:`${intrPct}%`,top:"50%",transform:"translate(-50%,-50%)"}}>
+                    <div style={{width:14,height:14,borderRadius:3,background:undervalued?C.green:C.red,border:"2px solid #fff",boxShadow:`0 0 8px ${undervalued?C.green:C.red}80`}}/>
+                    <div style={{position:"absolute",top:16,left:"50%",transform:"translateX(-50%)",whiteSpace:"nowrap",textAlign:"center"}}>
+                      <div style={{color:undervalued?C.green:C.red,fontSize:10,fontWeight:800}}>{ccy} {fmt(dcf.intrinsicValue)}</div>
+                      <div style={{color:C.muted,fontSize:9}}>Férová cena</div>
+                    </div>
+                  </div>
+                </div>
+                <div style={{background:undervalued?C.green+"12":C.red+"12",border:`1px solid ${undervalued?C.green:C.red}25`,borderRadius:10,padding:"8px 12px",fontSize:11,color:C.muted,lineHeight:1.6}}>
+                  💡 {undervalued?`Akcie se obchoduje s ${Math.abs(dcf.upside||0).toFixed(0)}% slevou oproti odhadované vnitřní hodnotě – potenciálně zajímavá příležitost.`:`Akcie se obchoduje s ${Math.abs(dcf.upside||0).toFixed(0)}% prémií nad odhadovanou vnitřní hodnotou – trh oceňuje budoucí růst.`}
+                </div>
+              </div>;
+            })()}
             <div style={{display:"flex",gap:8}}>
               {[{l:"Cílová cena",v:`${ccy} ${fmt(data.targetPrice)}`},{l:"Avg analytici",v:`${ccy} ${fmt(an.avgTarget)}`},{l:"Potenciál",v:pct(upPct),c:clr(upPct)}].map(({l,v,c})=>(
                 <div key={l} style={{flex:1,background:C.card2,borderRadius:9,padding:"8px 10px"}}><div style={{color:C.muted,fontSize:9,textTransform:"uppercase",letterSpacing:1,marginBottom:2}}>{l}</div><div style={{color:c||C.text,fontSize:13,fontWeight:800}}>{v}</div></div>
