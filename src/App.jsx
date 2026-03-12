@@ -1,5 +1,15 @@
 import { useState, useEffect } from "react";
 import { useAuth, useUser, UserButton } from "@clerk/clerk-react";
+
+const useIsMobile = () => {
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  useEffect(() => {
+    const handler = () => setIsMobile(window.innerWidth < 768);
+    window.addEventListener("resize", handler);
+    return () => window.removeEventListener("resize", handler);
+  }, []);
+  return isMobile;
+};
 import {
   AreaChart, Area, BarChart, Bar, LineChart, Line,
   RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis,
@@ -280,6 +290,7 @@ export default function App() {
   const [loading,setLoading]=useState(false);
   const [data,setData]=useState(null);
   const [error,setError]=useState(null);
+  const isMobile = useIsMobile();
   const [finTab,setFinTab]=useState("revenue");
   const [newsFilter,setNewsFilter]=useState("all");
   const [watchlist,setWatchlist]=useState([]);
@@ -403,39 +414,39 @@ export default function App() {
       <style>{`*{box-sizing:border-box}::-webkit-scrollbar{width:5px}::-webkit-scrollbar-thumb{background:${C.border};border-radius:3px}button{cursor:pointer}a{text-decoration:none}`}</style>
       {showScoreLegend&&<ScoreLegend onClose={()=>setShowScoreLegend(false)}/>}
 
-      <div style={{background:`${C.card}ee`,backdropFilter:"blur(12px)",borderBottom:`1px solid ${C.border}`,padding:"10px 24px",display:"flex",justifyContent:"space-between",alignItems:"center",position:"sticky",top:0,zIndex:100,flexWrap:"wrap",gap:8}}>
-        <div style={{display:"flex",alignItems:"center",gap:10}}>
-          <button onClick={()=>{setData(null);setError(null);}} style={{background:"transparent",border:`1px solid ${C.border}`,color:C.muted,borderRadius:8,padding:"5px 12px",fontSize:12}}>← Zpět</button>
-          <span style={{fontWeight:900,fontSize:18}}>{data.ticker}</span>
-          <span style={{color:C.muted,fontSize:13}}>{data.name}</span>
-          <span style={{fontSize:10,background:C.card2,color:C.muted,padding:"2px 8px",borderRadius:5}}>{data.exchange}</span>
+      <div style={{background:`${C.card}ee`,backdropFilter:"blur(12px)",borderBottom:`1px solid ${C.border}`,padding:isMobile?"8px 12px":"10px 24px",display:"flex",justifyContent:"space-between",alignItems:"center",position:"sticky",top:0,zIndex:100,flexWrap:"wrap",gap:8}}>
+        <div style={{display:"flex",alignItems:"center",gap:isMobile?6:10}}>
+          <button onClick={()=>{setData(null);setError(null);}} style={{background:"transparent",border:`1px solid ${C.border}`,color:C.muted,borderRadius:8,padding:"5px 10px",fontSize:11}}>← Zpět</button>
+          <span style={{fontWeight:900,fontSize:isMobile?15:18}}>{data.ticker}</span>
+          {!isMobile&&<span style={{color:C.muted,fontSize:13}}>{data.name}</span>}
+          {!isMobile&&<span style={{fontSize:10,background:C.card2,color:C.muted,padding:"2px 8px",borderRadius:5}}>{data.exchange}</span>}
         </div>
-        <div style={{display:"flex",alignItems:"center",gap:12}}>
-          <div><span style={{fontSize:20,fontWeight:900}}>{ccy} {fmt(pr.current)}</span><span style={{color:clr(pr.changePct||0),fontWeight:700,fontSize:13,marginLeft:8}}>{pct(pr.changePct)}</span></div>
-          <span style={{background:vc(data.verdict)+"25",color:vc(data.verdict),border:`1px solid ${vc(data.verdict)}50`,borderRadius:9,padding:"5px 16px",fontWeight:900,fontSize:14}}>{data.verdict||"DRŽET"}</span>
+        <div style={{display:"flex",alignItems:"center",gap:isMobile?8:12}}>
+          <div><span style={{fontSize:isMobile?16:20,fontWeight:900}}>{ccy} {fmt(pr.current)}</span><span style={{color:clr(pr.changePct||0),fontWeight:700,fontSize:12,marginLeft:6}}>{pct(pr.changePct)}</span></div>
+          {!isMobile&&<span style={{background:vc(data.verdict)+"25",color:vc(data.verdict),border:`1px solid ${vc(data.verdict)}50`,borderRadius:9,padding:"5px 16px",fontWeight:900,fontSize:14}}>{data.verdict||"DRŽET"}</span>}
           <UserButton afterSignOutUrl="/"/>
         </div>
       </div>
 
-      <div style={{maxWidth:1400,margin:"0 auto",padding:"18px 24px 50px",display:"flex",flexDirection:"column",gap:12}}>
+      <div style={{maxWidth:1400,margin:"0 auto",padding:isMobile?"12px 10px 50px":"18px 24px 50px",display:"flex",flexDirection:"column",gap:12}}>
         <Card>
-          <div style={{display:"flex",gap:20,flexWrap:"wrap"}}>
+          <div style={{display:"flex",gap:20,flexWrap:"wrap",flexDirection:isMobile?"column":"row"}}>
             <div style={{flex:1,minWidth:220}}>
               <div style={{color:C.muted,fontSize:11,marginBottom:6}}>{data.sector} · {data.exchange}</div>
               <p style={{margin:0,fontSize:13,lineHeight:1.8,color:"#94a3b8"}}>{data.description}</p>
             </div>
-            <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:8,minWidth:320}}>
+            <div style={{display:"grid",gridTemplateColumns:isMobile?"repeat(2,1fr)":"repeat(4,1fr)",gap:8,minWidth:0}}>
               <MCard label="Market Cap" value={pr.marketCap}/><MCard label="Objem" value={pr.volume}/>
               <MCard label="52T Max" value={`${fmt(pr.w52High)}`}/><MCard label="52T Min" value={`${fmt(pr.w52Low)}`}/>
             </div>
           </div>
         </Card>
 
-        <div style={{display:"grid",gridTemplateColumns:"repeat(8,1fr)",gap:8}}>
+        <div style={{display:"grid",gridTemplateColumns:isMobile?"repeat(4,1fr)":"repeat(8,1fr)",gap:8}}>
           {[{l:"P/E",v:fmt(mx.pe)},{l:"EPS",v:`${fmt(mx.eps)}`},{l:"Net Marže",v:pct(mx.netMargin)},{l:"ROE",v:pct(mx.roe)},{l:"Beta",v:fmt(mx.beta)},{l:"Div. Yield",v:pct(mx.dividendYield)},{l:"D/E",v:fmt(mx.debtEquity)},{l:"FCF",v:`${fmt(mx.freeCashFlowB)}B`}].map(m=><MCard key={m.l} label={m.l} value={m.v}/>)}
         </div>
 
-        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:12}}>
+        <div style={{display:"grid",gridTemplateColumns:isMobile?"1fr":"1fr 1fr 1fr",gap:12}}>
           <Card>
             <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:4}}>
               <SectionTitle icon="🕸️" title="Celkové Skóre" sub="Hodnocení 0–10 v klíčových kategoriích"/>
@@ -453,7 +464,7 @@ export default function App() {
           </Card>
           <Card>
             <SectionTitle icon="🌍" title="Makro Kontext"/>
-            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,marginBottom:10}}>
+            <div style={{display:"grid",gridTemplateColumns:isMobile?"1fr":"1fr 1fr",gap:8,marginBottom:10}}>
               {[{l:"Fed Rate",v:`${fmt(macro.fedRate)}%`},{l:"Inflace",v:`${fmt(macro.inflation)}%`},{l:"Sektor YTD",v:pct(macro.sectorYtdPct),c:clr(macro.sectorYtdPct)},{l:"S&P 500 YTD",v:pct(macro.sp500YtdPct),c:clr(macro.sp500YtdPct)}].map(({l,v,c})=>(
                 <div key={l} style={{background:C.card2,borderRadius:10,padding:"9px 11px"}}>
                   <div style={{color:C.muted,fontSize:9,textTransform:"uppercase",letterSpacing:1,marginBottom:2}}>{l}</div>
@@ -470,7 +481,7 @@ export default function App() {
               <div style={{color:C.text,fontSize:20,fontWeight:900,marginBottom:2}}>{ec.nextDate||"—"}</div>
               <div style={{color:C.muted,fontSize:12}}>{ec.quarter}</div>
             </div>
-            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}}>
+            <div style={{display:"grid",gridTemplateColumns:isMobile?"1fr":"1fr 1fr",gap:8}}>
               {[{l:"Odhadovaný EPS",v:`${ccy} ${fmt(ec.estimatedEPS)}`},{l:"Odh. tržby",v:`${fmt(ec.estimatedRevB)}B`},{l:"Předchozí překvapení",v:pct(ec.lastSurprisePct),c:clr(ec.lastSurprisePct)}].map(({l,v,c})=>(
                 <div key={l} style={{background:C.card2,borderRadius:9,padding:"9px 11px"}}>
                   <div style={{color:C.muted,fontSize:9,textTransform:"uppercase",letterSpacing:1,marginBottom:2}}>{l}</div>
@@ -509,7 +520,7 @@ export default function App() {
           </ResponsiveContainer>
         </Card>
 
-        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12}}>
+        <div style={{display:"grid",gridTemplateColumns:isMobile?"1fr":"1fr 1fr",gap:12}}>
           <Card>
             <SectionTitle icon="📊" title="Srovnání s S&P 500" sub="Výkonnost indexovaná na 100"/>
             <ResponsiveContainer width="100%" height={185}>
@@ -539,10 +550,10 @@ export default function App() {
           </Card>
         </div>
 
-        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12}}>
+        <div style={{display:"grid",gridTemplateColumns:isMobile?"1fr":"1fr 1fr",gap:12}}>
           <Card>
             <SectionTitle icon="⚖️" title="DCF Valuace" sub="Discounted Cash Flow – ocenění na základě budoucích peněžních toků"/>
-            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,marginBottom:12}}>
+            <div style={{display:"grid",gridTemplateColumns:isMobile?"1fr":"1fr 1fr",gap:8,marginBottom:12}}>
               {[{l:"Vnitřní hodnota",v:`${ccy} ${fmt(dcf.intrinsicValue)}`,big:true,tip:"Odhadovaná férová cena akcie dle DCF modelu"},{l:"Upside/Downside",v:pct(dcf.upside),big:true,c:clr(dcf.upside||0),tip:"Rozdíl mezi vnitřní hodnotou a aktuální cenou. Kladné = podhodnocená."},{l:"WACC",v:`${fmt(dcf.wacc)}%`,tip:"Průměrné náklady kapitálu. Nižší WACC = vyšší vnitřní hodnota."},{l:"Verdict",v:dcf.upside>15?"Podhodnocená":dcf.upside<-15?"Nadhodnocená":"Férová cena",c:dcf.upside>15?C.green:dcf.upside<-15?C.red:C.yellow}].map(({l,v,big,c,tip})=>(
                 <DCFCard key={l} label={l} value={v} big={big} color={c} tip={tip}/>
               ))}
@@ -556,7 +567,7 @@ export default function App() {
           <div style={{display:"flex",flexDirection:"column",gap:10}}>
             <Card style={{padding:16,flex:1}}>
               <h3 style={{margin:"0 0 10px",fontSize:14,fontWeight:800}}>📐 Technická Analýza</h3>
-              <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:6}}>
+              <div style={{display:"grid",gridTemplateColumns:isMobile?"repeat(2,1fr)":"repeat(3,1fr)",gap:6}}>
                 {[{l:"RSI",v:fmt(tc.rsi),c:tc.rsi>70?C.red:tc.rsi<30?C.green:C.text,tip:"RSI 0–100. Nad 70 = překoupeno (drahé). Pod 30 = přeprodáno (levné)."},{l:"MA 50",v:fmt(tc.ma50),tip:"Klouzavý průměr 50 dní. Cena nad MA50 = krátkodobý uptrend."},{l:"MA 200",v:fmt(tc.ma200),tip:"Klouzavý průměr 200 dní. Cena nad MA200 = dlouhodobý uptrend."},{l:"Support",v:fmt(tc.support),tip:"Úroveň kde akcie nacházela podporu (kupující vstupují)."},{l:"Resistance",v:fmt(tc.resistance),tip:"Úroveň kde akcie narážela na odpor (prodejci tlačí dolů)."}].map(({l,v,c,tip})=>(
                   <TechCard key={l} label={l} value={v} color={c} tip={tip}/>
                 ))}
@@ -569,7 +580,7 @@ export default function App() {
                 {[{k:"buy",c:C.green},{k:"hold",c:C.yellow},{k:"sell",c:C.red}].map(({k,c})=>an[k]>0&&<div key={k} style={{flex:an[k],background:c,display:"flex",alignItems:"center",justifyContent:"center",fontSize:9,fontWeight:800,color:"#000"}}>{an[k]}</div>)}
               </div>
               <div style={{display:"flex",justifyContent:"space-between",fontSize:11,marginBottom:10}}><span style={{color:C.green}}>Koupit {an.buy}</span><span style={{color:C.yellow}}>Držet {an.hold}</span><span style={{color:C.red}}>Prodat {an.sell}</span></div></>}
-              <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:6}}>
+              <div style={{display:"grid",gridTemplateColumns:isMobile?"1fr":"1fr 1fr 1fr",gap:6}}>
                 {[{l:"Low",v:fmt(an.lowTarget)},{l:"Průměr",v:fmt(an.avgTarget)},{l:"High",v:fmt(an.highTarget)}].map(({l,v})=>(
                   <div key={l} style={{background:C.card2,borderRadius:7,padding:"7px 9px"}}><div style={{color:C.muted,fontSize:9,marginBottom:1}}>{l}</div><div style={{color:C.text,fontSize:12,fontWeight:700}}>{ccy} {v}</div></div>
                 ))}
@@ -587,7 +598,7 @@ export default function App() {
               <div style={{background:buffPassed>=6?C.green+"20":buffPassed>=4?C.yellow+"20":C.red+"20",border:`1px solid ${buffPassed>=6?C.green:buffPassed>=4?C.yellow:C.red}40`,borderRadius:8,padding:"4px 12px",color:buffPassed>=6?C.green:buffPassed>=4?C.yellow:C.red,fontWeight:800,fontSize:13}}>{buffPassed>=6?"Silná volba":buffPassed>=4?"Průměrná":"Rizikové"}</div>
             </div>
           </div>
-          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}}>
+          <div style={{display:"grid",gridTemplateColumns:isMobile?"1fr":"1fr 1fr",gap:8}}>
             {bc.map((b,i)=>(
               <div key={i} style={{background:b.passed?C.green+"10":C.red+"08",border:`1px solid ${b.passed?C.green+"30":C.red+"20"}`,borderRadius:11,padding:"10px 14px",display:"flex",gap:10,alignItems:"flex-start"}}>
                 <span style={{fontSize:16,flexShrink:0,marginTop:1}}>{b.passed?"✅":"❌"}</span>
@@ -619,7 +630,7 @@ export default function App() {
 
         <Card>
           <SectionTitle icon="📆" title="Čtvrtletní Výsledky" sub={`Revenue v miliardách ${ccy}`}/>
-          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:16,alignItems:"start"}}>
+          <div style={{display:"grid",gridTemplateColumns:isMobile?"1fr":"1fr 1fr",gap:16,alignItems:"start"}}>
             <ResponsiveContainer width="100%" height={180}>
               <BarChart data={quarters} margin={{top:4,right:8,left:0,bottom:4}}>
                 <CartesianGrid strokeDasharray="3 3" stroke={C.border}/>
@@ -731,7 +742,7 @@ export default function App() {
           </div>
         </Card>
 
-        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12}}>
+        <div style={{display:"grid",gridTemplateColumns:isMobile?"1fr":"1fr 1fr",gap:12}}>
           <Card>
             <h3 style={{margin:"0 0 12px",fontSize:14,fontWeight:800,color:C.red}}>⚠️ Rizika</h3>
             {risks.filter(r=>r).map((r,i)=><div key={i} style={{display:"flex",gap:8,marginBottom:7}}><span style={{color:C.red,fontSize:8,marginTop:5,flexShrink:0}}>●</span><span style={{color:"#94a3b8",fontSize:12,lineHeight:1.5}}>{r}</span></div>)}
@@ -761,7 +772,7 @@ export default function App() {
                 <div style={{color:C.muted,fontSize:10,textTransform:"uppercase",letterSpacing:1,marginBottom:6}}>Investiční teze</div>
                 <p style={{color:"#94a3b8",fontSize:12,margin:0,lineHeight:1.8}}>{data.investmentThesis}</p>
               </div>
-              <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:14}}>
+              <div style={{display:"grid",gridTemplateColumns:isMobile?"1fr":"1fr 1fr",gap:14}}>
                 <div><div style={{color:C.green,fontWeight:800,fontSize:11,marginBottom:7}}>✅ Proč koupit</div>{data.pros?.filter(p=>p).map((p,i)=><div key={i} style={{color:"#94a3b8",fontSize:11,marginBottom:5,display:"flex",gap:5}}><span style={{color:C.green,flexShrink:0}}>+</span>{p}</div>)}</div>
                 <div><div style={{color:C.red,fontWeight:800,fontSize:11,marginBottom:7}}>❌ Proč ne</div>{data.cons?.filter(c=>c).map((c,i)=><div key={i} style={{color:"#94a3b8",fontSize:11,marginBottom:5,display:"flex",gap:5}}><span style={{color:C.red,flexShrink:0}}>−</span>{c}</div>)}</div>
               </div>
