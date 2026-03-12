@@ -3,7 +3,7 @@ import {
   AreaChart, Area, BarChart, Bar, LineChart, Line,
   RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis,
   XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
-  ComposedChart, Legend
+  ComposedChart, Legend, ReferenceLine
 } from "recharts";
 
 const C = { bg:"#060d1a",card:"#0b1628",card2:"#0f1e35",border:"#1a2d4a",text:"#e2e8f0",muted:"#4e6080",blue:"#3b82f6",green:"#10b981",red:"#ef4444",yellow:"#f59e0b",purple:"#8b5cf6",cyan:"#06b6d4",orange:"#f97316" };
@@ -13,6 +13,26 @@ const clr = n => (n||0)>=0?C.green:C.red;
 const vc = v => v?.includes("KOUPIT")||v?.includes("Podhodnoce")||v?.includes("Bullish")?C.green:v?.includes("PRODAT")||v?.includes("Nadhodnoce")||v?.includes("Bearish")?C.red:C.yellow;
 const sentClr = s => s==="positive"?C.green:s==="negative"?C.red:C.muted;
 const RADAR_LABELS = {valuation:"Valuace",growth:"Růst",profitability:"Ziskovost",financialHealth:"Fin. zdraví",momentum:"Momentum",dividend:"Dividenda"};
+
+const METRIC_TIPS = {
+  "P/E": "Price-to-Earnings · Cena akcie ÷ roční zisk na akcii. Nižší = levnější. Průměr S&P 500 ≈ 20.",
+  "EPS": "Earnings Per Share · Čistý zisk na 1 akcii za rok. Vyšší = lepší.",
+  "Net Marže": "Procento tržeb co zůstane jako čistý zisk. 20%+ je silné.",
+  "ROE": "Return on Equity · Zisk ÷ vlastní kapitál. 15%+ = silné.",
+  "Beta": "Volatilita vs. trh. 1,0 = kopíruje trh. >1 = rizikovější. <1 = stabilnější.",
+  "Div. Yield": "Roční dividenda jako % ceny. Vyšší = více příjmu.",
+  "D/E": "Debt-to-Equity · Celkový dluh ÷ vlastní kapitál. Nižší = méně zadlužená.",
+  "FCF": "Free Cash Flow · Hotovost po odečtení investic. Základ pro dividendy a růst.",
+};
+
+const RADAR_DESC = {
+  "Valuace":"Jak levná/drahá je akcie vs. fundamenty a konkurence",
+  "Růst":"Tempo růstu tržeb, zisku a EPS v posledních letech",
+  "Ziskovost":"Marže, ROE, ROIC – efektivita byznysu",
+  "Fin. zdraví":"Bilance, úroveň dluhu, cash flow",
+  "Momentum":"Cenový trend, relativní síla vs. trh",
+  "Dividenda":"Výše, stabilita a růst dividendy",
+};
 
 function buildCharts(history, targetPrice, analystLow, analystAvg, analystHigh) {
   const pts = (history||[]).filter(p=>p.price>0);
@@ -54,17 +74,157 @@ const Card = ({children,style={}}) => (
   </div>
 );
 
-const MCard = ({label,value,color}) => (
-  <div style={{background:C.card2,border:`1px solid ${C.border}`,borderRadius:12,padding:"11px 13px"}}>
-    <div style={{color:C.muted,fontSize:10,textTransform:"uppercase",letterSpacing:1,marginBottom:3}}>{label}</div>
-    <div style={{color:color||C.text,fontSize:15,fontWeight:700}}>{value||"—"}</div>
-  </div>
-);
+const MCard = ({label,value,color}) => {
+  const [show,setShow] = useState(false);
+  const tip = METRIC_TIPS[label];
+  return (
+    <div style={{background:C.card2,border:`1px solid ${C.border}`,borderRadius:12,padding:"11px 13px",position:"relative"}}
+      onMouseEnter={()=>tip&&setShow(true)} onMouseLeave={()=>setShow(false)}>
+      <div style={{display:"flex",alignItems:"center",gap:4,marginBottom:3}}>
+        <div style={{color:C.muted,fontSize:10,textTransform:"uppercase",letterSpacing:1}}>{label}</div>
+        {tip&&<div style={{color:C.blue,fontSize:9,background:C.blue+"20",borderRadius:"50%",width:13,height:13,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,cursor:"help",fontWeight:700}}>?</div>}
+      </div>
+      <div style={{color:color||C.text,fontSize:15,fontWeight:700}}>{value||"—"}</div>
+      {show&&tip&&<div style={{position:"absolute",bottom:"calc(100% + 6px)",left:0,zIndex:999,background:"#0a1525",border:`1px solid ${C.blue}50`,borderRadius:10,padding:"10px 13px",fontSize:11,color:"#94a3b8",lineHeight:1.7,width:230,boxShadow:"0 8px 32px #00000080",pointerEvents:"none"}}>{tip}</div>}
+    </div>
+  );
+};
 
 const SectionTitle = ({icon,title,sub}) => (
   <div style={{marginBottom:14}}>
     <h2 style={{margin:0,fontSize:15,fontWeight:800}}>{icon} {title}</h2>
     {sub&&<p style={{margin:"3px 0 0",color:C.muted,fontSize:11}}>{sub}</p>}
+  </div>
+);
+
+// Analyst price target bar visualization
+const AnalystTargetBar = ({current,low,avg,high,currency}) => {
+  if(!low||!high||!current||low>=high) return null;
+  const range = high - low;
+  const cp = Math.max(2,Math.min(98,((current-low)/range)*100));
+  const ap = Math.max(2,Math.min(98,((avg-low)/range)*100));
+  const upside = avg&&current?((avg-current)/current*100):0;
+  return (
+    <div style={{marginTop:16,padding:"0 4px"}}>
+      <div style={{color:C.muted,fontSize:10,textTransform:"uppercase",letterSpacing:1,marginBottom:24}}>
+        Vizualizace cenových cílů analytiků
+      </div>
+      <div style={{position:"relative",padding:"0 8px"}}>
+        <div style={{height:8,borderRadius:4,background:`linear-gradient(90deg,${C.red}60,${C.yellow}60,${C.green}60)`,position:"relative"}}>
+          {/* Current price */}
+          <div style={{position:"absolute",left:`${cp}%`,top:"50%",transform:"translate(-50%,-50%)",zIndex:3}}>
+            <div style={{width:16,height:16,borderRadius:"50%",background:C.blue,border:`2px solid #fff`,boxShadow:`0 0 10px ${C.blue}90`}}/>
+            <div style={{position:"absolute",bottom:22,left:"50%",transform:"translateX(-50%)",whiteSpace:"nowrap",textAlign:"center"}}>
+              <div style={{color:C.blue,fontSize:11,fontWeight:800}}>{currency} {fmt(current)}</div>
+              <div style={{color:C.muted,fontSize:9}}>Aktuální cena</div>
+            </div>
+          </div>
+          {/* Avg target */}
+          <div style={{position:"absolute",left:`${ap}%`,top:"50%",transform:"translate(-50%,-50%)",zIndex:2}}>
+            <div style={{width:14,height:14,borderRadius:"50%",background:C.yellow,border:`2px solid #fff`,boxShadow:`0 0 8px ${C.yellow}80`}}/>
+            <div style={{position:"absolute",top:20,left:"50%",transform:"translateX(-50%)",whiteSpace:"nowrap",textAlign:"center"}}>
+              <div style={{color:C.yellow,fontSize:11,fontWeight:800}}>{currency} {fmt(avg)}</div>
+              <div style={{color:C.muted,fontSize:9}}>Průměrný cíl</div>
+            </div>
+          </div>
+        </div>
+        <div style={{display:"flex",justifyContent:"space-between",marginTop:32}}>
+          <div style={{textAlign:"left"}}>
+            <div style={{color:C.red,fontSize:12,fontWeight:700}}>{currency} {fmt(low)}</div>
+            <div style={{color:C.muted,fontSize:9}}>🐻 Pesimistický</div>
+          </div>
+          <div style={{textAlign:"center"}}>
+            <div style={{color:upside>=0?C.green:C.red,fontSize:14,fontWeight:800}}>{upside>=0?"+":""}{upside.toFixed(1)}%</div>
+            <div style={{color:C.muted,fontSize:9}}>potenciál k průměru</div>
+          </div>
+          <div style={{textAlign:"right"}}>
+            <div style={{color:C.green,fontSize:12,fontWeight:700}}>{currency} {fmt(high)}</div>
+            <div style={{color:C.muted,fontSize:9}}>🐂 Optimistický</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Fear & Greed gauge
+const FearGreedMeter = ({value,label,stocks}) => {
+  if(!value) return null;
+  const color = value<=25?C.red:value<=45?C.orange:value<=55?C.yellow:value<=75?C.cyan:C.green;
+  const txt = value<=25?"Extrémní strach 😱":value<=45?"Strach 😟":value<=55?"Neutrální 😐":value<=75?"Chamtivost 😏":"Extrémní chamtivost 🤑";
+  const pct = value/100;
+  const r=20, cx=28, cy=28;
+  const circ = 2*Math.PI*r;
+  const dash = pct*(circ/2);
+  return (
+    <div style={{background:C.card2,borderRadius:12,padding:"12px 14px"}}>
+      <div style={{color:C.muted,fontSize:10,textTransform:"uppercase",letterSpacing:1,marginBottom:10}}>📊 Fear & Greed · Sektor</div>
+      <div style={{display:"flex",alignItems:"center",gap:14}}>
+        <div style={{position:"relative",width:56,height:34,flexShrink:0}}>
+          <svg width="56" height="34" viewBox="0 0 56 34">
+            <path d="M6 28 A22 22 0 0 1 50 28" fill="none" stroke={C.border} strokeWidth="6" strokeLinecap="round"/>
+            <path d="M6 28 A22 22 0 0 1 50 28" fill="none" stroke={color} strokeWidth="6" strokeLinecap="round"
+              strokeDasharray={`${pct*69} 69`} strokeDashoffset="0"/>
+            <circle cx={6+(50-6)*pct} cy={28-Math.sin(Math.PI*pct)*22} r="4" fill={color}/>
+          </svg>
+        </div>
+        <div>
+          <div style={{color,fontSize:14,fontWeight:800}}>{value}/100</div>
+          <div style={{color:C.text,fontSize:12,fontWeight:600}}>{txt}</div>
+          {label&&<div style={{color:C.muted,fontSize:10,marginTop:2}}>{label}</div>}
+        </div>
+      </div>
+      {stocks&&stocks.filter(s=>s).length>0&&(
+        <div style={{marginTop:10,paddingTop:10,borderTop:`1px solid ${C.border}`}}>
+          <div style={{color:C.muted,fontSize:9,textTransform:"uppercase",letterSpacing:1,marginBottom:6}}>Hlavní hráči v sektoru</div>
+          <div style={{display:"flex",flexWrap:"wrap",gap:5}}>
+            {stocks.filter(s=>s).map((s,i)=>(
+              <span key={i} style={{background:C.blue+"15",border:`1px solid ${C.blue}30`,borderRadius:6,padding:"2px 8px",fontSize:10,color:C.cyan,fontWeight:600}}>{s}</span>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+// Score legend popup
+const ScoreLegend = ({onClose}) => (
+  <div style={{position:"fixed",top:0,left:0,right:0,bottom:0,background:"#00000080",zIndex:1000,display:"flex",alignItems:"center",justifyContent:"center"}} onClick={onClose}>
+    <div style={{background:C.card,border:`1px solid ${C.border}`,borderRadius:16,padding:24,maxWidth:400,width:"90%",boxShadow:"0 20px 60px #000000a0"}} onClick={e=>e.stopPropagation()}>
+      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:16}}>
+        <h3 style={{margin:0,fontSize:15,fontWeight:800}}>🕸️ Jak číst skóre (0–10)</h3>
+        <button onClick={onClose} style={{background:"none",border:"none",color:C.muted,fontSize:20,cursor:"pointer"}}>×</button>
+      </div>
+      <div style={{display:"flex",flexDirection:"column",gap:8,marginBottom:16}}>
+        {[
+          {range:"1–3",label:"Slabé",color:C.red,desc:"Výrazně podprůměrné, varování"},
+          {range:"4–5",label:"Podprůměrné",color:C.orange,desc:"Pod průměrem trhu"},
+          {range:"6",label:"Průměrné",color:C.yellow,desc:"V souladu s průměrem trhu"},
+          {range:"7–8",label:"Silné",color:C.cyan,desc:"Nadprůměrné, konkurenční výhoda"},
+          {range:"9–10",label:"Výjimečné",color:C.green,desc:"Top 5–10% v celém trhu"},
+        ].map(({range,label,color,desc})=>(
+          <div key={range} style={{display:"flex",alignItems:"center",gap:10,background:C.card2,borderRadius:10,padding:"8px 12px"}}>
+            <div style={{background:color+"25",border:`1px solid ${color}50`,borderRadius:8,padding:"3px 8px",minWidth:36,textAlign:"center"}}>
+              <span style={{color,fontSize:13,fontWeight:800}}>{range}</span>
+            </div>
+            <div>
+              <div style={{color,fontSize:12,fontWeight:700}}>{label}</div>
+              <div style={{color:C.muted,fontSize:11}}>{desc}</div>
+            </div>
+          </div>
+        ))}
+      </div>
+      <div style={{borderTop:`1px solid ${C.border}`,paddingTop:12}}>
+        <div style={{color:C.muted,fontSize:10,textTransform:"uppercase",letterSpacing:1,marginBottom:8}}>Co každá kategorie znamená</div>
+        {Object.entries(RADAR_DESC).map(([k,v])=>(
+          <div key={k} style={{display:"flex",gap:8,marginBottom:5}}>
+            <span style={{color:C.blue,fontSize:11,fontWeight:700,minWidth:80}}>{k}:</span>
+            <span style={{color:"#94a3b8",fontSize:11}}>{v}</span>
+          </div>
+        ))}
+      </div>
+    </div>
   </div>
 );
 
@@ -76,6 +236,7 @@ export default function App() {
   const [finTab,setFinTab]=useState("revenue");
   const [newsFilter,setNewsFilter]=useState("all");
   const [watchlist,setWatchlist]=useState([]);
+  const [showScoreLegend,setShowScoreLegend]=useState(false);
 
   useEffect(()=>{ try{ const w=localStorage.getItem("wl2"); if(w) setWatchlist(JSON.parse(w)); }catch{} },[]);
 
@@ -100,11 +261,11 @@ export default function App() {
         method:"POST",headers:{"Content-Type":"application/json"},
         body:JSON.stringify({
           model:"claude-sonnet-4-20250514",
-          max_tokens:3000,
+          max_tokens:3500,
           tools:[{type:"web_search_20250305",name:"web_search"}],
           messages:[{role:"user",content:`Search the web for "${t}" stock and fill ALL fields with real numbers. Do 2 searches: 1) "${t} stock price market cap EPS P/E ratio revenue 2024 2025" 2) "${t} analyst price target news earnings date 2026". Return ONLY raw JSON. Today is March 2026. Every numeric field must have a real non-zero value. P/E = price divided by EPS (e.g. ~28 for Apple, ~50 for Nvidia).
 
-{"name":"","ticker":"${t}","exchange":"","sector":"","currency":"USD","description":"2 věty česky","price":{"current":0,"changePct":0,"marketCap":"","w52High":0,"w52Low":0,"volume":""},"metrics":{"pe":0,"eps":0,"netMargin":0,"grossMargin":0,"roe":0,"beta":0,"dividendYield":0,"debtEquity":0,"freeCashFlowB":0,"revenueGrowthPct":0},"radarScores":{"valuation":5,"growth":5,"profitability":5,"financialHealth":5,"momentum":5,"dividend":5},"annuals":[{"year":"2022","revB":0,"niB":0,"eps":0},{"year":"2023","revB":0,"niB":0,"eps":0},{"year":"2024","revB":0,"niB":0,"eps":0},{"year":"2025","revB":0,"niB":0,"eps":0}],"quarters":[{"q":"Q3 2025","revB":0,"niB":0,"eps":0,"yoy":0},{"q":"Q4 2025","revB":0,"niB":0,"eps":0,"yoy":0},{"q":"Q1 2026","revB":0,"niB":0,"eps":0,"yoy":0}],"peHistory":[{"year":"2022","pe":0},{"year":"2023","pe":0},{"year":"2024","pe":0},{"year":"2025","pe":0}],"history":[{"date":"Kvě '24","price":0,"sp500":0},{"date":"Srp '24","price":0,"sp500":0},{"date":"Lis '24","price":0,"sp500":0},{"date":"Úno '25","price":0,"sp500":0},{"date":"Čer '25","price":0,"sp500":0},{"date":"Bře '26","price":0,"sp500":0}],"analysts":{"buy":0,"hold":0,"sell":0,"avgTarget":0,"lowTarget":0,"highTarget":0},"dcf":{"intrinsicValue":0,"upside":0,"wacc":0},"technicals":{"ma50":0,"ma200":0,"rsi":0,"support":0,"resistance":0},"earningsCalendar":{"nextDate":"","quarter":"","estimatedEPS":0,"estimatedRevB":0,"lastSurprisePct":0},"buffettChecklist":[{"criterion":"ROE > 15%","passed":true,"note":""},{"criterion":"Nízký dluh","passed":true,"note":""},{"criterion":"Růst zisku","passed":true,"note":""},{"criterion":"Silný FCF","passed":true,"note":""},{"criterion":"Ekonomický příkop","passed":true,"note":""},{"criterion":"Srozumitelné podnikání","passed":true,"note":""},{"criterion":"Management vlastní akcie","passed":false,"note":""},{"criterion":"P/E pod průměrem","passed":false,"note":""}],"insiders":[{"name":"","role":"","type":"buy","shares":0,"valueM":0,"date":""}],"competitors":[{"ticker":"","name":"","pe":0,"revGrowthPct":0,"netMarginPct":0,"marketCapB":0},{"ticker":"","name":"","pe":0,"revGrowthPct":0,"netMarginPct":0,"marketCapB":0}],"macro":{"fedRate":0,"inflation":0,"sectorYtdPct":0,"sp500YtdPct":0,"outlook":""},"news":[{"title":"","summary":"česky","sentiment":"positive","date":"","source":""},{"title":"","summary":"česky","sentiment":"negative","date":"","source":""},{"title":"","summary":"česky","sentiment":"neutral","date":"","source":""},{"title":"","summary":"česky","sentiment":"positive","date":"","source":""},{"title":"","summary":"česky","sentiment":"neutral","date":"","source":""}],"risks":["","",""],"catalysts":["",""],"verdict":"KOUPIT","score":7,"targetPrice":0,"investmentThesis":"5 vět česky","pros":["",""],"cons":["",""]}`}]
+{"name":"","ticker":"${t}","exchange":"","sector":"","currency":"USD","description":"2 věty česky","price":{"current":0,"changePct":0,"marketCap":"","w52High":0,"w52Low":0,"volume":""},"metrics":{"pe":0,"eps":0,"netMargin":0,"grossMargin":0,"roe":0,"beta":0,"dividendYield":0,"debtEquity":0,"freeCashFlowB":0,"revenueGrowthPct":0},"radarScores":{"valuation":5,"growth":5,"profitability":5,"financialHealth":5,"momentum":5,"dividend":5},"annuals":[{"year":"2022","revB":0,"niB":0,"eps":0},{"year":"2023","revB":0,"niB":0,"eps":0},{"year":"2024","revB":0,"niB":0,"eps":0},{"year":"2025","revB":0,"niB":0,"eps":0}],"quarters":[{"q":"Q3 2025","revB":0,"niB":0,"eps":0,"yoy":0},{"q":"Q4 2025","revB":0,"niB":0,"eps":0,"yoy":0},{"q":"Q1 2026","revB":0,"niB":0,"eps":0,"yoy":0}],"peHistory":[{"year":"2022","pe":0},{"year":"2023","pe":0},{"year":"2024","pe":0},{"year":"2025","pe":0}],"history":[{"date":"Kvě '24","price":0,"sp500":0},{"date":"Srp '24","price":0,"sp500":0},{"date":"Lis '24","price":0,"sp500":0},{"date":"Úno '25","price":0,"sp500":0},{"date":"Čer '25","price":0,"sp500":0},{"date":"Bře '26","price":0,"sp500":0}],"analysts":{"buy":0,"hold":0,"sell":0,"avgTarget":0,"lowTarget":0,"highTarget":0},"dcf":{"intrinsicValue":0,"upside":0,"wacc":0},"technicals":{"ma50":0,"ma200":0,"rsi":0,"support":0,"resistance":0},"earningsCalendar":{"nextDate":"","quarter":"","estimatedEPS":0,"estimatedRevB":0,"lastSurprisePct":0},"buffettChecklist":[{"criterion":"ROE > 15%","passed":true,"note":""},{"criterion":"Nízký dluh","passed":true,"note":""},{"criterion":"Růst zisku","passed":true,"note":""},{"criterion":"Silný FCF","passed":true,"note":""},{"criterion":"Ekonomický příkop","passed":true,"note":""},{"criterion":"Srozumitelné podnikání","passed":true,"note":""},{"criterion":"Management vlastní akcie","passed":false,"note":""},{"criterion":"P/E pod průměrem","passed":false,"note":""}],"insiders":[{"name":"","role":"","type":"buy","shares":0,"valueM":0,"date":""}],"competitors":[{"ticker":"","name":"","pe":0,"revGrowthPct":0,"netMarginPct":0,"marketCapB":0},{"ticker":"","name":"","pe":0,"revGrowthPct":0,"netMarginPct":0,"marketCapB":0}],"macro":{"fedRate":0,"inflation":0,"sectorYtdPct":0,"sp500YtdPct":0,"outlook":"","sectorFearGreed":50,"sectorFearGreedLabel":"Sentiment sektoru neutrální","sectorTopStocks":["","",""]},"news":[{"title":"","summary":"česky","sentiment":"positive","date":"","source":"","url":"https://"},{"title":"","summary":"česky","sentiment":"negative","date":"","source":"","url":"https://"},{"title":"","summary":"česky","sentiment":"neutral","date":"","source":"","url":"https://"},{"title":"","summary":"česky","sentiment":"positive","date":"","source":"","url":"https://"},{"title":"","summary":"česky","sentiment":"neutral","date":"","source":"","url":"https://"}],"risks":["","",""],"catalysts":["",""],"verdict":"KOUPIT","score":7,"targetPrice":0,"investmentThesis":"5 vět česky","pros":["",""],"cons":["",""]}`}]
         })
       });
       const d=await res.json();
@@ -191,7 +352,9 @@ export default function App() {
 
   return (
     <div style={{minHeight:"100vh",background:C.bg,fontFamily:"system-ui,sans-serif",color:C.text}}>
-      <style>{`*{box-sizing:border-box}::-webkit-scrollbar{width:5px}::-webkit-scrollbar-thumb{background:${C.border};border-radius:3px}button{cursor:pointer}`}</style>
+      <style>{`*{box-sizing:border-box}::-webkit-scrollbar{width:5px}::-webkit-scrollbar-thumb{background:${C.border};border-radius:3px}button{cursor:pointer}a{text-decoration:none}`}</style>
+      {showScoreLegend&&<ScoreLegend onClose={()=>setShowScoreLegend(false)}/>}
+
       <div style={{background:`${C.card}ee`,backdropFilter:"blur(12px)",borderBottom:`1px solid ${C.border}`,padding:"10px 24px",display:"flex",justifyContent:"space-between",alignItems:"center",position:"sticky",top:0,zIndex:100,flexWrap:"wrap",gap:8}}>
         <div style={{display:"flex",alignItems:"center",gap:10}}>
           <button onClick={()=>{setData(null);setError(null);}} style={{background:"transparent",border:`1px solid ${C.border}`,color:C.muted,borderRadius:8,padding:"5px 12px",fontSize:12}}>← Zpět</button>
@@ -225,7 +388,10 @@ export default function App() {
 
         <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:12}}>
           <Card>
-            <SectionTitle icon="🕸️" title="Celkové Skóre" sub="Hodnocení 0–10 v klíčových kategoriích"/>
+            <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:4}}>
+              <SectionTitle icon="🕸️" title="Celkové Skóre" sub="Hodnocení 0–10 v klíčových kategoriích"/>
+              <button onClick={()=>setShowScoreLegend(true)} style={{background:C.blue+"20",border:`1px solid ${C.blue}40`,borderRadius:7,padding:"3px 9px",fontSize:10,color:C.blue,fontWeight:700}}>? Legenda</button>
+            </div>
             <ResponsiveContainer width="100%" height={195}>
               <RadarChart data={_radarData} margin={{top:8,right:36,left:36,bottom:8}}>
                 <PolarGrid stroke={C.border}/>
@@ -238,7 +404,7 @@ export default function App() {
           </Card>
           <Card>
             <SectionTitle icon="🌍" title="Makro Kontext"/>
-            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,marginBottom:12}}>
+            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,marginBottom:10}}>
               {[{l:"Fed Rate",v:`${fmt(macro.fedRate)}%`},{l:"Inflace",v:`${fmt(macro.inflation)}%`},{l:"Sektor YTD",v:pct(macro.sectorYtdPct),c:clr(macro.sectorYtdPct)},{l:"S&P 500 YTD",v:pct(macro.sp500YtdPct),c:clr(macro.sp500YtdPct)}].map(({l,v,c})=>(
                 <div key={l} style={{background:C.card2,borderRadius:10,padding:"9px 11px"}}>
                   <div style={{color:C.muted,fontSize:9,textTransform:"uppercase",letterSpacing:1,marginBottom:2}}>{l}</div>
@@ -246,10 +412,7 @@ export default function App() {
                 </div>
               ))}
             </div>
-            <div style={{background:C.card2,borderRadius:10,padding:"10px 13px"}}>
-              <div style={{color:C.muted,fontSize:9,textTransform:"uppercase",letterSpacing:1,marginBottom:4}}>Výhled sektoru</div>
-              <p style={{color:"#94a3b8",fontSize:12,margin:0,lineHeight:1.6}}>{macro.outlook}</p>
-            </div>
+            <FearGreedMeter value={macro.sectorFearGreed} label={macro.sectorFearGreedLabel} stocks={macro.sectorTopStocks}/>
           </Card>
           <Card>
             <SectionTitle icon="📅" title="Earnings Calendar" sub="Příští zveřejnění výsledků"/>
@@ -274,8 +437,8 @@ export default function App() {
             <SectionTitle icon="📈" title="Vývoj ceny + Fair Value zóny" sub="Historická data · predikce · pásmo analytiků"/>
             <div style={{display:"flex",gap:14,fontSize:11,color:C.muted}}>
               <span><span style={{display:"inline-block",width:14,height:2,background:C.blue,verticalAlign:"middle",marginRight:4}}/>Cena</span>
-              <span><span style={{display:"inline-block",width:14,borderTop:`2px dashed ${C.purple}`,verticalAlign:"middle",marginRight:4}}/>Predikce</span>
-              <span><span style={{display:"inline-block",width:14,height:8,background:C.green+"40",verticalAlign:"middle",marginRight:4}}/>Fair Value</span>
+              <span><span style={{display:"inline-block",width:14,borderTop:`2px dashed ${C.purple}`,verticalAlign:"middle",marginRight:4}}/>Průměrný cíl</span>
+              <span><span style={{display:"inline-block",width:14,height:8,background:C.green+"40",verticalAlign:"middle",marginRight:4}}/>Pásmo cílů (Low–High)</span>
             </div>
           </div>
           <ResponsiveContainer width="100%" height={220}>
@@ -292,7 +455,7 @@ export default function App() {
               <Area type="monotone" dataKey="high" name="high" stroke="transparent" fill="url(#fvg)" connectNulls/>
               <Area type="monotone" dataKey="low" name="low" stroke={C.green} strokeWidth={1} strokeDasharray="4 2" fill="transparent" connectNulls/>
               <Area type="monotone" dataKey="actual" name="Cena" stroke={C.blue} strokeWidth={2.5} fill="url(#ag)" connectNulls={false} dot={false}/>
-              <Area type="monotone" dataKey="predicted" name="Predikce" stroke={C.purple} strokeWidth={2} strokeDasharray="6 3" fill="url(#pg)" connectNulls dot={{fill:C.purple,r:3}}/>
+              <Area type="monotone" dataKey="predicted" name="Průměrný cíl" stroke={C.purple} strokeWidth={2} strokeDasharray="6 3" fill="url(#pg)" connectNulls dot={{fill:C.purple,r:3}}/>
             </AreaChart>
           </ResponsiveContainer>
         </Card>
@@ -345,9 +508,14 @@ export default function App() {
             <Card style={{padding:16,flex:1}}>
               <h3 style={{margin:"0 0 10px",fontSize:14,fontWeight:800}}>📐 Technická Analýza</h3>
               <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:6}}>
-                {[{l:"RSI",v:fmt(tc.rsi),c:tc.rsi>70?C.red:tc.rsi<30?C.green:C.text},{l:"MA 50",v:fmt(tc.ma50)},{l:"MA 200",v:fmt(tc.ma200)},{l:"Support",v:fmt(tc.support)},{l:"Resistance",v:fmt(tc.resistance)}].map(({l,v,c})=>(
-                  <div key={l} style={{background:C.card2,borderRadius:8,padding:"7px 8px"}}><div style={{color:C.muted,fontSize:9,textTransform:"uppercase",letterSpacing:1,marginBottom:2}}>{l}</div><div style={{color:c||C.text,fontSize:12,fontWeight:700}}>{v}</div></div>
-                ))}
+                {[{l:"RSI",v:fmt(tc.rsi),c:tc.rsi>70?C.red:tc.rsi<30?C.green:C.text,tip:"Relative Strength Index · 0–100. Nad 70 = překoupeno. Pod 30 = přeprodáno."},{l:"MA 50",v:fmt(tc.ma50),tip:"Klouzavý průměr 50 dní. Cena nad MA50 = krátkodobý uptend."},{l:"MA 200",v:fmt(tc.ma200),tip:"Klouzavý průměr 200 dní. Cena nad MA200 = dlouhodobý uptrend."},{l:"Support",v:fmt(tc.support),tip:"Cenová úroveň kde akcie historicky nacházela podporu (kupující)."},{l:"Resistance",v:fmt(tc.resistance),tip:"Cenová úroveň kde akcie narážela na odpor (prodejci)."}].map(({l,v,c,tip})=>{
+                  const [s,setS]=useState(false);
+                  return <div key={l} style={{background:C.card2,borderRadius:8,padding:"7px 8px",position:"relative"}} onMouseEnter={()=>setS(true)} onMouseLeave={()=>setS(false)}>
+                    <div style={{color:C.muted,fontSize:9,textTransform:"uppercase",letterSpacing:1,marginBottom:2}}>{l}</div>
+                    <div style={{color:c||C.text,fontSize:12,fontWeight:700}}>{v}</div>
+                    {s&&tip&&<div style={{position:"absolute",bottom:"calc(100% + 4px)",left:0,zIndex:999,background:"#0a1525",border:`1px solid ${C.blue}50`,borderRadius:8,padding:"8px 10px",fontSize:10,color:"#94a3b8",lineHeight:1.6,width:180,boxShadow:"0 8px 24px #00000080",pointerEvents:"none"}}>{tip}</div>}
+                  </div>;
+                })}
               </div>
             </Card>
             <Card style={{padding:16}}>
@@ -361,6 +529,7 @@ export default function App() {
                   <div key={l} style={{background:C.card2,borderRadius:7,padding:"7px 9px"}}><div style={{color:C.muted,fontSize:9,marginBottom:1}}>{l}</div><div style={{color:C.text,fontSize:12,fontWeight:700}}>{ccy} {v}</div></div>
                 ))}
               </div>
+              <AnalystTargetBar current={pr.current} low={an.lowTarget} avg={an.avgTarget} high={an.highTarget} currency={ccy}/>
             </Card>
           </div>
         </div>
@@ -487,17 +656,33 @@ export default function App() {
             </div>
           </div>
           <div style={{display:"flex",flexDirection:"column",gap:8}}>
-            {filtNews.map((n,i)=>(
-              <div key={i} style={{background:C.card2,borderRadius:11,padding:"11px 14px",borderLeft:`3px solid ${sentClr(n.sentiment)}`}}>
+            {filtNews.map((n,i)=>{
+              const hasUrl = n.url&&n.url.startsWith("http")&&n.url.length>10;
+              const inner = (
                 <div style={{display:"flex",justifyContent:"space-between",gap:10}}>
                   <div style={{flex:1}}>
-                    <div style={{fontWeight:700,fontSize:12,marginBottom:3}}>{n.sentiment==="positive"?"📈":n.sentiment==="negative"?"📉":"📋"} {n.title}</div>
+                    <div style={{fontWeight:700,fontSize:12,marginBottom:3,display:"flex",alignItems:"center",gap:6}}>
+                      {n.sentiment==="positive"?"📈":n.sentiment==="negative"?"📉":"📋"} {n.title}
+                      {hasUrl&&<span style={{color:C.blue,fontSize:10,background:C.blue+"15",borderRadius:5,padding:"1px 6px"}}>↗ číst</span>}
+                    </div>
                     {n.summary&&<div style={{color:"#94a3b8",fontSize:11,lineHeight:1.5}}>{n.summary}</div>}
                   </div>
                   <div style={{textAlign:"right",minWidth:62,color:C.muted,fontSize:10,flexShrink:0}}><div>{n.source}</div><div style={{marginTop:2}}>{n.date}</div></div>
                 </div>
-              </div>
-            ))}
+              );
+              return hasUrl ? (
+                <a key={i} href={n.url} target="_blank" rel="noopener noreferrer"
+                  style={{background:C.card2,borderRadius:11,padding:"11px 14px",borderLeft:`3px solid ${sentClr(n.sentiment)}`,display:"block",cursor:"pointer",transition:"background .15s"}}
+                  onMouseEnter={e=>e.currentTarget.style.background="#162035"}
+                  onMouseLeave={e=>e.currentTarget.style.background=C.card2}>
+                  {inner}
+                </a>
+              ) : (
+                <div key={i} style={{background:C.card2,borderRadius:11,padding:"11px 14px",borderLeft:`3px solid ${sentClr(n.sentiment)}`}}>
+                  {inner}
+                </div>
+              );
+            })}
           </div>
         </Card>
 
