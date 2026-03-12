@@ -22,7 +22,7 @@ const fmt = (n,d=2) => typeof n==="number"?n.toLocaleString("cs-CZ",{maximumFrac
 const pct = n => typeof n==="number"?`${n>0?"+":""}${n.toFixed(2)}%`:"—";
 const clr = n => (n||0)>=0?C.green:C.red;
 const vc = v => v?.includes("KOUPIT")||v?.includes("Podhodnoce")||v?.includes("Bullish")?C.green:v?.includes("PRODAT")||v?.includes("Nadhodnoce")||v?.includes("Bearish")?C.red:C.yellow;
-const sentClr = s => s==="positive"?C.green:s==="negative"?C.red:C.muted;
+const sentClr = s => s==="positive"?C.green:s==="negative"?C.red:C.cyan;
 const RADAR_LABELS = {valuation:"Valuace",growth:"Růst",profitability:"Ziskovost",financialHealth:"Fin. zdraví",momentum:"Momentum",dividend:"Dividenda"};
 
 const METRIC_TIPS = {
@@ -868,13 +868,13 @@ export default function App() {
               );
               return hasUrl ? (
                 <a key={i} href={n.url} target="_blank" rel="noopener noreferrer"
-                  style={{background:C.card2,borderRadius:11,padding:"11px 14px",borderLeft:`3px solid ${sentClr(n.sentiment)}`,display:"block",cursor:"pointer",transition:"background .15s"}}
-                  onMouseEnter={e=>e.currentTarget.style.background="#162035"}
-                  onMouseLeave={e=>e.currentTarget.style.background=C.card2}>
+                  style={{background:sentClr(n.sentiment)+"0d",borderRadius:11,padding:"11px 14px",borderLeft:`4px solid ${sentClr(n.sentiment)}`,display:"block",cursor:"pointer",transition:"background .15s"}}
+                  onMouseEnter={e=>e.currentTarget.style.background=sentClr(n.sentiment)+"1a"}
+                  onMouseLeave={e=>e.currentTarget.style.background=sentClr(n.sentiment)+"0d"}>
                   {inner}
                 </a>
               ) : (
-                <div key={i} style={{background:C.card2,borderRadius:11,padding:"11px 14px",borderLeft:`3px solid ${sentClr(n.sentiment)}`}}>
+                <div key={i} style={{background:sentClr(n.sentiment)+"0d",borderRadius:11,padding:"11px 14px",borderLeft:`4px solid ${sentClr(n.sentiment)}`}}>
                   {inner}
                 </div>
               );
