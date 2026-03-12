@@ -340,7 +340,7 @@ export default function App() {
         method:"POST",headers:{"Content-Type":"application/json"},
         body:JSON.stringify({
           model:"claude-sonnet-4-20250514",
-          max_tokens:3500,
+          max_tokens:5000,
           tools:[{type:"web_search_20250305",name:"web_search"}],
           messages:[{role:"user",content:`Search the web for "${t}" stock on ${exchInfo.label} (${exchInfo.hint}) and return data in LOCAL CURRENCY: ${exchInfo.currency}. IMPORTANT: If "${t}" is a short or ambiguous ticker (1-2 letters), first search for the full company name to confirm which company it is (e.g. "S stock NYSE" = SentinelOne, "U stock" = Unity Software). CRITICAL: All prices, targets, intrinsic values must be in ${exchInfo.currency} - do NOT convert to USD. Do 3 searches: 1) "${t} ${exchInfo.hint} stock price ${exchInfo.currency} 2025 2026" 2) "${t} analyst price target ${exchInfo.currency} earnings 2026" 3) "${t} stock news 2026 site:reuters.com OR site:bloomberg.com OR site:cnbc.com OR site:finance.yahoo.com". Return ONLY raw JSON. Today is March 2026. The "currency" field MUST be "${exchInfo.currency}". Every numeric field must have a real non-zero value. IMPORTANT: For each news item provide the full direct URL to the specific article from search results.
 
