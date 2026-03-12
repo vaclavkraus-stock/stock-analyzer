@@ -23,6 +23,11 @@ const METRIC_TIPS = {
   "Div. Yield": "Roční dividenda jako % ceny. Vyšší = více příjmu.",
   "D/E": "Debt-to-Equity · Celkový dluh ÷ vlastní kapitál. Nižší = méně zadlužená.",
   "FCF": "Free Cash Flow · Hotovost po odečtení investic. Základ pro dividendy a růst.",
+  "RSI": "Relative Strength Index · 0–100. Nad 70 = překoupeno (drahé). Pod 30 = přeprodáno (levné).",
+  "MA 50": "Klouzavý průměr 50 dní. Cena nad MA50 = krátkodobý uptrend.",
+  "MA 200": "Klouzavý průměr 200 dní. Cena nad MA200 = dlouhodobý uptrend.",
+  "Support": "Cenová úroveň kde akcie historicky nacházela podporu – zde kupující vstupují.",
+  "Resistance": "Cenová úroveň kde akcie narážela na odpor – zde prodejci tlačí cenu dolů.",
 };
 
 const RADAR_DESC = {
@@ -508,14 +513,9 @@ export default function App() {
             <Card style={{padding:16,flex:1}}>
               <h3 style={{margin:"0 0 10px",fontSize:14,fontWeight:800}}>📐 Technická Analýza</h3>
               <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:6}}>
-                {[{l:"RSI",v:fmt(tc.rsi),c:tc.rsi>70?C.red:tc.rsi<30?C.green:C.text,tip:"Relative Strength Index · 0–100. Nad 70 = překoupeno. Pod 30 = přeprodáno."},{l:"MA 50",v:fmt(tc.ma50),tip:"Klouzavý průměr 50 dní. Cena nad MA50 = krátkodobý uptend."},{l:"MA 200",v:fmt(tc.ma200),tip:"Klouzavý průměr 200 dní. Cena nad MA200 = dlouhodobý uptrend."},{l:"Support",v:fmt(tc.support),tip:"Cenová úroveň kde akcie historicky nacházela podporu (kupující)."},{l:"Resistance",v:fmt(tc.resistance),tip:"Cenová úroveň kde akcie narážela na odpor (prodejci)."}].map(({l,v,c,tip})=>{
-                  const [s,setS]=useState(false);
-                  return <div key={l} style={{background:C.card2,borderRadius:8,padding:"7px 8px",position:"relative"}} onMouseEnter={()=>setS(true)} onMouseLeave={()=>setS(false)}>
-                    <div style={{color:C.muted,fontSize:9,textTransform:"uppercase",letterSpacing:1,marginBottom:2}}>{l}</div>
-                    <div style={{color:c||C.text,fontSize:12,fontWeight:700}}>{v}</div>
-                    {s&&tip&&<div style={{position:"absolute",bottom:"calc(100% + 4px)",left:0,zIndex:999,background:"#0a1525",border:`1px solid ${C.blue}50`,borderRadius:8,padding:"8px 10px",fontSize:10,color:"#94a3b8",lineHeight:1.6,width:180,boxShadow:"0 8px 24px #00000080",pointerEvents:"none"}}>{tip}</div>}
-                  </div>;
-                })}
+                {[{l:"RSI",v:fmt(tc.rsi),c:tc.rsi>70?C.red:tc.rsi<30?C.green:C.text,tip:"Relative Strength Index · 0–100. Nad 70 = překoupeno. Pod 30 = přeprodáno."},{l:"MA 50",v:fmt(tc.ma50),tip:"Klouzavý průměr 50 dní. Cena nad MA50 = krátkodobý uptrend."},{l:"MA 200",v:fmt(tc.ma200),tip:"Klouzavý průměr 200 dní. Cena nad MA200 = dlouhodobý uptrend."},{l:"Support",v:fmt(tc.support),tip:"Cenová úroveň kde akcie historicky nacházela podporu (kupující)."},{l:"Resistance",v:fmt(tc.resistance),tip:"Cenová úroveň kde akcie narážela na odpor (prodejci)."}].map(({l,v,c,tip})=>(
+                  <MCard key={l} label={l} value={v} color={c}/>
+                ))}
               </div>
             </Card>
             <Card style={{padding:16}}>
