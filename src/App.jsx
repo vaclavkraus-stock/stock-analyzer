@@ -253,6 +253,27 @@ const ScoreLegend = ({onClose}) => (
   </div>
 );
 
+const TechCard = ({label,value,color,tip}) => {
+  const [show,setShow] = useState(false);
+  return <div style={{background:C.card2,borderRadius:8,padding:"7px 8px",position:"relative"}} onMouseEnter={()=>setShow(true)} onMouseLeave={()=>setShow(false)}>
+    <div style={{color:C.muted,fontSize:9,textTransform:"uppercase",letterSpacing:1,marginBottom:2}}>{label}</div>
+    <div style={{color:color||C.text,fontSize:12,fontWeight:700}}>{value}</div>
+    {show&&tip&&<div style={{position:"absolute",bottom:"calc(100% + 4px)",left:0,zIndex:999,background:"#0a1525",border:`1px solid ${C.blue}50`,borderRadius:8,padding:"8px 10px",fontSize:10,color:"#94a3b8",lineHeight:1.6,width:180,boxShadow:"0 8px 24px #00000080",pointerEvents:"none"}}>{tip}</div>}
+  </div>;
+};
+
+const DCFCard = ({label,value,big,color,tip}) => {
+  const [show,setShow] = useState(false);
+  return <div style={{background:C.card2,borderRadius:10,padding:"9px 11px",position:"relative"}} onMouseEnter={()=>tip&&setShow(true)} onMouseLeave={()=>setShow(false)}>
+    <div style={{display:"flex",alignItems:"center",gap:4,marginBottom:2}}>
+      <div style={{color:C.muted,fontSize:9,textTransform:"uppercase",letterSpacing:1}}>{label}</div>
+      {tip&&<div style={{color:C.blue,fontSize:9,background:C.blue+"20",borderRadius:"50%",width:13,height:13,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,cursor:"help",fontWeight:700}}>?</div>}
+    </div>
+    <div style={{color:color||C.text,fontSize:big?17:13,fontWeight:800}}>{value}</div>
+    {show&&tip&&<div style={{position:"absolute",bottom:"calc(100% + 4px)",left:0,zIndex:999,background:"#0a1525",border:`1px solid ${C.blue}50`,borderRadius:8,padding:"8px 10px",fontSize:11,color:"#94a3b8",lineHeight:1.6,width:220,boxShadow:"0 8px 24px #00000080",pointerEvents:"none"}}>{tip}</div>}
+  </div>;
+};
+
 export default function App() {
   const [ticker,setTicker]=useState("");
   const [loading,setLoading]=useState(false);
@@ -519,17 +540,9 @@ export default function App() {
           <Card>
             <SectionTitle icon="⚖️" title="DCF Valuace" sub="Discounted Cash Flow – ocenění na základě budoucích peněžních toků"/>
             <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,marginBottom:12}}>
-              {[{l:"Vnitřní hodnota",v:`${ccy} ${fmt(dcf.intrinsicValue)}`,big:true,tip:"Odhadovaná férová cena akcie dle DCF modelu – diskontované budoucí cash flow"},{l:"Upside/Downside",v:pct(dcf.upside),big:true,c:clr(dcf.upside||0),tip:"Procentuální rozdíl mezi vnitřní hodnotou a aktuální cenou. Kladné = podhodnocená."},{l:"WACC",v:`${fmt(dcf.wacc)}%`,tip:"Weighted Average Cost of Capital – průměrné náklady kapitálu. Nižší WACC = vyšší vnitřní hodnota."},{l:"Verdict",v:dcf.upside>15?"Podhodnocená":dcf.upside<-15?"Nadhodnocená":"Férová cena",c:dcf.upside>15?C.green:dcf.upside<-15?C.red:C.yellow}].map(({l,v,big,c,tip})=>{
-                const [s,setS]=useState(false);
-                return <div key={l} style={{background:C.card2,borderRadius:10,padding:"9px 11px",position:"relative"}} onMouseEnter={()=>tip&&setS(true)} onMouseLeave={()=>setS(false)}>
-                  <div style={{display:"flex",alignItems:"center",gap:4,marginBottom:2}}>
-                    <div style={{color:C.muted,fontSize:9,textTransform:"uppercase",letterSpacing:1}}>{l}</div>
-                    {tip&&<div style={{color:C.blue,fontSize:9,background:C.blue+"20",borderRadius:"50%",width:13,height:13,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,cursor:"help",fontWeight:700}}>?</div>}
-                  </div>
-                  <div style={{color:c||C.text,fontSize:big?17:13,fontWeight:800}}>{v}</div>
-                  {s&&tip&&<div style={{position:"absolute",bottom:"calc(100% + 4px)",left:0,zIndex:999,background:"#0a1525",border:`1px solid ${C.blue}50`,borderRadius:8,padding:"8px 10px",fontSize:11,color:"#94a3b8",lineHeight:1.6,width:220,boxShadow:"0 8px 24px #00000080",pointerEvents:"none"}}>{tip}</div>}
-                </div>;
-              })}
+              {[{l:"Vnitřní hodnota",v:`${ccy} ${fmt(dcf.intrinsicValue)}`,big:true,tip:"Odhadovaná férová cena akcie dle DCF modelu"},{l:"Upside/Downside",v:pct(dcf.upside),big:true,c:clr(dcf.upside||0),tip:"Rozdíl mezi vnitřní hodnotou a aktuální cenou. Kladné = podhodnocená."},{l:"WACC",v:`${fmt(dcf.wacc)}%`,tip:"Průměrné náklady kapitálu. Nižší WACC = vyšší vnitřní hodnota."},{l:"Verdict",v:dcf.upside>15?"Podhodnocená":dcf.upside<-15?"Nadhodnocená":"Férová cena",c:dcf.upside>15?C.green:dcf.upside<-15?C.red:C.yellow}].map(({l,v,big,c,tip})=>(
+                <DCFCard key={l} label={l} value={v} big={big} color={c} tip={tip}/>
+              ))}
             </div>
             <div style={{display:"flex",gap:8}}>
               {[{l:"Cílová cena",v:`${ccy} ${fmt(data.targetPrice)}`},{l:"Avg analytici",v:`${ccy} ${fmt(an.avgTarget)}`},{l:"Potenciál",v:pct(upPct),c:clr(upPct)}].map(({l,v,c})=>(
@@ -541,8 +554,8 @@ export default function App() {
             <Card style={{padding:16,flex:1}}>
               <h3 style={{margin:"0 0 10px",fontSize:14,fontWeight:800}}>📐 Technická Analýza</h3>
               <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:6}}>
-                {[{l:"RSI",v:fmt(tc.rsi),c:tc.rsi>70?C.red:tc.rsi<30?C.green:C.text,tip:"Relative Strength Index · 0–100. Nad 70 = překoupeno. Pod 30 = přeprodáno."},{l:"MA 50",v:fmt(tc.ma50),tip:"Klouzavý průměr 50 dní. Cena nad MA50 = krátkodobý uptrend."},{l:"MA 200",v:fmt(tc.ma200),tip:"Klouzavý průměr 200 dní. Cena nad MA200 = dlouhodobý uptrend."},{l:"Support",v:fmt(tc.support),tip:"Cenová úroveň kde akcie historicky nacházela podporu (kupující)."},{l:"Resistance",v:fmt(tc.resistance),tip:"Cenová úroveň kde akcie narážela na odpor (prodejci)."}].map(({l,v,c,tip})=>(
-                  <MCard key={l} label={l} value={v} color={c}/>
+                {[{l:"RSI",v:fmt(tc.rsi),c:tc.rsi>70?C.red:tc.rsi<30?C.green:C.text,tip:"RSI 0–100. Nad 70 = překoupeno (drahé). Pod 30 = přeprodáno (levné)."},{l:"MA 50",v:fmt(tc.ma50),tip:"Klouzavý průměr 50 dní. Cena nad MA50 = krátkodobý uptrend."},{l:"MA 200",v:fmt(tc.ma200),tip:"Klouzavý průměr 200 dní. Cena nad MA200 = dlouhodobý uptrend."},{l:"Support",v:fmt(tc.support),tip:"Úroveň kde akcie nacházela podporu (kupující vstupují)."},{l:"Resistance",v:fmt(tc.resistance),tip:"Úroveň kde akcie narážela na odpor (prodejci tlačí dolů)."}].map(({l,v,c,tip})=>(
+                  <TechCard key={l} label={l} value={v} color={c} tip={tip}/>
                 ))}
               </div>
             </Card>
