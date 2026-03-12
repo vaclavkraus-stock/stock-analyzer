@@ -323,7 +323,7 @@ export default function App() {
           tools:[{type:"web_search_20250305",name:"web_search"}],
           messages:[{role:"user",content:`Search the web for "${t}" stock and fill ALL fields with real numbers. Do 3 searches: 1) "${t} stock price market cap EPS P/E ratio revenue 2024 2025" 2) "${t} analyst price target earnings date 2026" 3) "${t} stock news 2026 site:reuters.com OR site:bloomberg.com OR site:cnbc.com OR site:finance.yahoo.com". Return ONLY raw JSON. Today is March 2026. Every numeric field must have a real non-zero value. IMPORTANT: For each news item you MUST provide the full direct URL to the specific article (not just homepage) - e.g. "https://www.reuters.com/markets/us/microsoft-beats-earnings-2026-01-15/" - use the actual URLs from your web search results.
 
-{"name":"","ticker":"${t}","exchange":"","sector":"","currency":"USD","description":"2 věty česky","price":{"current":0,"changePct":0,"marketCap":"","w52High":0,"w52Low":0,"volume":""},"metrics":{"pe":0,"eps":0,"netMargin":0,"grossMargin":0,"roe":0,"beta":0,"dividendYield":0,"debtEquity":0,"freeCashFlowB":0,"revenueGrowthPct":0},"radarScores":{"valuation":5,"growth":5,"profitability":5,"financialHealth":5,"momentum":5,"dividend":5},"annuals":[{"year":"2022","revB":0,"niB":0,"eps":0},{"year":"2023","revB":0,"niB":0,"eps":0},{"year":"2024","revB":0,"niB":0,"eps":0},{"year":"2025","revB":0,"niB":0,"eps":0}],"quarters":[{"q":"Q3 2025","revB":0,"niB":0,"eps":0,"yoy":0},{"q":"Q4 2025","revB":0,"niB":0,"eps":0,"yoy":0},{"q":"Q1 2026","revB":0,"niB":0,"eps":0,"yoy":0}],"peHistory":[{"year":"2022","pe":0},{"year":"2023","pe":0},{"year":"2024","pe":0},{"year":"2025","pe":0}],"history":[{"date":"Kvě '24","price":0,"sp500":0},{"date":"Srp '24","price":0,"sp500":0},{"date":"Lis '24","price":0,"sp500":0},{"date":"Úno '25","price":0,"sp500":0},{"date":"Čer '25","price":0,"sp500":0},{"date":"Bře '26","price":0,"sp500":0}],"analysts":{"buy":0,"hold":0,"sell":0,"avgTarget":0,"lowTarget":0,"highTarget":0},"dcf":{"intrinsicValue":0,"upside":0,"wacc":0},"technicals":{"ma50":0,"ma200":0,"rsi":0,"support":0,"resistance":0},"earningsCalendar":{"nextDate":"","quarter":"","estimatedEPS":0,"estimatedRevB":0,"lastSurprisePct":0},"buffettChecklist":[{"criterion":"ROE > 15%","passed":true,"note":""},{"criterion":"Nízký dluh","passed":true,"note":""},{"criterion":"Růst zisku","passed":true,"note":""},{"criterion":"Silný FCF","passed":true,"note":""},{"criterion":"Ekonomický příkop","passed":true,"note":""},{"criterion":"Srozumitelné podnikání","passed":true,"note":""},{"criterion":"Management vlastní akcie","passed":false,"note":""},{"criterion":"P/E pod průměrem","passed":false,"note":""}],"insiders":[{"name":"","role":"","type":"buy","shares":0,"valueM":0,"date":""}],"competitors":[{"ticker":"","name":"","pe":0,"revGrowthPct":0,"netMarginPct":0,"marketCapB":0},{"ticker":"","name":"","pe":0,"revGrowthPct":0,"netMarginPct":0,"marketCapB":0}],"macro":{"fedRate":0,"inflation":0,"sectorYtdPct":0,"sp500YtdPct":0,"outlook":"","sectorFearGreed":50,"sectorFearGreedLabel":"Sentiment sektoru neutrální","sectorTopStocks":["","",""]},"news":[{"title":"","summary":"česky","sentiment":"positive","date":"","source":"","url":"https://"},{"title":"","summary":"česky","sentiment":"negative","date":"","source":"","url":"https://"},{"title":"","summary":"česky","sentiment":"neutral","date":"","source":"","url":"https://"},{"title":"","summary":"česky","sentiment":"positive","date":"","source":"","url":"https://"},{"title":"","summary":"česky","sentiment":"neutral","date":"","source":"","url":"https://"}],"risks":["","",""],"catalysts":["",""],"verdict":"KOUPIT","score":7,"targetPrice":0,"investmentThesis":"5 vět česky","pros":["",""],"cons":["",""]}`}]
+{"name":"","ticker":"${t}","exchange":"","sector":"","currency":"USD","description":"2 věty česky","price":{"current":0,"changePct":0,"marketCap":"","w52High":0,"w52Low":0,"volume":""},"metrics":{"pe":0,"eps":0,"netMargin":0,"grossMargin":0,"roe":0,"beta":0,"dividendYield":0,"debtEquity":0,"freeCashFlowB":0,"revenueGrowthPct":0},"radarScores":{"valuation":5,"growth":5,"profitability":5,"financialHealth":5,"momentum":5,"dividend":5},"annuals":[{"year":"2022","revB":0,"niB":0,"eps":0},{"year":"2023","revB":0,"niB":0,"eps":0},{"year":"2024","revB":0,"niB":0,"eps":0},{"year":"2025","revB":0,"niB":0,"eps":0}],"quarters":[{"q":"Q3 2025","revB":0,"niB":0,"eps":0,"yoy":0},{"q":"Q4 2025","revB":0,"niB":0,"eps":0,"yoy":0},{"q":"Q1 2026","revB":0,"niB":0,"eps":0,"yoy":0}],"peHistory":[{"year":"2022","pe":0},{"year":"2023","pe":0},{"year":"2024","pe":0},{"year":"2025","pe":0}],"history":[{"date":"Kvě '24","price":0,"sp500":0},{"date":"Srp '24","price":0,"sp500":0},{"date":"Lis '24","price":0,"sp500":0},{"date":"Úno '25","price":0,"sp500":0},{"date":"Čer '25","price":0,"sp500":0},{"date":"Bře '26","price":0,"sp500":0}],"analysts":{"buy":0,"hold":0,"sell":0,"avgTarget":0,"lowTarget":0,"highTarget":0},"dcf":{"intrinsicValue":0,"upside":0,"wacc":0},"technicals":{"ma50":0,"ma200":0,"rsi":0,"support":0,"resistance":0},"earningsCalendar":{"nextDate":"","quarter":"","estimatedEPS":0,"estimatedRevB":0,"lastSurprisePct":0},"earningsHistory":[{"quarter":"Q4 2025","date":"","estimatedEPS":0,"actualEPS":0,"estimatedRevB":0,"actualRevB":0},{"quarter":"Q3 2025","date":"","estimatedEPS":0,"actualEPS":0,"estimatedRevB":0,"actualRevB":0},{"quarter":"Q2 2025","date":"","estimatedEPS":0,"actualEPS":0,"estimatedRevB":0,"actualRevB":0},{"quarter":"Q1 2025","date":"","estimatedEPS":0,"actualEPS":0,"estimatedRevB":0,"actualRevB":0}],"buffettChecklist":[{"criterion":"ROE > 15%","passed":true,"note":""},{"criterion":"Nízký dluh","passed":true,"note":""},{"criterion":"Růst zisku","passed":true,"note":""},{"criterion":"Silný FCF","passed":true,"note":""},{"criterion":"Ekonomický příkop","passed":true,"note":""},{"criterion":"Srozumitelné podnikání","passed":true,"note":""},{"criterion":"Management vlastní akcie","passed":false,"note":""},{"criterion":"P/E pod průměrem","passed":false,"note":""}],"insiders":[{"name":"","role":"","type":"buy","shares":0,"valueM":0,"date":""}],"competitors":[{"ticker":"","name":"","pe":0,"revGrowthPct":0,"netMarginPct":0,"marketCapB":0},{"ticker":"","name":"","pe":0,"revGrowthPct":0,"netMarginPct":0,"marketCapB":0}],"macro":{"fedRate":0,"inflation":0,"sectorYtdPct":0,"sp500YtdPct":0,"outlook":"","sectorFearGreed":50,"sectorFearGreedLabel":"Sentiment sektoru neutrální","sectorTopStocks":["","",""]},"news":[{"title":"","summary":"česky","sentiment":"positive","date":"","source":"","url":"https://"},{"title":"","summary":"česky","sentiment":"negative","date":"","source":"","url":"https://"},{"title":"","summary":"česky","sentiment":"neutral","date":"","source":"","url":"https://"},{"title":"","summary":"česky","sentiment":"positive","date":"","source":"","url":"https://"},{"title":"","summary":"česky","sentiment":"neutral","date":"","source":"","url":"https://"}],"risks":["","",""],"catalysts":["",""],"verdict":"KOUPIT","score":7,"targetPrice":0,"investmentThesis":"5 vět česky","pros":["",""],"cons":["",""]}`}]
         })
       });
       const d=await res.json();
@@ -481,7 +481,7 @@ export default function App() {
               <div style={{color:C.text,fontSize:20,fontWeight:900,marginBottom:2}}>{ec.nextDate||"—"}</div>
               <div style={{color:C.muted,fontSize:12}}>{ec.quarter}</div>
             </div>
-            <div style={{display:"grid",gridTemplateColumns:isMobile?"1fr":"1fr 1fr",gap:8}}>
+            <div style={{display:"grid",gridTemplateColumns:isMobile?"1fr":"1fr 1fr",gap:8,marginBottom:16}}>
               {[{l:"Odhadovaný EPS",v:`${ccy} ${fmt(ec.estimatedEPS)}`},{l:"Odh. tržby",v:`${fmt(ec.estimatedRevB)}B`},{l:"Předchozí překvapení",v:pct(ec.lastSurprisePct),c:clr(ec.lastSurprisePct)}].map(({l,v,c})=>(
                 <div key={l} style={{background:C.card2,borderRadius:9,padding:"9px 11px"}}>
                   <div style={{color:C.muted,fontSize:9,textTransform:"uppercase",letterSpacing:1,marginBottom:2}}>{l}</div>
@@ -489,6 +489,52 @@ export default function App() {
                 </div>
               ))}
             </div>
+            {(data.earningsHistory||[]).length>0&&<>
+              <div style={{color:C.muted,fontSize:10,textTransform:"uppercase",letterSpacing:1,marginBottom:8}}>Historie výsledků</div>
+              <div style={{display:"flex",flexDirection:"column",gap:6}}>
+                {(data.earningsHistory||[]).map((e,i)=>{
+                  const epsBeat = e.actualEPS>e.estimatedEPS;
+                  const revBeat = e.actualRevB>e.estimatedRevB;
+                  const epsDiff = e.estimatedEPS?(((e.actualEPS-e.estimatedEPS)/Math.abs(e.estimatedEPS))*100):0;
+                  const revDiff = e.estimatedRevB?(((e.actualRevB-e.estimatedRevB)/Math.abs(e.estimatedRevB))*100):0;
+                  const bothBeat = epsBeat&&revBeat;
+                  const bothMiss = !epsBeat&&!revBeat;
+                  const badge = bothBeat?"BEAT":bothMiss?"MISS":"MIXED";
+                  const badgeColor = bothBeat?C.green:bothMiss?C.red:C.yellow;
+                  return <div key={i} style={{background:C.card2,borderRadius:10,padding:"10px 14px",border:`1px solid ${badgeColor}20`}}>
+                    <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:8}}>
+                      <div>
+                        <span style={{color:C.text,fontWeight:800,fontSize:13}}>{e.quarter}</span>
+                        <span style={{color:C.muted,fontSize:11,marginLeft:8}}>{e.date}</span>
+                      </div>
+                      <span style={{background:badgeColor+"20",color:badgeColor,border:`1px solid ${badgeColor}40`,borderRadius:6,padding:"2px 10px",fontSize:11,fontWeight:900}}>{badge}</span>
+                    </div>
+                    <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}}>
+                      <div style={{background:C.bg,borderRadius:8,padding:"7px 10px"}}>
+                        <div style={{color:C.muted,fontSize:9,textTransform:"uppercase",letterSpacing:1,marginBottom:4}}>EPS</div>
+                        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+                          <div>
+                            <div style={{color:C.muted,fontSize:10}}>Očekáváno: <span style={{color:C.text}}>{ccy} {fmt(e.estimatedEPS)}</span></div>
+                            <div style={{color:C.muted,fontSize:10}}>Skutečné: <span style={{color:epsBeat?C.green:C.red,fontWeight:700}}>{ccy} {fmt(e.actualEPS)}</span></div>
+                          </div>
+                          <div style={{color:epsBeat?C.green:C.red,fontWeight:800,fontSize:13}}>{epsDiff>=0?"+":""}{epsDiff.toFixed(1)}%</div>
+                        </div>
+                      </div>
+                      <div style={{background:C.bg,borderRadius:8,padding:"7px 10px"}}>
+                        <div style={{color:C.muted,fontSize:9,textTransform:"uppercase",letterSpacing:1,marginBottom:4}}>Tržby</div>
+                        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+                          <div>
+                            <div style={{color:C.muted,fontSize:10}}>Očekáváno: <span style={{color:C.text}}>{fmt(e.estimatedRevB)}B</span></div>
+                            <div style={{color:C.muted,fontSize:10}}>Skutečné: <span style={{color:revBeat?C.green:C.red,fontWeight:700}}>{fmt(e.actualRevB)}B</span></div>
+                          </div>
+                          <div style={{color:revBeat?C.green:C.red,fontWeight:800,fontSize:13}}>{revDiff>=0?"+":""}{revDiff.toFixed(1)}%</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>;
+                })}
+              </div>
+            </>}
           </Card>
         </div>
 
