@@ -286,21 +286,21 @@ const DCFCard = ({label,value,big,color,tip}) => {
 };
 
 const EXCHANGES = [
-  {code:"US",      flag:"🇺🇸", label:"USA",       hint:"NYSE / NASDAQ",         currency:"USD", example:"AAPL, NVDA, MSFT"},
-  {code:"LSE",     flag:"🇬🇧", label:"Londýn",    hint:"London Stock Exchange",  currency:"GBp", example:"SHEL, HSBA, BP"},
-  {code:"XETRA",   flag:"🇩🇪", label:"Frankfurt", hint:"XETRA / Frankfurt",      currency:"EUR", example:"SAP, BMW, SIE"},
-  {code:"EURONEXT",flag:"🇫🇷", label:"Euronext",  hint:"Paris / Amsterdam",      currency:"EUR", example:"LVMH, ASML, TTE"},
-  {code:"TSE",     flag:"🇯🇵", label:"Tokio",     hint:"Tokyo Stock Exchange",   currency:"JPY", example:"7203, 6758, 9984"},
-  {code:"SSE",     flag:"🇨🇳", label:"Šanghaj",   hint:"Shanghai / Shenzhen",    currency:"CNY", example:"600519, 000858"},
-  {code:"HKEX",    flag:"🇭🇰", label:"Hongkong",  hint:"Hong Kong Exchange",     currency:"HKD", example:"700, 9988, 1299"},
-  {code:"KRX",     flag:"🇰🇷", label:"Soul",      hint:"Korea Exchange",         currency:"KRW", example:"005930, 000660"},
-  {code:"BSE",     flag:"🇮🇳", label:"Bombaj",    hint:"BSE / NSE India",        currency:"INR", example:"RELIANCE, TCS"},
-  {code:"PSE",     flag:"🇨🇿", label:"Praha",     hint:"Prague Stock Exchange",  currency:"CZK", example:"CEZ, KOMB, MONET"},
-  {code:"GPW",     flag:"🇵🇱", label:"Varšava",   hint:"Warsaw Stock Exchange",  currency:"PLN", example:"PKN, PKO, CDR"},
-  {code:"TSX",     flag:"🇨🇦", label:"Toronto",   hint:"Toronto Stock Exchange", currency:"CAD", example:"SHOP, RY, TD"},
-  {code:"ASX",     flag:"🇦🇺", label:"Sydney",    hint:"Australian Securities",  currency:"AUD", example:"BHP, CBA, CSL"},
-  {code:"BOVESPA", flag:"🇧🇷", label:"São Paulo", hint:"B3 / Bovespa",           currency:"BRL", example:"PETR4, VALE3"},
-  {code:"MOEX",    flag:"🇷🇺", label:"Moskva",    hint:"Moscow Exchange",        currency:"RUB", example:"GAZP, SBER, LKOH"},
+  {code:"US",      flag:"🇺🇸", label:"USA",       short:"NYSE",  hint:"NYSE / NASDAQ",         currency:"USD", example:"AAPL, NVDA, MSFT"},
+  {code:"LSE",     flag:"🇬🇧", label:"Londýn",    short:"LSE",   hint:"London Stock Exchange",  currency:"GBp", example:"SHEL, HSBA, BP"},
+  {code:"XETRA",   flag:"🇩🇪", label:"Frankfurt", short:"XETRA", hint:"XETRA / Frankfurt",      currency:"EUR", example:"SAP, BMW, SIE"},
+  {code:"EURONEXT",flag:"🇫🇷", label:"Euronext",  short:"ENX",   hint:"Paris / Amsterdam",      currency:"EUR", example:"LVMH, ASML, TTE"},
+  {code:"TSE",     flag:"🇯🇵", label:"Tokio",     short:"TSE",   hint:"Tokyo Stock Exchange",   currency:"JPY", example:"7203, 6758, 9984"},
+  {code:"SSE",     flag:"🇨🇳", label:"Šanghaj",   short:"SSE",   hint:"Shanghai / Shenzhen",    currency:"CNY", example:"600519, 000858"},
+  {code:"HKEX",    flag:"🇭🇰", label:"Hongkong",  short:"HKEX",  hint:"Hong Kong Exchange",     currency:"HKD", example:"700, 9988, 1299"},
+  {code:"KRX",     flag:"🇰🇷", label:"Soul",      short:"KRX",   hint:"Korea Exchange",         currency:"KRW", example:"005930, 000660"},
+  {code:"BSE",     flag:"🇮🇳", label:"Bombaj",    short:"NSE",   hint:"BSE / NSE India",        currency:"INR", example:"RELIANCE, TCS"},
+  {code:"PSE",     flag:"🇨🇿", label:"Praha",     short:"PSE",   hint:"Prague Stock Exchange",  currency:"CZK", example:"CEZ, KOMB, MONET"},
+  {code:"GPW",     flag:"🇵🇱", label:"Varšava",   short:"GPW",   hint:"Warsaw Stock Exchange",  currency:"PLN", example:"PKN, PKO, CDR"},
+  {code:"TSX",     flag:"🇨🇦", label:"Toronto",   short:"TSX",   hint:"Toronto Stock Exchange", currency:"CAD", example:"SHOP, RY, TD"},
+  {code:"ASX",     flag:"🇦🇺", label:"Sydney",    short:"ASX",   hint:"Australian Securities",  currency:"AUD", example:"BHP, CBA, CSL"},
+  {code:"BOVESPA", flag:"🇧🇷", label:"São Paulo", short:"B3",    hint:"B3 / Bovespa",           currency:"BRL", example:"PETR4, VALE3"},
+  {code:"MOEX",    flag:"🇷🇺", label:"Moskva",    short:"MOEX",  hint:"Moscow Exchange",        currency:"RUB", example:"GAZP, SBER, LKOH"},
 ];
 
 export default function App() {
@@ -342,7 +342,7 @@ export default function App() {
           model:"claude-sonnet-4-20250514",
           max_tokens:5000,
           tools:[{type:"web_search_20250305",name:"web_search"}],
-          messages:[{role:"user",content:`Search the web for "${t}" stock on ${exchInfo.label} (${exchInfo.hint}) and return data in LOCAL CURRENCY: ${exchInfo.currency}. IMPORTANT: If "${t}" is a short or ambiguous ticker (1-2 letters), first search for the full company name to confirm which company it is (e.g. "S stock NYSE" = SentinelOne, "U stock" = Unity Software). CRITICAL: All prices, targets, intrinsic values must be in ${exchInfo.currency} - do NOT convert to USD. Do 3 searches: 1) "${t} ${exchInfo.hint} stock price ${exchInfo.currency} 2025 2026" 2) "${t} analyst price target ${exchInfo.currency} earnings 2026" 3) "${t} stock news 2026 site:reuters.com OR site:bloomberg.com OR site:cnbc.com OR site:finance.yahoo.com". Return ONLY raw JSON. Today is March 2026. The "currency" field MUST be "${exchInfo.currency}". Every numeric field must have a real non-zero value. IMPORTANT: For each news item provide the full direct URL to the specific article from search results.
+          messages:[{role:"user",content:`Search the web for "${t}" stock on ${exchInfo.label} (${exchInfo.hint}) and return data in LOCAL CURRENCY: ${exchInfo.currency}. IMPORTANT: If "${t}" is a short or ambiguous ticker (1-2 letters), first search for the full company name to confirm which company it is (e.g. "S stock NYSE" = SentinelOne, "U stock" = Unity Software). CRITICAL: All prices, targets, intrinsic values must be in ${exchInfo.currency} - do NOT convert to USD. Today is March 2026 - always use the MOST RECENT available data - P/E, EPS, revenue must be current 2025/2026 values, NOT historical. Do 3 searches: 1) "${t} ${exchInfo.hint} stock price ${exchInfo.currency} current 2026" 2) "${t} analyst price target ${exchInfo.currency} earnings 2026" 3) "${t} stock news March 2026 site:reuters.com OR site:bloomberg.com OR site:cnbc.com OR site:finance.yahoo.com". Return ONLY raw JSON. The "currency" field MUST be "${exchInfo.currency}". Every numeric field must have a real non-zero value based on current data. IMPORTANT: For each news item provide the full direct URL to the specific article from search results.
 
 {"name":"","ticker":"${t}","exchange":"${exchInfo.hint}","sector":"","currency":"${exchInfo.currency}","description":"2 věty česky","price":{"current":0,"changePct":0,"marketCap":"","w52High":0,"w52Low":0,"volume":""},"metrics":{"pe":0,"eps":0,"netMargin":0,"grossMargin":0,"roe":0,"beta":0,"dividendYield":0,"debtEquity":0,"freeCashFlowB":0,"revenueGrowthPct":0},"radarScores":{"valuation":5,"growth":5,"profitability":5,"financialHealth":5,"momentum":5,"dividend":5},"annuals":[{"year":"2022","revB":0,"niB":0,"eps":0},{"year":"2023","revB":0,"niB":0,"eps":0},{"year":"2024","revB":0,"niB":0,"eps":0},{"year":"2025","revB":0,"niB":0,"eps":0}],"quarters":[{"q":"Q3 2025","revB":0,"niB":0,"eps":0,"yoy":0},{"q":"Q4 2025","revB":0,"niB":0,"eps":0,"yoy":0},{"q":"Q1 2026","revB":0,"niB":0,"eps":0,"yoy":0}],"peHistory":[{"year":"2022","pe":0},{"year":"2023","pe":0},{"year":"2024","pe":0},{"year":"2025","pe":0}],"history":[{"date":"Kvě '24","price":0,"sp500":0},{"date":"Srp '24","price":0,"sp500":0},{"date":"Lis '24","price":0,"sp500":0},{"date":"Úno '25","price":0,"sp500":0},{"date":"Čer '25","price":0,"sp500":0},{"date":"Bře '26","price":0,"sp500":0}],"analysts":{"buy":0,"hold":0,"sell":0,"avgTarget":0,"lowTarget":0,"highTarget":0},"dcf":{"intrinsicValue":0,"upside":0,"wacc":0},"technicals":{"ma50":0,"ma200":0,"rsi":0,"support":0,"resistance":0},"earningsCalendar":{"nextDate":"","quarter":"","estimatedEPS":0,"estimatedRevB":0,"lastSurprisePct":0},"earningsHistory":[{"quarter":"Q4 2025","date":"","estimatedEPS":0,"actualEPS":0,"estimatedRevB":0,"actualRevB":0},{"quarter":"Q3 2025","date":"","estimatedEPS":0,"actualEPS":0,"estimatedRevB":0,"actualRevB":0},{"quarter":"Q2 2025","date":"","estimatedEPS":0,"actualEPS":0,"estimatedRevB":0,"actualRevB":0},{"quarter":"Q1 2025","date":"","estimatedEPS":0,"actualEPS":0,"estimatedRevB":0,"actualRevB":0}],"buffettChecklist":[{"criterion":"ROE > 15%","passed":true,"note":""},{"criterion":"Nízký dluh","passed":true,"note":""},{"criterion":"Růst zisku","passed":true,"note":""},{"criterion":"Silný FCF","passed":true,"note":""},{"criterion":"Ekonomický příkop","passed":true,"note":""},{"criterion":"Srozumitelné podnikání","passed":true,"note":""},{"criterion":"Management vlastní akcie","passed":false,"note":""},{"criterion":"P/E pod průměrem","passed":false,"note":""}],"insiders":[{"name":"","role":"","type":"buy","shares":0,"valueM":0,"date":""}],"competitors":[{"ticker":"","name":"","pe":0,"revGrowthPct":0,"netMarginPct":0,"marketCapB":0},{"ticker":"","name":"","pe":0,"revGrowthPct":0,"netMarginPct":0,"marketCapB":0}],"macro":{"fedRate":0,"inflation":0,"sectorYtdPct":0,"sp500YtdPct":0,"outlook":"","sectorFearGreed":50,"sectorFearGreedLabel":"Sentiment sektoru neutrální","sectorTopStocks":["","",""]},"news":[{"title":"","summary":"česky","sentiment":"positive","date":"","source":"","url":"https://"},{"title":"","summary":"česky","sentiment":"negative","date":"","source":"","url":"https://"},{"title":"","summary":"česky","sentiment":"neutral","date":"","source":"","url":"https://"},{"title":"","summary":"česky","sentiment":"positive","date":"","source":"","url":"https://"},{"title":"","summary":"česky","sentiment":"neutral","date":"","source":"","url":"https://"}],"risks":["","",""],"catalysts":["",""],"verdict":"KOUPIT","score":7,"targetPrice":0,"investmentThesis":"5 vět česky","pros":["",""],"cons":["",""]}`}]
         })
@@ -390,7 +390,7 @@ export default function App() {
           {EXCHANGES.map(ex=>(
             <button key={ex.code} onClick={()=>setExchange(ex.code)} title={`${ex.label} – ${ex.hint}\nPř: ${ex.example}`} style={{background:exchange===ex.code?C.blue+"30":"transparent",border:`1px solid ${exchange===ex.code?C.blue:C.border}`,borderRadius:8,padding:"5px 4px",cursor:"pointer",display:"flex",flexDirection:"column",alignItems:"center",gap:2,transition:"all .15s"}}>
               <span style={{fontSize:16}}>{ex.flag}</span>
-              <span style={{color:exchange===ex.code?C.blue:C.muted,fontSize:9,fontWeight:700,letterSpacing:0.3}}>{ex.code==="EURONEXT"?"EU":ex.code==="BOVESPA"?"BRA":ex.code==="XETRA"?"DE":ex.code}</span>
+              <span style={{color:exchange===ex.code?C.blue:C.muted,fontSize:9,fontWeight:700,letterSpacing:0.3}}>{ex.short}</span>
             </button>
           ))}
         </div>
