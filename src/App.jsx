@@ -120,7 +120,7 @@ const SectionTitle = ({icon,title,sub}) => {
 };
 
 // Analyst price target chart
-const AnalystTargetChart = ({current,low,avg,high,currency}) => {
+const AnalystTargetChart = ({current,low,avg,high,currency,T}) => {
   const C = useC();
   if(!low||!high||!current||low>=high) return null;
   const upside = avg&&current?((avg-current)/current*100):0;
@@ -168,7 +168,7 @@ const AnalystTargetChart = ({current,low,avg,high,currency}) => {
 };
 
 // Fear & Greed gauge
-const FearGreedMeter = ({value,label,stocks}) => {
+const FearGreedMeter = ({value,label,stocks,T}) => {
   const C = useC();
   if(!value) return null;
   const color = value<=25?C.red:value<=45?C.orange:value<=55?C.yellow:value<=75?C.cyan:C.green;
@@ -612,7 +612,7 @@ export default function App() {
               <div style={{display:"flex",flexDirection:"column",gap:6}}>
                 <div style={{background:vc(data.verdict)+"20",border:`1px solid ${vc(data.verdict)}40`,borderRadius:10,padding:"6px 14px",color:vc(data.verdict),fontWeight:900,fontSize:16,textAlign:"center"}}>{data.verdict||"DRŽET"}</div>
                 <div style={{color:C.muted,fontSize:11,textAlign:"center",lineHeight:1.5}}>
-                  {(data.score||5)>=8?{T.scoreContext[0]}:((data.score||5)>=6?{T.scoreContext[1]}:((data.score||5)>=4?{T.scoreContext[2]}:{T.scoreContext[3]}))}
+                  {(data.score||5)>=8?T.scoreContext[0]:((data.score||5)>=6?T.scoreContext[1]:((data.score||5)>=4?T.scoreContext[2]:T.scoreContext[3]))}
                 </div>
                 <div style={{display:"flex",gap:4}}>
                   {[1,2,3,4,5,6,7,8,9,10].map(n=>(
