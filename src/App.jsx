@@ -147,7 +147,7 @@ const AnalystTargetChart = ({current,low,avg,high,currency}) => {
   return (
     <div style={{marginTop:14}}>
       <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:8}}>
-        <div style={{color:C.muted,fontSize:10,textTransform:"uppercase",letterSpacing:1}}{T.priceTarget}</div>
+        <div style={{color:C.muted,fontSize:10,textTransform:"uppercase",letterSpacing:1}}>{T.priceTarget}</div>
         <div style={{color:upside>=0?C.green:C.red,fontSize:13,fontWeight:800,background:(upside>=0?C.green:C.red)+"15",border:`1px solid ${(upside>=0?C.green:C.red)}30`,borderRadius:7,padding:"2px 10px"}}>
           {upside>=0?"+":""}{upside.toFixed(1)}% potenciál
         </div>
@@ -218,7 +218,7 @@ const FearGreedMeter = ({value,label,stocks}) => {
       </div>
       {stocks&&stocks.filter(s=>s).length>0&&(
         <div style={{marginTop:10,paddingTop:10,borderTop:`1px solid ${C.border}`}}>
-          <div style={{color:C.muted,fontSize:9,textTransform:"uppercase",letterSpacing:1,marginBottom:6}}{T.sectorPlayers}</div>
+          <div style={{color:C.muted,fontSize:9,textTransform:"uppercase",letterSpacing:1,marginBottom:6}}>{T.sectorPlayers}</div>
           <div style={{display:"flex",flexWrap:"wrap",gap:5}}>
             {stocks.filter(s=>s).map((s,i)=>(
               <span key={i} style={{background:C.blue+"15",border:`1px solid ${C.blue}30`,borderRadius:6,padding:"2px 8px",fontSize:10,color:C.cyan,fontWeight:600}}>{s}</span>
@@ -684,7 +684,7 @@ export default function App() {
           <Card>
             <SectionTitle icon="📅" title={T.earningsCalendar} sub={T.earningsSub}/>
             <div style={{background:`linear-gradient(135deg,${C.blue}15,${C.purple}10)`,border:`1px solid ${C.blue}30`,borderRadius:14,padding:"16px 18px",marginBottom:12,textAlign:"center"}}>
-              <div style={{color:C.blue,fontSize:12,fontWeight:700,marginBottom:4,textTransform:"uppercase",letterSpacing:1}}{T.nextResults}</div>
+              <div style={{color:C.blue,fontSize:12,fontWeight:700,marginBottom:4,textTransform:"uppercase",letterSpacing:1}}>{T.nextResults}</div>
               <div style={{color:C.text,fontSize:20,fontWeight:900,marginBottom:2}}>{ec.nextDate||"—"}</div>
               <div style={{color:C.muted,fontSize:12}}>{ec.quarter}</div>
             </div>
@@ -697,7 +697,7 @@ export default function App() {
               ))}
             </div>
             {(data.earningsHistory||[]).length>0&&<>
-              <div style={{color:C.muted,fontSize:10,textTransform:"uppercase",letterSpacing:1,marginBottom:8}}{T.resultsHistory}</div>
+              <div style={{color:C.muted,fontSize:10,textTransform:"uppercase",letterSpacing:1,marginBottom:8}}>{T.resultsHistory}</div>
               <div style={{display:"flex",flexDirection:"column",gap:6}}>
                 {(data.earningsHistory||[]).map((e,i)=>{
                   const epsBeat = e.actualEPS>e.estimatedEPS;
@@ -820,7 +820,7 @@ export default function App() {
               const intrPct = ((dcf.intrinsicValue-lo)/range*100).toFixed(1);
               const undervalued = dcf.intrinsicValue>pr.current;
               return <div style={{marginBottom:12}}>
-                <div style={{color:C.muted,fontSize:10,textTransform:"uppercase",letterSpacing:1,marginBottom:10}}{T.currentVsIntrinsic}</div>
+                <div style={{color:C.muted,fontSize:10,textTransform:"uppercase",letterSpacing:1,marginBottom:10}}>{T.currentVsIntrinsic}</div>
                 <div style={{position:"relative",height:8,borderRadius:4,background:C.card2,marginBottom:24}}>
                   <div style={{position:"absolute",left:`${Math.min(parseFloat(curPct),parseFloat(intrPct))}%`,width:`${Math.abs(parseFloat(intrPct)-parseFloat(curPct))}%`,height:"100%",background:undervalued?C.green+"40":C.red+"40",borderRadius:4}}/>
                   {/* Current price pin */}
@@ -852,7 +852,7 @@ export default function App() {
             </div>
             {/* Sensitivity table */}
             {(data.dcfSensitivity||[]).length>0&&<>
-              <div style={{color:C.muted,fontSize:10,textTransform:"uppercase",letterSpacing:1,margin:"14px 0 8px"}}{T.sensitivity}</div>
+              <div style={{color:C.muted,fontSize:10,textTransform:"uppercase",letterSpacing:1,margin:"14px 0 8px"}}>{T.sensitivity}</div>
               <div style={{overflowX:"auto"}}>
                 <table style={{width:"100%",borderCollapse:"collapse",fontSize:11}}>
                   <thead>
@@ -890,7 +890,7 @@ export default function App() {
               </div>
             </Card>
             <Card style={{padding:16}}>
-              <h3 style={{margin:"0 0 6px",fontSize:14,fontWeight:800}}{T.analysts} ({totalA})</h3>
+              <h3 style={{margin:"0 0 6px",fontSize:14,fontWeight:800}}>{T.analysts} ({totalA})</h3>
               <div style={{color:C.muted,fontSize:10,marginBottom:8,lineHeight:1.5}}>{T.analystsSub}</div>
               {totalA>0&&<><div style={{display:"flex",borderRadius:7,overflow:"hidden",marginBottom:6,height:18}}>
                 {[{k:"buy",c:C.green},{k:"hold",c:C.yellow},{k:"sell",c:C.red}].map(({k,c})=>an[k]>0&&<div key={k} style={{flex:an[k],background:c,display:"flex",alignItems:"center",justifyContent:"center",fontSize:9,fontWeight:800,color:"#000"}}>{an[k]}</div>)}
@@ -1063,11 +1063,11 @@ export default function App() {
 
         <div style={{display:"grid",gridTemplateColumns:isMobile?"1fr":"1fr 1fr",gap:12}}>
           <Card>
-            <h3 style={{margin:"0 0 12px",fontSize:14,fontWeight:800,color:C.red}}{T.risks}</h3>
+            <h3 style={{margin:"0 0 12px",fontSize:14,fontWeight:800,color:C.red}}>{T.risks}</h3>
             {risks.filter(r=>r).map((r,i)=><div key={i} style={{display:"flex",gap:8,marginBottom:7}}><span style={{color:C.red,fontSize:8,marginTop:5,flexShrink:0}}>●</span><span style={{color:C.muted,fontSize:12,lineHeight:1.5}}>{r}</span></div>)}
           </Card>
           <Card>
-            <h3 style={{margin:"0 0 12px",fontSize:14,fontWeight:800,color:C.green}}{T.catalysts}</h3>
+            <h3 style={{margin:"0 0 12px",fontSize:14,fontWeight:800,color:C.green}}>{T.catalysts}</h3>
             {catalysts.filter(c=>c).map((c,i)=><div key={i} style={{display:"flex",gap:8,marginBottom:7}}><span style={{color:C.green,fontSize:8,marginTop:5,flexShrink:0}}>●</span><span style={{color:C.muted,fontSize:12,lineHeight:1.5}}>{c}</span></div>)}
           </Card>
         </div>
