@@ -1071,7 +1071,7 @@ export default function App() {
           </div>
         </div>
 
-        <p style={{color:C.muted,fontSize:10,textAlign:"center",lineHeight:1.6}}>Data: Live web search &nbsp;·&nbsp; {T.disclaimer}</p>
+        <p style={{color:C.muted,fontSize:10,textAlign:"center",lineHeight:1.6}}>{T.disclaimer}</p>
       </div>
     </div>
     
