@@ -1064,8 +1064,8 @@ export default function App() {
                 <p style={{color:C.muted,fontSize:12,margin:0,lineHeight:1.8}}>{data.investmentThesis}</p>
               </div>
               <div style={{display:"grid",gridTemplateColumns:isMobile?"1fr":"1fr 1fr",gap:14}}>
-                <div><div style={{color:C.green,fontWeight:800,fontSize:11,marginBottom:7}}>✅ Proč koupit</div>{data.pros?.filter(p=>p).map((p,i)=><div key={i} style={{color:C.muted,fontSize:11,marginBottom:5,display:"flex",gap:5}}><span style={{color:C.green,flexShrink:0}}>+</span>{p}</div>)}</div>
-                <div><div style={{color:C.red,fontWeight:800,fontSize:11,marginBottom:7}}>❌ Proč ne</div>{data.cons?.filter(c=>c).map((c,i)=><div key={i} style={{color:C.muted,fontSize:11,marginBottom:5,display:"flex",gap:5}}><span style={{color:C.red,flexShrink:0}}>−</span>{c}</div>)}</div>
+                <div><div style={{color:C.green,fontWeight:800,fontSize:11,marginBottom:7}}>Proc koupit</div>{data.pros?.filter(p=>p).map((p,i)=><div key={i} style={{color:C.muted,fontSize:11,marginBottom:5,display:"flex",gap:5}}><span style={{color:C.green,flexShrink:0}}>+</span>{p}</div>)}</div>
+                <div><div style={{color:C.red,fontWeight:800,fontSize:11,marginBottom:7}}>Proc ne</div>{data.cons?.filter(c=>c).map((c,i)=><div key={i} style={{color:C.muted,fontSize:11,marginBottom:5,display:"flex",gap:5}}><span style={{color:C.red,flexShrink:0}}>-</span>{c}</div>)}</div>
               </div>
             </div>
           </div>
