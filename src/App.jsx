@@ -1033,7 +1033,7 @@ export default function App() {
           </Card>
         </div>
 
-        <div style={{background:`linear-gradient(135deg,${vc(data.verdict)}12,${C.card})`,border:`1px solid ${vc(data.verdict)}40`,borderRadius:18,padding:28,boxShadow:`0 0 40px ${vc(data.verdict)}10`}}>
+        <div style={{background:`linear-gradient(135deg,${vc(data.verdict)}20,${C.card})`,border:`1px solid ${vc(data.verdict)}40`,borderRadius:18,padding:28}}>
           <div style={{display:"flex",gap:24,alignItems:"flex-start",flexWrap:"wrap"}}>
             <div style={{textAlign:"center",minWidth:100}}>
               <div style={{width:86,height:86,borderRadius:"50%",margin:"0 auto 10px",background:vc(data.verdict)+"20",border:`3px solid ${vc(data.verdict)}`,display:"flex",alignItems:"center",justifyContent:"center",boxShadow:`0 0 20px ${vc(data.verdict)}30`}}>
@@ -1049,7 +1049,7 @@ export default function App() {
                 ))}
               </div>
               <div style={{background:C.bg,borderRadius:12,padding:"14px 16px",marginBottom:14}}>
-                <div style={{color:C.muted,fontSize:10,textTransform:"uppercase",letterSpacing:1,marginBottom:6}}>Investiční teze</div>
+                <div style={{color:C.muted,fontSize:10,textTransform:"uppercase",letterSpacing:1,marginBottom:6}}>Investicni teze</div>
                 <p style={{color:C.muted,fontSize:12,margin:0,lineHeight:1.8}}>{data.investmentThesis}</p>
               </div>
               <div style={{display:"grid",gridTemplateColumns:isMobile?"1fr":"1fr 1fr",gap:14}}>
