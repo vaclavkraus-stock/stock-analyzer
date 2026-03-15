@@ -432,8 +432,7 @@ export default function App() {
         <UserButton afterSignOutUrl="/"/>
       </div>
       <div style={{marginBottom:30,textAlign:"center"}}>
-        <div style={{fontSize:52,marginBottom:12}}>📊</div>
-        <h1 style={{color:C.blue,fontSize:34,fontWeight:900,margin:"0 0 8px",letterSpacing:-1.5}}>Stock Analyzer Pro</h1>
+        <img src="/logo.svg" alt="Stock Analyzer Pro" style={{width:280,height:"auto",marginBottom:8}}/>
         <p style={{color:C.muted,fontSize:14,margin:0}}>Live data · DCF · Buffett checklist · Insider · Fair Value · AI analýza</p>
       </div>
       <div style={{background:C.card,border:`1px solid ${C.border}`,borderRadius:22,padding:30,width:"100%",maxWidth:500,boxShadow:darkMode?"0 20px 60px #00000060":"0 20px 60px #0000001a"}}>
@@ -478,7 +477,7 @@ export default function App() {
     <ThemeContext.Provider value={C}>
     <div style={{minHeight:"100vh",background:C.bg,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",fontFamily:"system-ui,sans-serif"}}>
       <style>{`@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.6;transform:scale(.95)}}@keyframes ld{0%{transform:translateX(-100%)}100%{transform:translateX(400%)}}`}</style>
-      <div style={{fontSize:50,marginBottom:18,animation:"pulse 1.8s ease-in-out infinite"}}>📊</div>
+      <img src="/logo.svg" alt="Logo" style={{width:160,height:"auto",marginBottom:18,animation:"pulse 1.8s ease-in-out infinite"}}/>
       <h2 style={{color:C.text,fontSize:20,fontWeight:800,marginBottom:6}}>{T.loading} {ticker}...</h2>
       <LoadingTimer muted={C.muted}/>
       <div style={{width:240,height:3,background:C.border,borderRadius:4,overflow:"hidden",marginTop:20}}>
