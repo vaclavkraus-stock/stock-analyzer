@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, createContext, useContext } from "react";
 import { useAuth, useUser, UserButton } from "@clerk/clerk-react";
 
 const useIsMobile = () => {
@@ -108,8 +108,8 @@ const MCard = ({label,value,color}) => {
   );
 };
 
-const ThemeContext = React.createContext(null);
-const useC = () => React.useContext(ThemeContext);
+const ThemeContext = createContext(null);
+const useC = () => useContext(ThemeContext);
 
 const SectionTitle = ({icon,title,sub}) => {
   const C = useC();
