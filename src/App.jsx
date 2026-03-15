@@ -599,6 +599,18 @@ export default function App() {
                 </div>
               ))}
             </div>
+            {/* Pros & Cons summary */}
+            {(data.pros?.filter(p=>p).length>0||data.cons?.filter(c=>c).length>0)&&<div style={{marginTop:12,display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}}>
+              <div style={{background:C.green+"0d",borderRadius:10,padding:"8px 10px",borderLeft:`3px solid ${C.green}`}}>
+                <div style={{color:C.green,fontSize:9,fontWeight:700,textTransform:"uppercase",letterSpacing:1,marginBottom:5}}>✅ Proč koupit</div>
+                {(data.pros||[]).filter(p=>p).map((p,i)=><div key={i} style={{color:C.muted,fontSize:10,lineHeight:1.5,marginBottom:3}}>+ {p}</div>)}
+              </div>
+              <div style={{background:C.red+"0d",borderRadius:10,padding:"8px 10px",borderLeft:`3px solid ${C.red}`}}>
+                <div style={{color:C.red,fontSize:9,fontWeight:700,textTransform:"uppercase",letterSpacing:1,marginBottom:5}}>❌ Rizika</div>
+                {(data.cons||[]).filter(c=>c).map((c,i)=><div key={i} style={{color:C.muted,fontSize:10,lineHeight:1.5,marginBottom:3}}>– {c}</div>)}
+              </div>
+            </div>}
+            </div>
           </Card>
           <Card>
             <SectionTitle icon="🌍" title={T.macro}/>
@@ -1023,12 +1035,12 @@ export default function App() {
 
         <div style={{display:"grid",gridTemplateColumns:isMobile?"1fr":"1fr 1fr",gap:12}}>
           <Card>
-            <h3 style={{margin:"0 0 12px",fontSize:14,fontWeight:800,color:C.red}}>{T.risks}</h3>
-            {risks.filter(r=>r).map((r,i)=><div key={i} style={{display:"flex",gap:8,marginBottom:7}}><span style={{color:C.red,fontSize:8,marginTop:5,flexShrink:0}}>●</span><span style={{color:C.muted,fontSize:12,lineHeight:1.5}}>{r}</span></div>)}
-          </Card>
-          <Card>
             <h3 style={{margin:"0 0 12px",fontSize:14,fontWeight:800,color:C.green}}>{T.catalysts}</h3>
             {catalysts.filter(c=>c).map((c,i)=><div key={i} style={{display:"flex",gap:8,marginBottom:7}}><span style={{color:C.green,fontSize:8,marginTop:5,flexShrink:0}}>●</span><span style={{color:C.muted,fontSize:12,lineHeight:1.5}}>{c}</span></div>)}
+          </Card>
+          <Card>
+            <h3 style={{margin:"0 0 12px",fontSize:14,fontWeight:800,color:C.red}}>{T.risks}</h3>
+            {risks.filter(r=>r).map((r,i)=><div key={i} style={{display:"flex",gap:8,marginBottom:7}}><span style={{color:C.red,fontSize:8,marginTop:5,flexShrink:0}}>●</span><span style={{color:C.muted,fontSize:12,lineHeight:1.5}}>{r}</span></div>)}
           </Card>
         </div>
 
