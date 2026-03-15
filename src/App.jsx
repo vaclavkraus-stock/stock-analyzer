@@ -38,14 +38,14 @@ const METRIC_TIPS = {
   "RSI": "Relative Strength Index · 0–100. Nad 70 = překoupeno (drahé). Pod 30 = přeprodáno (levné).",
   "MA 50": "Klouzavý průměr 50 dní. Cena nad MA50 = krátkodobý uptrend.",
   "MA 200": "Klouzavý průměr 200 dní. Cena nad MA200 = dlouhodobý uptrend.",
-  "Support": "Cenová úroveň kde akcie historicky nacházela podporu – zde kupující vstupují.",
-  "Resistance": "Cenová úroveň kde akcie narážela na odpor – zde prodejci tlačí cenu dolů.",
+  "Support": "Cenová úroveň kde akcie historicky nacházela podporu - zde kupující vstupují.",
+  "Resistance": "Cenová úroveň kde akcie narážela na odpor - zde prodejci tlačí cenu dolů.",
 };
 
 const RADAR_DESC = {
   "Valuace":"Jak levná/drahá je akcie vs. fundamenty a konkurence",
   "Růst":"Tempo růstu tržeb, zisku a EPS v posledních letech",
-  "Ziskovost":"Marže, ROE, ROIC – efektivita byznysu",
+  "Ziskovost":"Marže, ROE, ROIC - efektivita byznysu",
   "Fin. zdraví":"Bilance, úroveň dluhu, cash flow",
   "Momentum":"Cenový trend, relativní síla vs. trh",
   "Dividenda":"Výše, stabilita a růst dividendy",
@@ -201,11 +201,11 @@ const FearGreedMeter = ({value,label,stocks,T}) => {
         </div>
         <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"3px 8px"}}>
           {[
-            {range:"0–25",label:"Extreme Fear",color:C.red,desc:"Panika, přeprodaný trh – historicky příležitost nakupovat"},
+            {range:"0–25",label:"Extreme Fear",color:C.red,desc:"Panika, přeprodaný trh - historicky příležitost nakupovat"},
             {range:"26–45",label:"Fear",color:C.orange,desc:"Opatrnost, nižší valuace akcií v sektoru"},
             {range:"46–55",label:"Neutral",color:C.yellow,desc:"Vyvážený sentiment, normální podmínky"},
             {range:"56–75",label:"Greed",color:C.cyan,desc:"Optimismus, vyšší valuace, investoři riskují více"},
-            {range:"76–100",label:"Extreme Greed",color:C.green,desc:"Euforie, přehřátý trh – historicky čas opatrnosti"},
+            {range:"76–100",label:"Extreme Greed",color:C.green,desc:"Euforie, přehřátý trh - historicky čas opatrnosti"},
           ].map(({range,label,color,desc})=>(
             <div key={range} style={{display:"flex",gap:5,alignItems:"flex-start",opacity:value>=parseInt(range)&&value<=(parseInt(range.split("–")[1])||100)?1:0.45}}>
               <span style={{color,fontSize:9,fontWeight:800,minWidth:38,marginTop:1}}>{range}</span>
@@ -350,14 +350,14 @@ export default function App() {
     sectorPlayers:"Hlavní hráči v sektoru",
     score:"Celkové Skóre", scoreSub:"Hodnocení 0–10 v klíčových kategoriích",
     scoreLegend:"? Legenda", scoreContext:["Top 20% akcií","Nadprůměrná kvalita","Průměr trhu","Podprůměrná"],
-    earningsCalendar:"Earnings Calendar", earningsSub:"Výsledky hýbou cenou – průměrně ±5% v den zveřejnění.",
+    earningsCalendar:"Earnings Calendar", earningsSub:"Výsledky hýbou cenou - průměrně ±5% v den zveřejnění.",
     nextResults:"Příští výsledky", resultsHistory:"Historie výsledků",
     estEPS:"Odhadovaný EPS", estRev:"Odh. tržby", prevSurprise:"Předchozí překvapení",
-    insiders:"Insider Trading", insiderSub:"Nákupy/prodeje akcií vedením firmy – insideři znají firmu nejlépe.",
+    insiders:"Insider Trading", insiderSub:"Nákupy/prodeje akcií vedením firmy - insideři znají firmu nejlépe.",
     competitors:"Srovnání s Konkurencí",
-    dcf:"DCF Valuace", dcfSub:"Discounted Cash Flow – ocenění na základě budoucích peněžních toků",
+    dcf:"DCF Valuace", dcfSub:"Discounted Cash Flow - ocenění na základě budoucích peněžních toků",
     currentVsIntrinsic:"Aktuální cena vs. vnitřní hodnota", targetPrice:"Cílová cena",
-    avgAnalysts:"Avg analytici", potential:"Potenciál", sensitivity:"Citlivostní analýza – Vnitřní hodnota při různém WACC",
+    avgAnalysts:"Avg analytici", potential:"Potencial", sensitivity:"Citlivostni analyza - Vnitrni hodnota pri ruznem WACC",
     growth:"Růst", wacc:"WACC",
     technicals:"Technická Analýza", analysts:"Analytici", analystsSub:"Konsenzus Wall Street analytiků",
     buy2:"Koupit", hold2:"Držet", sell2:"Prodat",
@@ -367,12 +367,12 @@ export default function App() {
     peHistory:"Historické P/E Ratio", peHistSub:"Valuace v čase",
     investmentThesis:"Investiční Teze", pros:"Proč koupit", cons:"Proč nekoupit",
     favorable:"↑ Příznivé", unfavorable:"↓ Nepříznivé", neutral2:"→ Neutrální",
-    disclaimer:"Pouze informační charakter – není investiční doporučení.",
+    disclaimer:"Pouze informační charakter - není investiční doporučení.",
     subheadline:"Live data · DCF · Buffett checklist · Insider · Fair Value · AI analýza",
     quarter:"Kvartál", rev:"Rev (B)", profit:"Zisk (B)", yoy:"YoY",
     ticker2:"Ticker", firm:"Firma", marketCap:"Market Cap", revGrowth:"Rev. Růst", netMargin:"Net Marže",
     name2:"Jméno", role:"Funkce", type2:"Typ", shares:"Akcie", value2:"Hodnota", date2:"Datum",
-    fearGreed:"Fear & Greed Index – Sektor",
+    fearGreed:"Fear & Greed Index - Sektor",
     fedRate:"Fed Rate", inflation:"Inflace", sectorYtd:"Sektor YTD", sp500Ytd:"S&P 500 YTD",
   };
 
@@ -452,14 +452,14 @@ export default function App() {
         <label style={{color:C.muted,fontSize:11,display:"block",marginBottom:8,textTransform:"uppercase",letterSpacing:1}}>{T.exchange}</label>
         <div style={{display:"grid",gridTemplateColumns:"repeat(5,1fr)",gap:5,marginBottom:14}}>
           {EXCHANGES.map(ex=>(
-            <button key={ex.code} onClick={()=>setExchange(ex.code)} title={`${ex.label} – ${ex.hint}\nPř: ${ex.example}`} style={{background:exchange===ex.code?C.blue+"30":C.card2,border:`1px solid ${exchange===ex.code?C.blue:C.border}`,borderRadius:8,padding:"5px 4px",cursor:"pointer",display:"flex",flexDirection:"column",alignItems:"center",gap:2,transition:"all .15s"}}>
+            <button key={ex.code} onClick={()=>setExchange(ex.code)} title={`${ex.label} - ${ex.hint}\nPř: ${ex.example}`} style={{background:exchange===ex.code?C.blue+"30":C.card2,border:`1px solid ${exchange===ex.code?C.blue:C.border}`,borderRadius:8,padding:"5px 4px",cursor:"pointer",display:"flex",flexDirection:"column",alignItems:"center",gap:2,transition:"all .15s"}}>
               <span style={{fontSize:16}}>{ex.flag}</span>
               <span style={{color:exchange===ex.code?C.blue:C.muted,fontSize:9,fontWeight:700,letterSpacing:0.3}}>{ex.short}</span>
             </button>
           ))}
         </div>
         <div style={{color:C.muted,fontSize:10,marginBottom:12,textAlign:"center"}}>
-          {EXCHANGES.find(e=>e.code===exchange)?.flag} <span style={{color:C.text,fontWeight:700}}>{EXCHANGES.find(e=>e.code===exchange)?.label}</span> – {EXCHANGES.find(e=>e.code===exchange)?.hint} · <span style={{color:C.muted}}>Př: {EXCHANGES.find(e=>e.code===exchange)?.example}</span>
+          {EXCHANGES.find(e=>e.code===exchange)?.flag} <span style={{color:C.text,fontWeight:700}}>{EXCHANGES.find(e=>e.code===exchange)?.label}</span> - {EXCHANGES.find(e=>e.code===exchange)?.hint} · <span style={{color:C.muted}}>Př: {EXCHANGES.find(e=>e.code===exchange)?.example}</span>
         </div>
         <label style={{color:C.muted,fontSize:11,display:"block",marginBottom:8,textTransform:"uppercase",letterSpacing:1}}>{T.ticker}</label>
         <input value={ticker} onChange={e=>setTicker(e.target.value.toUpperCase())} onKeyDown={e=>e.key==="Enter"&&analyze()} placeholder={EXCHANGES.find(e=>e.code===exchange)?.example||"AAPL"} style={{width:"100%",background:C.card2,border:`2px solid ${C.border}`,borderRadius:12,color:C.text,fontSize:22,fontWeight:900,padding:"13px 16px",letterSpacing:3,marginBottom:14,transition:"border .2s"}}/>
@@ -617,9 +617,9 @@ export default function App() {
             <div style={{display:"grid",gridTemplateColumns:isMobile?"1fr":"1fr 1fr",gap:8,marginBottom:10}}>
               {[
                 {l:T.fedRate,v:`${fmt(macro.fedRate)}%`,tip:macro.fedRate>4?"Vysoké sazby tlačí dolů valuace růstových akcií.":macro.fedRate<2?"Nízké sazby podporují růstové akcie.":"Sazby v normálním pásmu."},
-                {l:T.inflation,v:`${fmt(macro.inflation)}%`,tip:macro.inflation>4?"Vysoká inflace snižuje reálné výnosy a tlačí Fed ke zvyšování sazeb.":macro.inflation<2?"Nízká inflace – prostor pro uvolnění měnové politiky.":"Inflace blízko cíle Fedu 2%."},
-                {l:T.sectorYtd,v:pct(macro.sectorYtdPct),c:clr(macro.sectorYtdPct),tip:`Výkonnost sektoru od začátku roku. ${macro.sectorYtdPct>0?"Sektor roste – příznivé prostředí.":"Sektor klesá – sleduj fundamenty firmy."}`},
-                {l:T.sp500Ytd,v:pct(macro.sp500YtdPct),c:clr(macro.sp500YtdPct),tip:`Výkonnost trhu od začátku roku. ${macro.sp500YtdPct>0?"Býčí trh – risk-on sentiment.":"Medvědí trh – investoři jsou opatrní."}`}
+                {l:T.inflation,v:`${fmt(macro.inflation)}%`,tip:macro.inflation>4?"Vysoká inflace snižuje reálné výnosy a tlačí Fed ke zvyšování sazeb.":macro.inflation<2?"Nízká inflace - prostor pro uvolnění měnové politiky.":"Inflace blízko cíle Fedu 2%."},
+                {l:T.sectorYtd,v:pct(macro.sectorYtdPct),c:clr(macro.sectorYtdPct),tip:`Výkonnost sektoru od začátku roku. ${macro.sectorYtdPct>0?"Sektor roste - příznivé prostředí.":"Sektor klesá - sleduj fundamenty firmy."}`},
+                {l:T.sp500Ytd,v:pct(macro.sp500YtdPct),c:clr(macro.sp500YtdPct),tip:`Výkonnost trhu od začátku roku. ${macro.sp500YtdPct>0?"Býčí trh - risk-on sentiment.":"Medvědí trh - investoři jsou opatrní."}`}
               ].map(({l,v,c,tip})=>(
                 <div key={l} style={{background:C.card2,borderRadius:10,padding:"9px 11px",position:"relative",cursor:"help"}} title={tip}>
                   <div style={{color:C.muted,fontSize:9,textTransform:"uppercase",letterSpacing:1,marginBottom:2}}>{l} ℹ️</div>
@@ -779,7 +779,7 @@ export default function App() {
           <Card>
             <SectionTitle icon="⚖️" title={T.dcf} sub={T.dcfSub}/>
             <div style={{display:"grid",gridTemplateColumns:isMobile?"1fr":"1fr 1fr",gap:8,marginBottom:12}}>
-              {[{l:"Vnitřní hodnota",v:`${ccy} ${fmt(dcf.intrinsicValue)}`,big:true,tip:"Odhadovaná férová cena akcie dle DCF modelu – součet všech budoucích cash flow diskontovaných na dnešní hodnotu."},{l:"Upside/Downside",v:pct(dcf.upside),big:true,c:clr(dcf.upside||0),tip:"Rozdíl mezi vnitřní hodnotou a aktuální cenou. Kladné = akcie je podhodnocená."},{l:"WACC",v:`${fmt(dcf.wacc)}%`,tip:"Průměrné náklady kapitálu. Čím nižší WACC, tím vyšší vnitřní hodnota – firma levněji financuje růst."},{l:"Verdict",v:dcf.upside>15?"Podhodnocená":dcf.upside<-15?"Nadhodnocená":"Férová cena",c:dcf.upside>15?C.green:dcf.upside<-15?C.red:C.yellow}].map(({l,v,big,c,tip})=>(
+              {[{l:"Vnitřní hodnota",v:`${ccy} ${fmt(dcf.intrinsicValue)}`,big:true,tip:"Odhadovaná férová cena akcie dle DCF modelu - součet všech budoucích cash flow diskontovaných na dnešní hodnotu."},{l:"Upside/Downside",v:pct(dcf.upside),big:true,c:clr(dcf.upside||0),tip:"Rozdíl mezi vnitřní hodnotou a aktuální cenou. Kladné = akcie je podhodnocená."},{l:"WACC",v:`${fmt(dcf.wacc)}%`,tip:"Průměrné náklady kapitálu. Čím nižší WACC, tím vyšší vnitřní hodnota - firma levněji financuje růst."},{l:"Verdict",v:dcf.upside>15?"Podhodnocená":dcf.upside<-15?"Nadhodnocená":"Férová cena",c:dcf.upside>15?C.green:dcf.upside<-15?C.red:C.yellow}].map(({l,v,big,c,tip})=>(
                 <DCFCard key={l} label={l} value={v} big={big} color={c} tip={tip}/>
               ))}
             </div>
@@ -813,7 +813,7 @@ export default function App() {
                   </div>
                 </div>
                 <div style={{background:undervalued?C.green+"12":C.red+"12",border:`1px solid ${undervalued?C.green:C.red}25`,borderRadius:10,padding:"8px 12px",fontSize:11,color:C.muted,lineHeight:1.6}}>
-                  💡 {undervalued?`Akcie se obchoduje s ${Math.abs(dcf.upside||0).toFixed(0)}% slevou oproti odhadované vnitřní hodnotě – potenciálně zajímavá příležitost.`:`Akcie se obchoduje s ${Math.abs(dcf.upside||0).toFixed(0)}% prémií nad odhadovanou vnitřní hodnotou – trh oceňuje budoucí růst.`}
+                  💡 {undervalued?`Akcie se obchoduje s ${Math.abs(dcf.upside||0).toFixed(0)}% slevou oproti odhadované vnitřní hodnotě - potenciálně zajímavá příležitost.`:`Akcie se obchoduje s ${Math.abs(dcf.upside||0).toFixed(0)}% prémií nad odhadovanou vnitřní hodnotou - trh oceňuje budoucí růst.`}
                 </div>
               </div>;
             })()}
@@ -1071,7 +1071,7 @@ export default function App() {
           </div>
         </div>
 
-        <p style={{color:C.muted,fontSize:10,textAlign:"center",lineHeight:1.6}}>{T.disclaimer}</p>
+        <p style={{color:C.muted,fontSize:10,textAlign:"center",lineHeight:1.6}}>Pouze informacni charakter - neni investicni doporuceni.</p>
       </div>
     </div>
     
