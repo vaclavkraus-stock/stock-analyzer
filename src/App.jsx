@@ -108,8 +108,9 @@ const MCard = ({label,value,color}) => {
   );
 };
 
-const ThemeContext = createContext(null);
-const useC = () => useContext(ThemeContext);
+const DEFAULT_C = {bg:"#060d1a",card:"#0b1628",card2:"#0f1e35",border:"#1a2d4a",text:"#e2e8f0",muted:"#4e6080",blue:"#3b82f6",green:"#10b981",red:"#ef4444",yellow:"#f59e0b",purple:"#8b5cf6",cyan:"#06b6d4",orange:"#f97316"};
+const ThemeContext = createContext(DEFAULT_C);
+const useC = () => useContext(ThemeContext) || DEFAULT_C;
 
 const SectionTitle = ({icon,title,sub}) => {
   const C = useC();
