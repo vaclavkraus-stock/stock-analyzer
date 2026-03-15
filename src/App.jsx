@@ -21,9 +21,9 @@ const C = { bg:"#060d1a",card:"#0b1628",card2:"#0f1e35",border:"#1a2d4a",text:"#
 const CL = { bg:"#f1f5f9",card:"#ffffff",card2:"#f8fafc",border:"#e2e8f0",text:"#0f172a",muted:"#64748b",blue:"#2563eb",green:"#059669",red:"#dc2626",yellow:"#d97706",purple:"#7c3aed",cyan:"#0891b2",orange:"#ea580c" };
 const fmt = (n,d=2) => typeof n==="number"?n.toLocaleString("cs-CZ",{maximumFractionDigits:d}):(n||"—");
 const pct = n => typeof n==="number"?`${n>0?"+":""}${n.toFixed(2)}%`:"—";
-const clr = n => (n||0)>=0?C.green:C.red;
-const vc = v => v?.includes("KOUPIT")||v?.includes("Podhodnoce")||v?.includes("Bullish")?C.green:v?.includes("PRODAT")||v?.includes("Nadhodnoce")||v?.includes("Bearish")?C.red:C.yellow;
-const sentClr = s => s==="positive"?C.green:s==="negative"?C.red:C.cyan;
+const clr = n => (n||0)>=0?"#10b981":"#ef4444";
+const vc = v => v?.includes("KOUPIT")||v?.includes("Podhodnoce")||v?.includes("Bullish")||v?.includes("BUY")?"#10b981":v?.includes("PRODAT")||v?.includes("Nadhodnoce")||v?.includes("Bearish")||v?.includes("SELL")?"#ef4444":"#f59e0b";
+const sentClr = s => s==="positive"?"#10b981":s==="negative"?"#ef4444":"#06b6d4";
 const RADAR_LABELS = {valuation:"Valuace",growth:"Růst",profitability:"Ziskovost",financialHealth:"Fin. zdraví",momentum:"Momentum",dividend:"Dividenda"};
 
 const METRIC_TIPS = {
@@ -349,7 +349,7 @@ export default function App() {
     macro:"Makro Kontext", macroOutlook:"Makro výhled:", sectorIndicators:"Klíčové ukazatele pro sektor",
     sectorPlayers:"Hlavní hráči v sektoru",
     score:"Celkové Skóre", scoreSub:"Hodnocení 0–10 v klíčových kategoriích",
-    scoreLegend:"? Legenda", scoreContext:[{T.scoreContext[0]},{T.scoreContext[1]},{T.scoreContext[2]},{T.scoreContext[3]}],
+    scoreLegend:"? Legenda", scoreContext:["Top 20% akcií","Nadprůměrná kvalita","Průměr trhu","Podprůměrná"],
     earningsCalendar:"Earnings Calendar", earningsSub:"Výsledky hýbou cenou – průměrně ±5% v den zveřejnění.",
     nextResults:"Příští výsledky", resultsHistory:"Historie výsledků",
     estEPS:"Odhadovaný EPS", estRev:"Odh. tržby", prevSurprise:"Předchozí překvapení",
@@ -368,11 +368,11 @@ export default function App() {
     investmentThesis:"Investiční Teze", pros:"Proč koupit", cons:"Proč nepoupit",
     favorable:"↑ Příznivé", unfavorable:"↓ Nepříznivé", neutral2:"→ Neutrální",
     disclaimer:"Pouze informační charakter – není investiční doporučení.",
-    subheadline:"{T.subheadline}",
+    subheadline:"Live data · DCF · Buffett checklist · Insider · Fair Value · AI analýza",
     quarter:"Kvartál", rev:"Rev (B)", profit:"Zisk (B)", yoy:"YoY",
     ticker2:"Ticker", firm:"Firma", marketCap:"Market Cap", revGrowth:"Rev. Růst", netMargin:"Net Marže",
     name2:"Jméno", role:"Funkce", type2:"Typ", shares:"Akcie", value2:"Hodnota", date2:"Datum",
-    fearGreed:"{T.fearGreed}",
+    fearGreed:"Fear & Greed Index – Sektor",
     fedRate:"Fed Rate", inflation:"Inflace", sectorYtd:"Sektor YTD", sp500Ytd:"S&P 500 YTD",
   } : {
     back:"← Back", buy:"BUY", sell:"SELL", hold:"HOLD", analyze:"Analyze →",
