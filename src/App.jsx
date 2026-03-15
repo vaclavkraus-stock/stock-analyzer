@@ -383,8 +383,9 @@ export default function App() {
     if(override) setTicker(override);
     setLoading(true); setError(null); setData(null); setFinTab("revenue"); setNewsFilter("all");
     try{
+      const clerkToken = await window.Clerk?.session?.getToken();
       const res = await fetch("/api/analyze", {
-        method:"POST",headers:{"Content-Type":"application/json"},
+        method:"POST",headers:{"Content-Type":"application/json","Authorization":`Bearer ${clerkToken}`},
         body:JSON.stringify({
           model:"claude-sonnet-4-20250514",
           max_tokens:5000,
