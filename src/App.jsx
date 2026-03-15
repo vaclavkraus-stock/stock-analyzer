@@ -17,9 +17,7 @@ import {
   ComposedChart, Legend, ReferenceLine, Cell
 } from "recharts";
 
-let darkMode = true;
 let C = { bg:"#060d1a",card:"#0b1628",card2:"#0f1e35",border:"#1a2d4a",text:"#e2e8f0",muted:"#4e6080",blue:"#3b82f6",green:"#10b981",red:"#ef4444",yellow:"#f59e0b",purple:"#8b5cf6",cyan:"#06b6d4",orange:"#f97316" };
-let darkMode = true;
 const CL = { bg:"#f1f5f9",card:"#ffffff",card2:"#f8fafc",border:"#e2e8f0",text:"#0f172a",muted:"#64748b",blue:"#2563eb",green:"#059669",red:"#dc2626",yellow:"#d97706",purple:"#7c3aed",cyan:"#0891b2",orange:"#ea580c" };
 const fmt = (n,d=2) => typeof n==="number"?n.toLocaleString("cs-CZ",{maximumFractionDigits:d}):(n||"—");
 const pct = n => typeof n==="number"?`${n>0?"+":""}${n.toFixed(2)}%`:"—";
@@ -1051,18 +1049,18 @@ export default function App() {
                 ))}
               </div>
               <div style={{background:C.bg,borderRadius:12,padding:"14px 16px",marginBottom:14}}>
-                <div style={{color:C.muted,fontSize:10,textTransform:"uppercase",letterSpacing:1,marginBottom:6}}>Investicni teze</div>
+                <div style={{color:C.muted,fontSize:10,textTransform:"uppercase",letterSpacing:1,marginBottom:6}}>Investiční teze</div>
                 <p style={{color:C.muted,fontSize:12,margin:0,lineHeight:1.8}}>{data.investmentThesis}</p>
               </div>
               <div style={{display:"grid",gridTemplateColumns:isMobile?"1fr":"1fr 1fr",gap:14}}>
-                <div><div style={{color:C.green,fontWeight:800,fontSize:11,marginBottom:7}}>Proc koupit</div>{data.pros?.filter(p=>p).map((p,i)=><div key={i} style={{color:C.muted,fontSize:11,marginBottom:5,display:"flex",gap:5}}><span style={{color:C.green,flexShrink:0}}>+</span>{p}</div>)}</div>
-                <div><div style={{color:C.red,fontWeight:800,fontSize:11,marginBottom:7}}>Proc ne</div>{data.cons?.filter(c=>c).map((c,i)=><div key={i} style={{color:C.muted,fontSize:11,marginBottom:5,display:"flex",gap:5}}><span style={{color:C.red,flexShrink:0}}>-</span>{c}</div>)}</div>
+                <div><div style={{color:C.green,fontWeight:800,fontSize:11,marginBottom:7}}>✅ Proč koupit</div>{data.pros?.filter(p=>p).map((p,i)=><div key={i} style={{color:C.muted,fontSize:11,marginBottom:5,display:"flex",gap:5}}><span style={{color:C.green,flexShrink:0}}>+</span>{p}</div>)}</div>
+                <div><div style={{color:C.red,fontWeight:800,fontSize:11,marginBottom:7}}>❌ Proč ne</div>{data.cons?.filter(c=>c).map((c,i)=><div key={i} style={{color:C.muted,fontSize:11,marginBottom:5,display:"flex",gap:5}}><span style={{color:C.red,flexShrink:0}}>−</span>{c}</div>)}</div>
               </div>
             </div>
           </div>
         </div>
 
-        <p style={{color:C.muted,fontSize:10,textAlign:"center",lineHeight:1.6}}>Data: Live web search</p>
+        <p style={{color:C.muted,fontSize:10,textAlign:"center",lineHeight:1.6}}>📡 Data: Live web search · ⚠️ {T.disclaimer}</p>
       </div>
     </div>
     
