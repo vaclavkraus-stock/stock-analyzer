@@ -19,23 +19,23 @@ import {
 
 let C = { bg:"#060d1a",card:"#0b1628",card2:"#0f1e35",border:"#1a2d4a",text:"#e2e8f0",muted:"#4e6080",blue:"#3b82f6",green:"#10b981",red:"#ef4444",yellow:"#f59e0b",purple:"#8b5cf6",cyan:"#06b6d4",orange:"#f97316" };
 const CL = { bg:"#f1f5f9",card:"#ffffff",card2:"#f8fafc",border:"#e2e8f0",text:"#0f172a",muted:"#64748b",blue:"#2563eb",green:"#059669",red:"#dc2626",yellow:"#d97706",purple:"#7c3aed",cyan:"#0891b2",orange:"#ea580c" };
-const fmt = (n,d=2) => typeof n==="number"?n.toLocaleString("cs-CZ",{maximumFractionDigits:d}):(n||"-");
-const pct = n => typeof n==="number"?`${n>0?"+":""}${n.toFixed(2)}%`:"-";
+const fmt = (n,d=2) => typeof n==="number"?n.toLocaleString("cs-CZ",{maximumFractionDigits:d}):(n||"—");
+const pct = n => typeof n==="number"?`${n>0?"+":""}${n.toFixed(2)}%`:"—";
 const clr = n => (n||0)>=0?"#10b981":"#ef4444";
 const vc = v => v?.includes("KOUPIT")||v?.includes("Podhodnoce")||v?.includes("Bullish")||v?.includes("BUY")?"#10b981":v?.includes("PRODAT")||v?.includes("Nadhodnoce")||v?.includes("Bearish")||v?.includes("SELL")?"#ef4444":"#f59e0b";
 const sentClr = s => s==="positive"?"#10b981":s==="negative"?"#ef4444":"#06b6d4";
 const RADAR_LABELS = {valuation:"Valuace",growth:"Růst",profitability:"Ziskovost",financialHealth:"Fin. zdraví",momentum:"Momentum",dividend:"Dividenda"};
 
 const METRIC_TIPS = {
-  "P/E": "Price-to-Earnings . Cena akcie / roční zisk na akcii. Nižší = levnější. Průměr S&P 500 ~ 20.",
-  "EPS": "Earnings Per Share . Čistý zisk na 1 akcii za rok. Vyšší = lepší.",
+  "P/E": "Price-to-Earnings · Cena akcie ÷ roční zisk na akcii. Nižší = levnější. Průměr S&P 500 ≈ 20.",
+  "EPS": "Earnings Per Share · Čistý zisk na 1 akcii za rok. Vyšší = lepší.",
   "Net Marže": "Procento tržeb co zůstane jako čistý zisk. 20%+ je silné.",
-  "ROE": "Return on Equity . Zisk / vlastní kapitál. 15%+ = silné.",
+  "ROE": "Return on Equity · Zisk ÷ vlastní kapitál. 15%+ = silné.",
   "Beta": "Volatilita vs. trh. 1,0 = kopíruje trh. >1 = rizikovější. <1 = stabilnější.",
   "Div. Yield": "Roční dividenda jako % ceny. Vyšší = více příjmu.",
-  "D/E": "Debt-to-Equity . Celkový dluh / vlastní kapitál. Nižší = méně zadlužená.",
-  "FCF": "Free Cash Flow . Hotovost po odečtení investic. Základ pro dividendy a růst.",
-  "RSI": "Relative Strength Index . 0-100. Nad 70 = překoupeno (drahé). Pod 30 = přeprodáno (levné).",
+  "D/E": "Debt-to-Equity · Celkový dluh ÷ vlastní kapitál. Nižší = méně zadlužená.",
+  "FCF": "Free Cash Flow · Hotovost po odečtení investic. Základ pro dividendy a růst.",
+  "RSI": "Relative Strength Index · 0–100. Nad 70 = překoupeno (drahé). Pod 30 = přeprodáno (levné).",
   "MA 50": "Klouzavý průměr 50 dní. Cena nad MA50 = krátkodobý uptrend.",
   "MA 200": "Klouzavý průměr 200 dní. Cena nad MA200 = dlouhodobý uptrend.",
   "Support": "Cenová úroveň kde akcie historicky nacházela podporu - zde kupující vstupují.",
@@ -102,7 +102,7 @@ const MCard = ({label,value,color}) => {
         <div style={{color:C.muted,fontSize:10,textTransform:"uppercase",letterSpacing:1}}>{label}</div>
         {tip&&<div style={{color:C.blue,fontSize:9,background:C.blue+"20",borderRadius:"50%",width:13,height:13,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,cursor:"help",fontWeight:700}}>?</div>}
       </div>
-      <div style={{color:color||C.text,fontSize:15,fontWeight:700}}>{value||"-"}</div>
+      <div style={{color:color||C.text,fontSize:15,fontWeight:700}}>{value||"—"}</div>
       {show&&tip&&<div style={{position:"absolute",bottom:"calc(100% + 6px)",left:0,zIndex:999,background:darkMode?"#0a1525":C.card,border:`1px solid ${C.blue}50`,borderRadius:10,padding:"10px 13px",fontSize:11,color:C.muted,lineHeight:1.7,width:230,boxShadow:"0 8px 32px #00000080",pointerEvents:"none"}}>{tip}</div>}
     </div>
   );
@@ -177,7 +177,7 @@ const FearGreedMeter = ({value,label,stocks,T}) => {
   const pct = value/100;
   return (
     <div style={{background:C.card2,borderRadius:12,padding:"12px 14px"}}>
-      <div style={{color:C.muted,fontSize:10,textTransform:"uppercase",letterSpacing:1,marginBottom:10}}>📊 Fear & Greed Index . Sektor</div>
+      <div style={{color:C.muted,fontSize:10,textTransform:"uppercase",letterSpacing:1,marginBottom:10}}>📊 Fear & Greed Index · Sektor</div>
       <div style={{display:"flex",alignItems:"center",gap:14}}>
         <div style={{position:"relative",width:56,height:34,flexShrink:0}}>
           <svg width="56" height="34" viewBox="0 0 56 34">
@@ -188,30 +188,30 @@ const FearGreedMeter = ({value,label,stocks,T}) => {
           </svg>
         </div>
         <div>
-          <div style={{color,fontSize:14,fontWeight:800}}>{value}/100 . {txt}</div>
+          <div style={{color,fontSize:14,fontWeight:800}}>{value}/100 · {txt}</div>
           {label&&<div style={{color:C.muted,fontSize:10,marginTop:2}}>{label}</div>}
         </div>
       </div>
       {/* Fear & Greed scale explanation */}
       <div style={{marginTop:10,paddingTop:10,borderTop:`1px solid ${C.border}`}}>
         <div style={{display:"flex",gap:3,marginBottom:8,borderRadius:6,overflow:"hidden",height:6}}>
-          {[[C.red,"0-25"],[C.orange,"26-45"],[C.yellow,"46-55"],[C.cyan,"56-75"],[C.green,"76-100"]].map(([c,r])=>(
+          {[[C.red,"0–25"],[C.orange,"26–45"],[C.yellow,"46–55"],[C.cyan,"56–75"],[C.green,"76–100"]].map(([c,r])=>(
             <div key={r} style={{flex:1,background:c,opacity:value&&((parseInt(r)<=value)||(parseInt(r.split("-")[1])>=value&&parseInt(r)<=value))?1:0.3}}/>
           ))}
         </div>
         <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"3px 8px"}}>
           {[
-            {range:"0-25",label:"Extreme Fear",color:C.red,desc:"Panika, přeprodaný trh - historicky příležitost nakupovat"},
-            {range:"26-45",label:"Fear",color:C.orange,desc:"Opatrnost, nižší valuace akcií v sektoru"},
-            {range:"46-55",label:"Neutral",color:C.yellow,desc:"Vyvážený sentiment, normální podmínky"},
-            {range:"56-75",label:"Greed",color:C.cyan,desc:"Optimismus, vyšší valuace, investoři riskují více"},
-            {range:"76-100",label:"Extreme Greed",color:C.green,desc:"Euforie, přehřátý trh - historicky čas opatrnosti"},
+            {range:"0–25",label:"Extreme Fear",color:C.red,desc:"Panika, přeprodaný trh - historicky příležitost nakupovat"},
+            {range:"26–45",label:"Fear",color:C.orange,desc:"Opatrnost, nižší valuace akcií v sektoru"},
+            {range:"46–55",label:"Neutral",color:C.yellow,desc:"Vyvážený sentiment, normální podmínky"},
+            {range:"56–75",label:"Greed",color:C.cyan,desc:"Optimismus, vyšší valuace, investoři riskují více"},
+            {range:"76–100",label:"Extreme Greed",color:C.green,desc:"Euforie, přehřátý trh - historicky čas opatrnosti"},
           ].map(({range,label,color,desc})=>(
             <div key={range} style={{display:"flex",gap:5,alignItems:"flex-start",opacity:value>=parseInt(range)&&value<=(parseInt(range.split("-")[1])||100)?1:0.45}}>
               <span style={{color,fontSize:9,fontWeight:800,minWidth:38,marginTop:1}}>{range}</span>
               <div>
                 <span style={{color,fontSize:9,fontWeight:700}}>{label}</span>
-                <span style={{color:C.muted,fontSize:9}}> . {desc}</span>
+                <span style={{color:C.muted,fontSize:9}}> · {desc}</span>
               </div>
             </div>
           ))}
@@ -237,16 +237,16 @@ const ScoreLegend = ({onClose}) => {
   return <div style={{position:"fixed",top:0,left:0,right:0,bottom:0,background:"#00000080",zIndex:1000,display:"flex",alignItems:"center",justifyContent:"center"}} onClick={onClose}>
     <div style={{background:C.card,border:`1px solid ${C.border}`,borderRadius:16,padding:24,maxWidth:400,width:"90%",boxShadow:"0 20px 60px #000000a0"}} onClick={e=>e.stopPropagation()}>
       <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:16}}>
-        <h3 style={{margin:0,fontSize:15,fontWeight:800,color:C.text}}>🕸️ Jak číst skóre (0-10)</h3>
+        <h3 style={{margin:0,fontSize:15,fontWeight:800,color:C.text}}>🕸️ Jak číst skóre (0–10)</h3>
         <button onClick={onClose} style={{background:"none",border:"none",color:C.muted,fontSize:20,cursor:"pointer"}}>×</button>
       </div>
       <div style={{display:"flex",flexDirection:"column",gap:8,marginBottom:16}}>
         {[
-          {range:"1-3",label:"Slabé",color:C.red,desc:"Výrazně podprůměrné, varování"},
-          {range:"4-5",label:"Podprůměrné",color:C.orange,desc:"Pod průměrem trhu"},
+          {range:"1–3",label:"Slabé",color:C.red,desc:"Výrazně podprůměrné, varování"},
+          {range:"4–5",label:"Podprůměrné",color:C.orange,desc:"Pod průměrem trhu"},
           {range:"6",label:"Průměrné",color:C.yellow,desc:"V souladu s průměrem trhu"},
-          {range:"7-8",label:"Silné",color:C.cyan,desc:"Nadprůměrné, konkurenční výhoda"},
-          {range:"9-10",label:"Výjimečné",color:C.green,desc:"Top 5-10% v celém trhu"},
+          {range:"7–8",label:"Silné",color:C.cyan,desc:"Nadprůměrné, konkurenční výhoda"},
+          {range:"9–10",label:"Výjimečné",color:C.green,desc:"Top 5–10% v celém trhu"},
         ].map(({range,label,color,desc})=>(
           <div key={range} style={{display:"flex",alignItems:"center",gap:10,background:C.card2,borderRadius:10,padding:"8px 12px"}}>
             <div style={{background:color+"25",border:`1px solid ${color}50`,borderRadius:8,padding:"3px 8px",minWidth:36,textAlign:"center"}}>
@@ -348,9 +348,9 @@ export default function App() {
     risks:"⚠️ Rizika", catalysts:"🚀 Katalyzátory",
     macro:"Makro Kontext", macroOutlook:"Makro výhled:", sectorIndicators:"Klíčové ukazatele pro sektor",
     sectorPlayers:"Hlavní hráči v sektoru",
-    score:"Celkové Skóre", scoreSub:"Hodnocení 0-10 v klíčových kategoriích",
+    score:"Celkové Skóre", scoreSub:"Hodnocení 0–10 v klíčových kategoriích",
     scoreLegend:"? Legenda", scoreContext:["Top 20% akcií","Nadprůměrná kvalita","Průměr trhu","Podprůměrná"],
-    earningsCalendar:"Earnings Calendar", earningsSub:"Výsledky hýbou cenou - průměrně +/-5% v den zveřejnění.",
+    earningsCalendar:"Earnings Calendar", earningsSub:"Výsledky hýbou cenou - průměrně ±5% v den zveřejnění.",
     nextResults:"Příští výsledky", resultsHistory:"Historie výsledků",
     estEPS:"Odhadovaný EPS", estRev:"Odh. tržby", prevSurprise:"Předchozí překvapení",
     insiders:"Insider Trading", insiderSub:"Nákupy/prodeje akcií vedením firmy - insideři znají firmu nejlépe.",
@@ -362,13 +362,13 @@ export default function App() {
     technicals:"Technická Analýza", analysts:"Analytici", analystsSub:"Konsenzus Wall Street analytiků",
     buy2:"Koupit", hold2:"Držet", sell2:"Prodat",
     priceTarget:"Cenové cíle vs. aktuální cena",
-    priceChart:"Vývoj ceny + Fair Value zóny", priceChartSub:"Historická data . predikce . pásmo analytiků",
+    priceChart:"Vývoj ceny + Fair Value zóny", priceChartSub:"Historická data · predikce · pásmo analytiků",
     sp500:"Srovnání s S&P 500", sp500Sub:"Výkonnost indexovaná na 100",
     peHistory:"Historické P/E Ratio", peHistSub:"Valuace v čase",
     investmentThesis:"Investiční Teze", pros:"Proč koupit", cons:"Proč nekoupit",
     favorable:"↑ Příznivé", unfavorable:"↓ Nepříznivé", neutral2:"→ Neutrální",
     disclaimer:"Pouze informační charakter - není investiční doporučení.",
-    subheadline:"Live data . DCF . Buffett checklist . Insider . Fair Value . AI analýza",
+    subheadline:"Live data · DCF · Buffett checklist · Insider · Fair Value · AI analýza",
     quarter:"Kvartál", rev:"Rev (B)", profit:"Zisk (B)", yoy:"YoY",
     ticker2:"Ticker", firm:"Firma", marketCap:"Market Cap", revGrowth:"Rev. Růst", netMargin:"Net Marže",
     name2:"Jméno", role:"Funkce", type2:"Typ", shares:"Akcie", value2:"Hodnota", date2:"Datum",
@@ -459,7 +459,7 @@ export default function App() {
           ))}
         </div>
         <div style={{color:C.muted,fontSize:10,marginBottom:12,textAlign:"center"}}>
-          {EXCHANGES.find(e=>e.code===exchange)?.flag} <span style={{color:C.text,fontWeight:700}}>{EXCHANGES.find(e=>e.code===exchange)?.label}</span> - {EXCHANGES.find(e=>e.code===exchange)?.hint} . <span style={{color:C.muted}}>Př: {EXCHANGES.find(e=>e.code===exchange)?.example}</span>
+          {EXCHANGES.find(e=>e.code===exchange)?.flag} <span style={{color:C.text,fontWeight:700}}>{EXCHANGES.find(e=>e.code===exchange)?.label}</span> - {EXCHANGES.find(e=>e.code===exchange)?.hint} · <span style={{color:C.muted}}>Př: {EXCHANGES.find(e=>e.code===exchange)?.example}</span>
         </div>
         <label style={{color:C.muted,fontSize:11,display:"block",marginBottom:8,textTransform:"uppercase",letterSpacing:1}}>{T.ticker}</label>
         <input value={ticker} onChange={e=>setTicker(e.target.value.toUpperCase())} onKeyDown={e=>e.key==="Enter"&&analyze()} placeholder={EXCHANGES.find(e=>e.code===exchange)?.example||"AAPL"} style={{width:"100%",background:C.card2,border:`2px solid ${C.border}`,borderRadius:12,color:C.text,fontSize:22,fontWeight:900,padding:"13px 16px",letterSpacing:3,marginBottom:14,transition:"border .2s"}}/>
@@ -541,7 +541,7 @@ export default function App() {
                 {data.domain&&<img src={`https://logo.clearbit.com/${data.domain}`} onError={e=>e.target.style.display="none"} style={{width:48,height:48,borderRadius:12,objectFit:"contain",background:"#fff",padding:4,boxShadow:"0 2px 12px #00000040"}} alt=""/>}
                 <div>
                   <div style={{fontWeight:900,fontSize:20,color:C.text,letterSpacing:-0.5}}>{data.name}</div>
-                  <div style={{color:C.muted,fontSize:11,marginTop:2}}>{data.sector} . {data.exchange}</div>
+                  <div style={{color:C.muted,fontSize:11,marginTop:2}}>{data.sector} · {data.exchange}</div>
                 </div>
               </div>
               <p style={{margin:0,fontSize:13,lineHeight:1.8,color:C.muted}}>{data.description}</p>
@@ -640,13 +640,13 @@ export default function App() {
             {macro.outlook&&<div style={{background:C.card2,borderRadius:10,padding:"10px 12px",marginBottom:10,fontSize:11,color:C.muted,lineHeight:1.6}}>
               📋 <span style={{color:C.text,fontWeight:700}}>{T.macroOutlook} </span>{macro.outlook}
             </div>}
-            <FearGreedMeter value={macro.sectorFearGreed} label={macro.sectorFearGreedLabel} stocks={macro.sectorTopStocks}/>
+            <FearGreedMeter value={macro.sectorFearGreed} label={macro.sectorFearGreedLabel} stocks={macro.sectorTopStocks} T={T}/>
           </Card>
           <Card>
             <SectionTitle icon="📅" title={T.earningsCalendar} sub={T.earningsSub}/>
             <div style={{background:`linear-gradient(135deg,${C.blue}15,${C.purple}10)`,border:`1px solid ${C.blue}30`,borderRadius:14,padding:"16px 18px",marginBottom:12,textAlign:"center"}}>
               <div style={{color:C.blue,fontSize:12,fontWeight:700,marginBottom:4,textTransform:"uppercase",letterSpacing:1}}>{T.nextResults}</div>
-              <div style={{color:C.text,fontSize:20,fontWeight:900,marginBottom:2}}>{ec.nextDate||"-"}</div>
+              <div style={{color:C.text,fontSize:20,fontWeight:900,marginBottom:2}}>{ec.nextDate||"—"}</div>
               <div style={{color:C.muted,fontSize:12}}>{ec.quarter}</div>
             </div>
             <div style={{display:"grid",gridTemplateColumns:isMobile?"1fr":"1fr 1fr",gap:8,marginBottom:16}}>
@@ -712,7 +712,7 @@ export default function App() {
             <div style={{display:"flex",gap:14,fontSize:11,color:C.muted}}>
               <span><span style={{display:"inline-block",width:14,height:2,background:C.blue,verticalAlign:"middle",marginRight:4}}/>Cena</span>
               <span><span style={{display:"inline-block",width:14,borderTop:`2px dashed ${C.purple}`,verticalAlign:"middle",marginRight:4}}/>Průměrný cíl</span>
-              <span><span style={{display:"inline-block",width:14,height:8,background:C.green+"40",verticalAlign:"middle",marginRight:4}}/>Pásmo cílů (Low-High)</span>
+              <span><span style={{display:"inline-block",width:14,height:8,background:C.green+"40",verticalAlign:"middle",marginRight:4}}/>Pásmo cílů (Low–High)</span>
             </div>
           </div>
           <ResponsiveContainer width="100%" height={220}>
@@ -845,7 +845,7 @@ export default function App() {
             <Card style={{padding:16,flex:1}}>
               <h3 style={{margin:"0 0 10px",fontSize:14,fontWeight:800}}>📐 Technická Analýza</h3>
               <div style={{display:"grid",gridTemplateColumns:isMobile?"repeat(2,1fr)":"repeat(3,1fr)",gap:6}}>
-                {[{l:"RSI",v:fmt(tc.rsi),c:tc.rsi>70?C.red:tc.rsi<30?C.green:C.text,tip:"RSI 0-100. Nad 70 = překoupeno (drahé). Pod 30 = přeprodáno (levné)."},{l:"MA 50",v:fmt(tc.ma50),tip:"Klouzavý průměr 50 dní. Cena nad MA50 = krátkodobý uptrend."},{l:"MA 200",v:fmt(tc.ma200),tip:"Klouzavý průměr 200 dní. Cena nad MA200 = dlouhodobý uptrend."},{l:"Support",v:fmt(tc.support),tip:"Úroveň kde akcie nacházela podporu (kupující vstupují)."},{l:"Resistance",v:fmt(tc.resistance),tip:"Úroveň kde akcie narážela na odpor (prodejci tlačí dolů)."}].map(({l,v,c,tip})=>(
+                {[{l:"RSI",v:fmt(tc.rsi),c:tc.rsi>70?C.red:tc.rsi<30?C.green:C.text,tip:"RSI 0–100. Nad 70 = překoupeno (drahé). Pod 30 = přeprodáno (levné)."},{l:"MA 50",v:fmt(tc.ma50),tip:"Klouzavý průměr 50 dní. Cena nad MA50 = krátkodobý uptrend."},{l:"MA 200",v:fmt(tc.ma200),tip:"Klouzavý průměr 200 dní. Cena nad MA200 = dlouhodobý uptrend."},{l:"Support",v:fmt(tc.support),tip:"Úroveň kde akcie nacházela podporu (kupující vstupují)."},{l:"Resistance",v:fmt(tc.resistance),tip:"Úroveň kde akcie narážela na odpor (prodejci tlačí dolů)."}].map(({l,v,c,tip})=>(
                   <TechCard key={l} label={l} value={v} color={c} tip={tip}/>
                 ))}
               </div>
@@ -862,7 +862,7 @@ export default function App() {
                   <div key={l} style={{background:C.card2,borderRadius:7,padding:"7px 9px"}}><div style={{color:C.muted,fontSize:9,marginBottom:1}}>{l}</div><div style={{color:C.text,fontSize:12,fontWeight:700}}>{ccy} {v}</div></div>
                 ))}
               </div>
-              <AnalystTargetChart current={pr.current} low={an.lowTarget} avg={an.avgTarget} high={an.highTarget} currency={ccy}/>
+              <AnalystTargetChart current={pr.current} low={an.lowTarget} avg={an.avgTarget} high={an.highTarget} currency={ccy} T={T}/>
             </Card>
           </div>
         </div>
@@ -887,7 +887,7 @@ export default function App() {
 
         <Card>
           <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:14,flexWrap:"wrap",gap:8}}>
-            <SectionTitle icon="📅" title={T.annualResults} sub={`v miliardách ${ccy} . ${T.annualSub}`}/>
+            <SectionTitle icon="📅" title={T.annualResults} sub={`v miliardách ${ccy} · ${T.annualSub}`}/>
             <div style={{display:"flex",gap:4}}>
               {[["revenue",T.revenue],["netIncome",T.netIncome],["eps","EPS"]].map(([t,l])=><button key={t} onClick={()=>setFinTab(t)} style={tabSt(t)}>{l}</button>)}
             </div>
