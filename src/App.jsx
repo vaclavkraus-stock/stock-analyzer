@@ -334,9 +334,8 @@ export default function App() {
   const [watchlist,setWatchlist]=useState([]);
   const [showScoreLegend,setShowScoreLegend]=useState(false);
   const [darkMode,setDarkMode]=useState(true);
-  const [lang,setLang]=useState("cs");
   const C = darkMode ? {bg:"#060d1a",card:"#0b1628",card2:"#0f1e35",border:"#1a2d4a",text:"#e2e8f0",muted:"#4e6080",blue:"#3b82f6",green:"#10b981",red:"#ef4444",yellow:"#f59e0b",purple:"#8b5cf6",cyan:"#06b6d4",orange:"#f97316"} : {bg:"#f1f5f9",card:"#ffffff",card2:"#f8fafc",border:"#e2e8f0",text:"#0f172a",muted:"#64748b",blue:"#2563eb",green:"#059669",red:"#dc2626",yellow:"#d97706",purple:"#7c3aed",cyan:"#0891b2",orange:"#ea580c"};
-  const T = lang==="cs" ? {
+  const T = {
     back:"← Zpět", buy:"KOUPIT", sell:"PRODAT", hold:"DRŽET", analyze:"Analyzovat →",
     exchange:"Burza", ticker:"Ticker Symbol", watchlist:"Watchlist",
     news:"Nejnovější Zprávy", read:"↗ číst", all:"Vše", pos:"📈 Pozit.", neg:"📉 Negat.", neu:"📋 Neutr.",
@@ -365,7 +364,7 @@ export default function App() {
     priceChart:"Vývoj ceny + Fair Value zóny", priceChartSub:"Historická data · predikce · pásmo analytiků",
     sp500:"Srovnání s S&P 500", sp500Sub:"Výkonnost indexovaná na 100",
     peHistory:"Historické P/E Ratio", peHistSub:"Valuace v čase",
-    investmentThesis:"Investiční Teze", pros:"Proč koupit", cons:"Proč nepoupit",
+    investmentThesis:"Investiční Teze", pros:"Proč koupit", cons:"Proč nekoupit",
     favorable:"↑ Příznivé", unfavorable:"↓ Nepříznivé", neutral2:"→ Neutrální",
     disclaimer:"Pouze informační charakter – není investiční doporučení.",
     subheadline:"Live data · DCF · Buffett checklist · Insider · Fair Value · AI analýza",
@@ -374,44 +373,6 @@ export default function App() {
     name2:"Jméno", role:"Funkce", type2:"Typ", shares:"Akcie", value2:"Hodnota", date2:"Datum",
     fearGreed:"Fear & Greed Index – Sektor",
     fedRate:"Fed Rate", inflation:"Inflace", sectorYtd:"Sektor YTD", sp500Ytd:"S&P 500 YTD",
-  } : {
-    back:"← Back", buy:"BUY", sell:"SELL", hold:"HOLD", analyze:"Analyze →",
-    exchange:"Exchange", ticker:"Ticker Symbol", watchlist:"Watchlist",
-    news:"Latest News", read:"↗ read", all:"All", pos:"📈 Pos.", neg:"📉 Neg.", neu:"📋 Neu.",
-    loading:"Analyzing", darkMode:"Dark mode", lightMode:"Light mode",
-    annualResults:"Annual Results", annualSub:"dashed = analyst estimate",
-    quarterlyResults:"Quarterly Results", revenue:"Revenue", netIncome:"Net Income",
-    buffett:"Buffett Checklist", buffettSub:"8 Warren Buffett criteria for quality long-term investments",
-    strongChoice:"Strong pick", average:"Average", risky:"Risky",
-    risks:"⚠️ Risks", catalysts:"🚀 Catalysts",
-    macro:"Macro Context", macroOutlook:"Macro outlook:", sectorIndicators:"Key indicators for sector",
-    sectorPlayers:"Top sector stocks",
-    score:"Overall Score", scoreSub:"Rating 0–10 across key categories",
-    scoreLegend:"? Legend", scoreContext:["Top 20% stocks","Above average","Market average","Below average"],
-    earningsCalendar:"Earnings Calendar", earningsSub:"Earnings move price – avg ±5% on report day.",
-    nextResults:"Next results", resultsHistory:"Earnings history",
-    estEPS:"Estimated EPS", estRev:"Est. revenue", prevSurprise:"Previous surprise",
-    insiders:"Insider Trading", insiderSub:"Insider buys/sells – insiders know the company best.",
-    competitors:"Competitor Comparison",
-    dcf:"DCF Valuation", dcfSub:"Discounted Cash Flow – valuation based on future cash flows",
-    currentVsIntrinsic:"Current price vs. intrinsic value", targetPrice:"Target price",
-    avgAnalysts:"Avg analysts", potential:"Potential", sensitivity:"Sensitivity analysis – Intrinsic value at different WACC",
-    growth:"Growth", wacc:"WACC",
-    technicals:"Technical Analysis", analysts:"Analysts", analystsSub:"Wall Street analyst consensus",
-    buy2:"Buy", hold2:"Hold", sell2:"Sell",
-    priceTarget:"Price targets vs. current price",
-    priceChart:"Price chart + Fair Value zones", priceChartSub:"Historical data · forecast · analyst range",
-    sp500:"vs. S&P 500", sp500Sub:"Performance indexed to 100",
-    peHistory:"Historical P/E Ratio", peHistSub:"Valuation over time",
-    investmentThesis:"Investment Thesis", pros:"Why buy", cons:"Why not buy",
-    favorable:"↑ Favorable", unfavorable:"↓ Unfavorable", neutral2:"→ Neutral",
-    disclaimer:"For informational purposes only – not investment advice.",
-    subheadline:"Live data · DCF · Buffett checklist · Insider · Fair Value · AI analysis",
-    quarter:"Quarter", rev:"Rev (B)", profit:"Income (B)", yoy:"YoY",
-    ticker2:"Ticker", firm:"Company", marketCap:"Market Cap", revGrowth:"Rev. Growth", netMargin:"Net Margin",
-    name2:"Name", role:"Role", type2:"Type", shares:"Shares", value2:"Value", date2:"Date",
-    fearGreed:"Fear & Greed Index – Sector",
-    fedRate:"Fed Rate", inflation:"Inflation", sectorYtd:"Sector YTD", sp500Ytd:"S&P 500 YTD",
   };
 
   useEffect(()=>{ try{ const w=localStorage.getItem("wl2"); if(w) setWatchlist(JSON.parse(w)); }catch{} },[]);
@@ -480,7 +441,6 @@ export default function App() {
       <style>{`*{box-sizing:border-box}input:focus{outline:none;border-color:${C.blue}!important}button{transition:all .18s;cursor:pointer}button:hover{opacity:.85}button:active{transform:scale(.97)}`}</style>
       <div style={{position:"fixed",top:16,right:20,zIndex:100,display:"flex",gap:8,alignItems:"center"}}>
         <button onClick={()=>setDarkMode(d=>!d)} style={{background:C.card,border:`1px solid ${C.border}`,borderRadius:8,padding:"6px 10px",fontSize:14,color:C.text,cursor:"pointer"}}>{darkMode?"☀️":"🌙"}</button>
-        <button onClick={()=>setLang(l=>l==="cs"?"en":"cs")} style={{background:C.card,border:`1px solid ${C.border}`,borderRadius:8,padding:"6px 10px",fontSize:11,fontWeight:700,color:C.text,cursor:"pointer"}}>{lang==="cs"?"EN":"CS"}</button>
         <UserButton afterSignOutUrl="/"/>
       </div>
       <div style={{marginBottom:30,textAlign:"center"}}>
@@ -568,7 +528,6 @@ export default function App() {
           <div><span style={{fontSize:isMobile?16:20,fontWeight:900}}>{ccy} {fmt(pr.current)}</span><span style={{color:clr(pr.changePct||0),fontWeight:700,fontSize:12,marginLeft:6}}>{pct(pr.changePct)}</span></div>
           {!isMobile&&<span style={{background:vc(data.verdict)+"25",color:vc(data.verdict),border:`1px solid ${vc(data.verdict)}50`,borderRadius:9,padding:"5px 16px",fontWeight:900,fontSize:14}}>{data.verdict||"DRŽET"}</span>}
           <button onClick={()=>setDarkMode(d=>!d)} style={{background:C.card2,border:`1px solid ${C.border}`,borderRadius:8,padding:"5px 9px",fontSize:14,color:C.text}} title={darkMode?T.lightMode:T.darkMode}>{darkMode?"☀️":"🌙"}</button>
-          <button onClick={()=>setLang(l=>l==="cs"?"en":"cs")} style={{background:C.card2,border:`1px solid ${C.border}`,borderRadius:8,padding:"5px 9px",fontSize:11,fontWeight:700,color:C.text}}>{lang==="cs"?"EN":"CS"}</button>
           <UserButton afterSignOutUrl="/"/>
         </div>
       </div>
