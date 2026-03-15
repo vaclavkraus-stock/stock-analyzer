@@ -1,4 +1,4 @@
-import { useState, useEffect, createContext, useContext } from "react";
+import { useState, useEffect } from "react";
 import { useAuth, useUser, UserButton } from "@clerk/clerk-react";
 
 const useIsMobile = () => {
@@ -17,7 +17,7 @@ import {
   ComposedChart, Legend, ReferenceLine, Cell
 } from "recharts";
 
-const C = { bg:"#060d1a",card:"#0b1628",card2:"#0f1e35",border:"#1a2d4a",text:"#e2e8f0",muted:"#4e6080",blue:"#3b82f6",green:"#10b981",red:"#ef4444",yellow:"#f59e0b",purple:"#8b5cf6",cyan:"#06b6d4",orange:"#f97316" };
+let C = { bg:"#060d1a",card:"#0b1628",card2:"#0f1e35",border:"#1a2d4a",text:"#e2e8f0",muted:"#4e6080",blue:"#3b82f6",green:"#10b981",red:"#ef4444",yellow:"#f59e0b",purple:"#8b5cf6",cyan:"#06b6d4",orange:"#f97316" };
 const CL = { bg:"#f1f5f9",card:"#ffffff",card2:"#f8fafc",border:"#e2e8f0",text:"#0f172a",muted:"#64748b",blue:"#2563eb",green:"#059669",red:"#dc2626",yellow:"#d97706",purple:"#7c3aed",cyan:"#0891b2",orange:"#ea580c" };
 const fmt = (n,d=2) => typeof n==="number"?n.toLocaleString("cs-CZ",{maximumFractionDigits:d}):(n||"—");
 const pct = n => typeof n==="number"?`${n>0?"+":""}${n.toFixed(2)}%`:"—";
@@ -78,7 +78,7 @@ function buildCharts(history, targetPrice, analystLow, analystAvg, analystHigh) 
 }
 
 const Tip = ({active,payload,label}) => {
-  const C = useC();
+  
   if(!active||!payload?.length) return null;
   return <div style={{background:C.card2,border:`1px solid ${C.border}`,borderRadius:10,padding:"10px 14px",boxShadow:"0 8px 32px #00000040"}}>
     {label&&<div style={{color:C.muted,fontSize:11,marginBottom:5}}>{label}</div>}
@@ -87,12 +87,12 @@ const Tip = ({active,payload,label}) => {
 };
 
 const Card = ({children,style={}}) => {
-  const C = useC();
+  
   return <div style={{background:C.card,border:`1px solid ${C.border}`,borderRadius:16,padding:20,boxShadow:"0 2px 12px #00000018",...style}}>{children}</div>;
 };
 
 const MCard = ({label,value,color}) => {
-  const C = useC();
+  
   const [show,setShow] = useState(false);
   const tip = METRIC_TIPS[label];
   return (
@@ -108,12 +108,12 @@ const MCard = ({label,value,color}) => {
   );
 };
 
-const DEFAULT_C = {bg:"#060d1a",card:"#0b1628",card2:"#0f1e35",border:"#1a2d4a",text:"#e2e8f0",muted:"#4e6080",blue:"#3b82f6",green:"#10b981",red:"#ef4444",yellow:"#f59e0b",purple:"#8b5cf6",cyan:"#06b6d4",orange:"#f97316"};
-const ThemeContext = createContext(DEFAULT_C);
-const useC = () => useContext(ThemeContext) || DEFAULT_C;
+
+
+
 
 const SectionTitle = ({icon,title,sub}) => {
-  const C = useC();
+  
   return <div style={{marginBottom:14}}>
     <h2 style={{margin:0,fontSize:15,fontWeight:800,color:C.text}}>{icon} {title}</h2>
     {sub&&<p style={{margin:"3px 0 0",color:C.muted,fontSize:11}}>{sub}</p>}
@@ -122,7 +122,7 @@ const SectionTitle = ({icon,title,sub}) => {
 
 // Analyst price target chart
 const AnalystTargetChart = ({current,low,avg,high,currency,T}) => {
-  const C = useC();
+  
   if(!low||!high||!current||low>=high) return null;
   const upside = avg&&current?((avg-current)/current*100):0;
   const chartData = [
@@ -148,7 +148,7 @@ const AnalystTargetChart = ({current,low,avg,high,currency,T}) => {
   return (
     <div style={{marginTop:14}}>
       <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:8}}>
-        <div style={{color:C.muted,fontSize:10,textTransform:"uppercase",letterSpacing:1}}>{T.priceTarget}</div>
+        <div style={{color:C.muted,fontSize:10,textTransform:"uppercase",letterSpacing:1}}>Cenové cíle vs. aktuální cena</div>
         <div style={{color:upside>=0?C.green:C.red,fontSize:13,fontWeight:800,background:(upside>=0?C.green:C.red)+"15",border:`1px solid ${(upside>=0?C.green:C.red)}30`,borderRadius:7,padding:"2px 10px"}}>
           {upside>=0?"+":""}{upside.toFixed(1)}% potenciál
         </div>
@@ -170,7 +170,7 @@ const AnalystTargetChart = ({current,low,avg,high,currency,T}) => {
 
 // Fear & Greed gauge
 const FearGreedMeter = ({value,label,stocks,T}) => {
-  const C = useC();
+  
   if(!value) return null;
   const color = value<=25?C.red:value<=45?C.orange:value<=55?C.yellow:value<=75?C.cyan:C.green;
   const txt = value<=25?"Extreme Fear 😱":value<=45?"Fear 😟":value<=55?"Neutral 😐":value<=75?"Greed 😏":"Extreme Greed 🤑";
@@ -219,7 +219,7 @@ const FearGreedMeter = ({value,label,stocks,T}) => {
       </div>
       {stocks&&stocks.filter(s=>s).length>0&&(
         <div style={{marginTop:10,paddingTop:10,borderTop:`1px solid ${C.border}`}}>
-          <div style={{color:C.muted,fontSize:9,textTransform:"uppercase",letterSpacing:1,marginBottom:6}}>{T.sectorPlayers}</div>
+          <div style={{color:C.muted,fontSize:9,textTransform:"uppercase",letterSpacing:1,marginBottom:6}}>Hlavní hráči v sektoru</div>
           <div style={{display:"flex",flexWrap:"wrap",gap:5}}>
             {stocks.filter(s=>s).map((s,i)=>(
               <span key={i} style={{background:C.blue+"15",border:`1px solid ${C.blue}30`,borderRadius:6,padding:"2px 8px",fontSize:10,color:C.cyan,fontWeight:600}}>{s}</span>
@@ -233,7 +233,7 @@ const FearGreedMeter = ({value,label,stocks,T}) => {
 
 // Score legend popup
 const ScoreLegend = ({onClose}) => {
-  const C = useC();
+  
   return <div style={{position:"fixed",top:0,left:0,right:0,bottom:0,background:"#00000080",zIndex:1000,display:"flex",alignItems:"center",justifyContent:"center"}} onClick={onClose}>
     <div style={{background:C.card,border:`1px solid ${C.border}`,borderRadius:16,padding:24,maxWidth:400,width:"90%",boxShadow:"0 20px 60px #000000a0"}} onClick={e=>e.stopPropagation()}>
       <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:16}}>
@@ -273,7 +273,7 @@ const ScoreLegend = ({onClose}) => {
 };
 
 const TechCard = ({label,value,color,tip}) => {
-  const C = useC();
+  
   const [show,setShow] = useState(false);
   return <div style={{background:C.card2,borderRadius:8,padding:"7px 8px",position:"relative"}} onMouseEnter={()=>setShow(true)} onMouseLeave={()=>setShow(false)}>
     <div style={{color:C.muted,fontSize:9,textTransform:"uppercase",letterSpacing:1,marginBottom:2}}>{label}</div>
@@ -283,7 +283,7 @@ const TechCard = ({label,value,color,tip}) => {
 };
 
 const DCFCard = ({label,value,big,color,tip}) => {
-  const C = useC();
+  
   const [show,setShow] = useState(false);
   return <div style={{background:C.card2,borderRadius:10,padding:"9px 11px",position:"relative"}} onMouseEnter={()=>tip&&setShow(true)} onMouseLeave={()=>setShow(false)}>
     <div style={{display:"flex",alignItems:"center",gap:4,marginBottom:2}}>
@@ -335,7 +335,7 @@ export default function App() {
   const [watchlist,setWatchlist]=useState([]);
   const [showScoreLegend,setShowScoreLegend]=useState(false);
   const [darkMode,setDarkMode]=useState(true);
-  const C = darkMode ? {bg:"#060d1a",card:"#0b1628",card2:"#0f1e35",border:"#1a2d4a",text:"#e2e8f0",muted:"#4e6080",blue:"#3b82f6",green:"#10b981",red:"#ef4444",yellow:"#f59e0b",purple:"#8b5cf6",cyan:"#06b6d4",orange:"#f97316"} : {bg:"#f1f5f9",card:"#ffffff",card2:"#f8fafc",border:"#e2e8f0",text:"#0f172a",muted:"#64748b",blue:"#2563eb",green:"#059669",red:"#dc2626",yellow:"#d97706",purple:"#7c3aed",cyan:"#0891b2",orange:"#ea580c"};
+  C = darkMode ? {bg:"#060d1a",card:"#0b1628",card2:"#0f1e35",border:"#1a2d4a",text:"#e2e8f0",muted:"#4e6080",blue:"#3b82f6",green:"#10b981",red:"#ef4444",yellow:"#f59e0b",purple:"#8b5cf6",cyan:"#06b6d4",orange:"#f97316"} : {bg:"#f1f5f9",card:"#ffffff",card2:"#f8fafc",border:"#e2e8f0",text:"#0f172a",muted:"#64748b",blue:"#2563eb",green:"#059669",red:"#dc2626",yellow:"#d97706",purple:"#7c3aed",cyan:"#0891b2",orange:"#ea580c"};
   const T = {
     back:"← Zpět", buy:"KOUPIT", sell:"PRODAT", hold:"DRŽET", analyze:"Analyzovat →",
     exchange:"Burza", ticker:"Ticker Symbol", watchlist:"Watchlist",
@@ -437,7 +437,7 @@ export default function App() {
   };
 
   if(!loading&&!data) return (
-    <ThemeContext.Provider value={C}>
+    
     <div style={{minHeight:"100vh",background:darkMode?`radial-gradient(ellipse at 20% 50%, #0d1f3c 0%, ${C.bg} 60%)`:`radial-gradient(ellipse at 20% 50%, #dbeafe 0%, ${C.bg} 60%)`,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",fontFamily:"system-ui,sans-serif",padding:24}}>
       <style>{`*{box-sizing:border-box}input:focus{outline:none;border-color:${C.blue}!important}button{transition:all .18s;cursor:pointer}button:hover{opacity:.85}button:active{transform:scale(.97)}`}</style>
       <div style={{position:"fixed",top:16,right:20,zIndex:100,display:"flex",gap:8,alignItems:"center"}}>
@@ -483,11 +483,11 @@ export default function App() {
         </div>
       )}
     </div>
-    </ThemeContext.Provider>
+    
   );
 
   if(loading) return (
-    <ThemeContext.Provider value={C}>
+    
     <div style={{minHeight:"100vh",background:C.bg,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",fontFamily:"system-ui,sans-serif"}}>
       <style>{`@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.6;transform:scale(.95)}}@keyframes ld{0%{transform:translateX(-100%)}100%{transform:translateX(400%)}}`}</style>
       <img src="/logo.svg" alt="Logo" style={{width:160,height:"auto",marginBottom:18,animation:"pulse 1.8s ease-in-out infinite"}}/>
@@ -497,7 +497,7 @@ export default function App() {
         <div style={{width:"40%",height:"100%",background:`linear-gradient(90deg,transparent,${C.blue},${C.purple},transparent)`,animation:"ld 1.6s ease-in-out infinite"}}/>
       </div>
     </div>
-    </ThemeContext.Provider>
+    
   );
 
   if(!data) return null;
@@ -510,7 +510,7 @@ export default function App() {
   const buffPassed=bc.filter(b=>b.passed).length;
 
   return (
-    <ThemeContext.Provider value={C}>
+    
     <div style={{minHeight:"100vh",background:C.bg,fontFamily:"system-ui,sans-serif",color:C.text}}>
       <style>{`*{box-sizing:border-box}::-webkit-scrollbar{width:5px}::-webkit-scrollbar-thumb{background:${C.border};border-radius:3px}button{cursor:pointer}a{text-decoration:none}`}</style>
       {showScoreLegend&&<ScoreLegend onClose={()=>setShowScoreLegend(false)}/>}
@@ -528,7 +528,7 @@ export default function App() {
         <div style={{display:"flex",alignItems:"center",gap:isMobile?8:12}}>
           <div><span style={{fontSize:isMobile?16:20,fontWeight:900}}>{ccy} {fmt(pr.current)}</span><span style={{color:clr(pr.changePct||0),fontWeight:700,fontSize:12,marginLeft:6}}>{pct(pr.changePct)}</span></div>
           {!isMobile&&<span style={{background:vc(data.verdict)+"25",color:vc(data.verdict),border:`1px solid ${vc(data.verdict)}50`,borderRadius:9,padding:"5px 16px",fontWeight:900,fontSize:14}}>{data.verdict||"DRŽET"}</span>}
-          <button onClick={()=>setDarkMode(d=>!d)} style={{background:C.card2,border:`1px solid ${C.border}`,borderRadius:8,padding:"5px 9px",fontSize:14,color:C.text}} title={darkMode?T.lightMode:T.darkMode}>{darkMode?"☀️":"🌙"}</button>
+          <button onClick={()=>setDarkMode(d=>!d)} style={{background:C.card2,border:`1px solid ${C.border}`,borderRadius:8,padding:"5px 9px",fontSize:14,color:C.text}} title={darkMode?"Světlý režim":"Tmavý režim"}>{darkMode?"☀️":"🌙"}</button>
           <UserButton afterSignOutUrl="/"/>
         </div>
       </div>
@@ -1062,6 +1062,6 @@ export default function App() {
         <p style={{color:C.muted,fontSize:10,textAlign:"center",lineHeight:1.6}}>📡 Data: Live web search · ⚠️ {T.disclaimer}</p>
       </div>
     </div>
-    </ThemeContext.Provider>
+    
   );
 }
