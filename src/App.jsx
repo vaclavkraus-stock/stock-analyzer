@@ -196,7 +196,7 @@ const FearGreedMeter = ({value,label,stocks,T}) => {
       <div style={{marginTop:10,paddingTop:10,borderTop:`1px solid ${C.border}`}}>
         <div style={{display:"flex",gap:3,marginBottom:8,borderRadius:6,overflow:"hidden",height:6}}>
           {[[C.red,"0–25"],[C.orange,"26–45"],[C.yellow,"46–55"],[C.cyan,"56–75"],[C.green,"76–100"]].map(([c,r])=>(
-            <div key={r} style={{flex:1,background:c,opacity:value&&((parseInt(r)<=value)||(parseInt(r.split("–")[1])>=value&&parseInt(r)<=value))?1:0.3}}/>
+            <div key={r} style={{flex:1,background:c,opacity:value&&((parseInt(r)<=value)||(parseInt(r.split("-")[1])>=value&&parseInt(r)<=value))?1:0.3}}/>
           ))}
         </div>
         <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"3px 8px"}}>
@@ -207,7 +207,7 @@ const FearGreedMeter = ({value,label,stocks,T}) => {
             {range:"56–75",label:"Greed",color:C.cyan,desc:"Optimismus, vyšší valuace, investoři riskují více"},
             {range:"76–100",label:"Extreme Greed",color:C.green,desc:"Euforie, přehřátý trh - historicky čas opatrnosti"},
           ].map(({range,label,color,desc})=>(
-            <div key={range} style={{display:"flex",gap:5,alignItems:"flex-start",opacity:value>=parseInt(range)&&value<=(parseInt(range.split("–")[1])||100)?1:0.45}}>
+            <div key={range} style={{display:"flex",gap:5,alignItems:"flex-start",opacity:value>=parseInt(range)&&value<=(parseInt(range.split("-")[1])||100)?1:0.45}}>
               <span style={{color,fontSize:9,fontWeight:800,minWidth:38,marginTop:1}}>{range}</span>
               <div>
                 <span style={{color,fontSize:9,fontWeight:700}}>{label}</span>
@@ -607,7 +607,7 @@ export default function App() {
               </div>
               <div style={{background:C.red+"0d",borderRadius:10,padding:"8px 10px",borderLeft:`3px solid ${C.red}`}}>
                 <div style={{color:C.red,fontSize:9,fontWeight:700,textTransform:"uppercase",letterSpacing:1,marginBottom:5}}>❌ Rizika</div>
-                {(data.cons||[]).filter(c=>c).map((c,i)=><div key={i} style={{color:C.muted,fontSize:10,lineHeight:1.5,marginBottom:3}}>– {c}</div>)}
+                {(data.cons||[]).filter(c=>c).map((c,i)=><div key={i} style={{color:C.muted,fontSize:10,lineHeight:1.5,marginBottom:3}}>- {c}</div>)}
               </div>
             </div>}
             </div>
@@ -1071,7 +1071,7 @@ export default function App() {
           </div>
         </div>
 
-        <p style={{color:C.muted,fontSize:10,textAlign:"center",lineHeight:1.6}}>Pouze informacni charakter - neni investicni doporuceni.</p>
+        <p style={{color:C.muted,fontSize:10,textAlign:"center",lineHeight:1.6}}>Data: Live web search</p>
       </div>
     </div>
     
