@@ -148,7 +148,7 @@ const AnalystTargetChart = ({current,low,avg,high,currency,T}) => {
   return (
     <div style={{marginTop:14}}>
       <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:8}}>
-        <div style={{color:C.muted,fontSize:10,textTransform:"uppercase",letterSpacing:1}}>{T.priceTarget}</div>
+        <div style={{color:C.muted,fontSize:10,textTransform:"uppercase",letterSpacing:1}}>Cenové cíle vs. aktuální cena</div>
         <div style={{color:upside>=0?C.green:C.red,fontSize:13,fontWeight:800,background:(upside>=0?C.green:C.red)+"15",border:`1px solid ${(upside>=0?C.green:C.red)}30`,borderRadius:7,padding:"2px 10px"}}>
           {upside>=0?"+":""}{upside.toFixed(1)}% potenciál
         </div>
@@ -219,7 +219,7 @@ const FearGreedMeter = ({value,label,stocks,T}) => {
       </div>
       {stocks&&stocks.filter(s=>s).length>0&&(
         <div style={{marginTop:10,paddingTop:10,borderTop:`1px solid ${C.border}`}}>
-          <div style={{color:C.muted,fontSize:9,textTransform:"uppercase",letterSpacing:1,marginBottom:6}}>{T.sectorPlayers}</div>
+          <div style={{color:C.muted,fontSize:9,textTransform:"uppercase",letterSpacing:1,marginBottom:6}}>Hlavní hráči v sektoru</div>
           <div style={{display:"flex",flexWrap:"wrap",gap:5}}>
             {stocks.filter(s=>s).map((s,i)=>(
               <span key={i} style={{background:C.blue+"15",border:`1px solid ${C.blue}30`,borderRadius:6,padding:"2px 8px",fontSize:10,color:C.cyan,fontWeight:600}}>{s}</span>
