@@ -334,7 +334,33 @@ export default function App() {
   const [watchlist,setWatchlist]=useState([]);
   const [showScoreLegend,setShowScoreLegend]=useState(false);
   const [darkMode,setDarkMode]=useState(true);
+  const [lang,setLang]=useState("cs");
   const C = darkMode ? {bg:"#060d1a",card:"#0b1628",card2:"#0f1e35",border:"#1a2d4a",text:"#e2e8f0",muted:"#4e6080",blue:"#3b82f6",green:"#10b981",red:"#ef4444",yellow:"#f59e0b",purple:"#8b5cf6",cyan:"#06b6d4",orange:"#f97316"} : {bg:"#f1f5f9",card:"#ffffff",card2:"#f8fafc",border:"#e2e8f0",text:"#0f172a",muted:"#64748b",blue:"#2563eb",green:"#059669",red:"#dc2626",yellow:"#d97706",purple:"#7c3aed",cyan:"#0891b2",orange:"#ea580c"};
+  const T = lang==="cs" ? {
+    back:"← Zpět", buy:"KOUPIT", sell:"PRODAT", hold:"DRŽET", analyze:"Analyzovat →",
+    exchange:"Burza", ticker:"Ticker Symbol", watchlist:"Watchlist",
+    news:"Nejnovější Zprávy", read:"↗ číst", all:"Vše", pos:"📈 Pozit.", neg:"📉 Negat.", neu:"📋 Neutr.",
+    loading:"Analyzuji", darkMode:"Tmavý režim", lightMode:"Světlý režim",
+    annualResults:"Roční Výsledky", revenue:"Revenue", netIncome:"Čistý zisk",
+    buffett:"Buffettův Checklist", strongChoice:"Silná volba", average:"Průměrná", risky:"Rizikové",
+    risks:"Rizika", catalysts:"Katalyzátory", macro:"Makro Kontext", score:"Celkové Skóre",
+    earningsCalendar:"Earnings Calendar", nextResults:"Příští výsledky", resultsHistory:"Historie výsledků",
+    insiders:"Insider Trading", competitors:"Srovnání s Konkurencí",
+    dcf:"DCF Valuace", technicals:"Technická Analýza", analysts:"Analytici",
+    investmentThesis:"Investiční Teze", disclaimer:"Pouze informační charakter – není investiční doporučení."
+  } : {
+    back:"← Back", buy:"BUY", sell:"SELL", hold:"HOLD", analyze:"Analyze →",
+    exchange:"Exchange", ticker:"Ticker Symbol", watchlist:"Watchlist",
+    news:"Latest News", read:"↗ read", all:"All", pos:"📈 Pos.", neg:"📉 Neg.", neu:"📋 Neu.",
+    loading:"Analyzing", darkMode:"Dark mode", lightMode:"Light mode",
+    annualResults:"Annual Results", revenue:"Revenue", netIncome:"Net Income",
+    buffett:"Buffett Checklist", strongChoice:"Strong pick", average:"Average", risky:"Risky",
+    risks:"Risks", catalysts:"Catalysts", macro:"Macro Context", score:"Overall Score",
+    earningsCalendar:"Earnings Calendar", nextResults:"Next results", resultsHistory:"Earnings history",
+    insiders:"Insider Trading", competitors:"Competitor Comparison",
+    dcf:"DCF Valuation", technicals:"Technical Analysis", analysts:"Analysts",
+    investmentThesis:"Investment Thesis", disclaimer:"For informational purposes only – not investment advice."
+  };
 
   useEffect(()=>{ try{ const w=localStorage.getItem("wl2"); if(w) setWatchlist(JSON.parse(w)); }catch{} },[]);
 
@@ -401,7 +427,8 @@ export default function App() {
     <div style={{minHeight:"100vh",background:darkMode?`radial-gradient(ellipse at 20% 50%, #0d1f3c 0%, ${C.bg} 60%)`:`radial-gradient(ellipse at 20% 50%, #dbeafe 0%, ${C.bg} 60%)`,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",fontFamily:"system-ui,sans-serif",padding:24}}>
       <style>{`*{box-sizing:border-box}input:focus{outline:none;border-color:${C.blue}!important}button{transition:all .18s;cursor:pointer}button:hover{opacity:.85}button:active{transform:scale(.97)}`}</style>
       <div style={{position:"fixed",top:16,right:20,zIndex:100,display:"flex",gap:8,alignItems:"center"}}>
-        <button onClick={()=>setDarkMode(d=>!d)} style={{background:C.card,border:`1px solid ${C.border}`,borderRadius:8,padding:"6px 10px",fontSize:14,color:C.text,cursor:"pointer"}} title={darkMode?"Světlý režim":"Tmavý režim"}>{darkMode?"☀️":"🌙"}</button>
+        <button onClick={()=>setDarkMode(d=>!d)} style={{background:C.card,border:`1px solid ${C.border}`,borderRadius:8,padding:"6px 10px",fontSize:14,color:C.text,cursor:"pointer"}}>{darkMode?"☀️":"🌙"}</button>
+        <button onClick={()=>setLang(l=>l==="cs"?"en":"cs")} style={{background:C.card,border:`1px solid ${C.border}`,borderRadius:8,padding:"6px 10px",fontSize:11,fontWeight:700,color:C.text,cursor:"pointer"}}>{lang==="cs"?"EN":"CS"}</button>
         <UserButton afterSignOutUrl="/"/>
       </div>
       <div style={{marginBottom:30,textAlign:"center"}}>
@@ -410,7 +437,7 @@ export default function App() {
         <p style={{color:C.muted,fontSize:14,margin:0}}>Live data · DCF · Buffett checklist · Insider · Fair Value · AI analýza</p>
       </div>
       <div style={{background:C.card,border:`1px solid ${C.border}`,borderRadius:22,padding:30,width:"100%",maxWidth:500,boxShadow:darkMode?"0 20px 60px #00000060":"0 20px 60px #0000001a"}}>
-        <label style={{color:C.muted,fontSize:11,display:"block",marginBottom:8,textTransform:"uppercase",letterSpacing:1}}>Burza</label>
+        <label style={{color:C.muted,fontSize:11,display:"block",marginBottom:8,textTransform:"uppercase",letterSpacing:1}}>{T.exchange}</label>
         <div style={{display:"grid",gridTemplateColumns:"repeat(5,1fr)",gap:5,marginBottom:14}}>
           {EXCHANGES.map(ex=>(
             <button key={ex.code} onClick={()=>setExchange(ex.code)} title={`${ex.label} – ${ex.hint}\nPř: ${ex.example}`} style={{background:exchange===ex.code?C.blue+"30":C.card2,border:`1px solid ${exchange===ex.code?C.blue:C.border}`,borderRadius:8,padding:"5px 4px",cursor:"pointer",display:"flex",flexDirection:"column",alignItems:"center",gap:2,transition:"all .15s"}}>
@@ -422,10 +449,10 @@ export default function App() {
         <div style={{color:C.muted,fontSize:10,marginBottom:12,textAlign:"center"}}>
           {EXCHANGES.find(e=>e.code===exchange)?.flag} <span style={{color:C.text,fontWeight:700}}>{EXCHANGES.find(e=>e.code===exchange)?.label}</span> – {EXCHANGES.find(e=>e.code===exchange)?.hint} · <span style={{color:C.muted}}>Př: {EXCHANGES.find(e=>e.code===exchange)?.example}</span>
         </div>
-        <label style={{color:C.muted,fontSize:11,display:"block",marginBottom:8,textTransform:"uppercase",letterSpacing:1}}>Ticker Symbol</label>
+        <label style={{color:C.muted,fontSize:11,display:"block",marginBottom:8,textTransform:"uppercase",letterSpacing:1}}>{T.ticker}</label>
         <input value={ticker} onChange={e=>setTicker(e.target.value.toUpperCase())} onKeyDown={e=>e.key==="Enter"&&analyze()} placeholder={EXCHANGES.find(e=>e.code===exchange)?.example||"AAPL"} style={{width:"100%",background:C.card2,border:`2px solid ${C.border}`,borderRadius:12,color:C.text,fontSize:22,fontWeight:900,padding:"13px 16px",letterSpacing:3,marginBottom:14,transition:"border .2s"}}/>
         <button onClick={()=>analyze()} style={{width:"100%",background:`linear-gradient(135deg,${C.blue},#6366f1)`,border:"none",borderRadius:12,color:"#fff",fontSize:16,fontWeight:700,padding:"14px 0",boxShadow:`0 4px 20px ${C.blue}40`}}>
-          Analyzovat →
+          {T.analyze}
         </button>
         {error&&<div style={{color:C.red,fontSize:12,marginTop:12,textAlign:"center",lineHeight:1.5}}>{error}</div>}
       </div>
@@ -452,7 +479,7 @@ export default function App() {
     <div style={{minHeight:"100vh",background:C.bg,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",fontFamily:"system-ui,sans-serif"}}>
       <style>{`@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.6;transform:scale(.95)}}@keyframes ld{0%{transform:translateX(-100%)}100%{transform:translateX(400%)}}`}</style>
       <div style={{fontSize:50,marginBottom:18,animation:"pulse 1.8s ease-in-out infinite"}}>📊</div>
-      <h2 style={{color:C.text,fontSize:20,fontWeight:800,marginBottom:6}}>Analyzuji {ticker}...</h2>
+      <h2 style={{color:C.text,fontSize:20,fontWeight:800,marginBottom:6}}>{T.loading} {ticker}...</h2>
       <LoadingTimer muted={C.muted}/>
       <div style={{width:240,height:3,background:C.border,borderRadius:4,overflow:"hidden",marginTop:20}}>
         <div style={{width:"40%",height:"100%",background:`linear-gradient(90deg,transparent,${C.blue},${C.purple},transparent)`,animation:"ld 1.6s ease-in-out infinite"}}/>
@@ -478,7 +505,7 @@ export default function App() {
 
       <div style={{background:`${C.card}ee`,backdropFilter:"blur(12px)",borderBottom:`1px solid ${C.border}`,padding:isMobile?"8px 12px":"10px 24px",display:"flex",justifyContent:"space-between",alignItems:"center",position:"sticky",top:0,zIndex:100,flexWrap:"wrap",gap:8}}>
         <div style={{display:"flex",alignItems:"center",gap:isMobile?6:10}}>
-          <button onClick={()=>{setData(null);setError(null);}} style={{background:"transparent",border:`1px solid ${C.border}`,color:C.muted,borderRadius:8,padding:"5px 10px",fontSize:11}}>← Zpět</button>
+          <button onClick={()=>{setData(null);setError(null);}} style={{background:"transparent",border:`1px solid ${C.border}`,color:C.muted,borderRadius:8,padding:"5px 10px",fontSize:11}}>{T.back}</button>
           {data.domain&&<img src={`https://logo.clearbit.com/${data.domain}`} onError={e=>e.target.style.display="none"} style={{width:32,height:32,borderRadius:8,objectFit:"contain",background:"#fff",padding:3,boxShadow:"0 2px 8px #00000030"}} alt=""/>}
           <div>
             <div style={{fontWeight:900,fontSize:isMobile?15:20,lineHeight:1}}>{data.ticker}</div>
@@ -489,7 +516,8 @@ export default function App() {
         <div style={{display:"flex",alignItems:"center",gap:isMobile?8:12}}>
           <div><span style={{fontSize:isMobile?16:20,fontWeight:900}}>{ccy} {fmt(pr.current)}</span><span style={{color:clr(pr.changePct||0),fontWeight:700,fontSize:12,marginLeft:6}}>{pct(pr.changePct)}</span></div>
           {!isMobile&&<span style={{background:vc(data.verdict)+"25",color:vc(data.verdict),border:`1px solid ${vc(data.verdict)}50`,borderRadius:9,padding:"5px 16px",fontWeight:900,fontSize:14}}>{data.verdict||"DRŽET"}</span>}
-          <button onClick={()=>setDarkMode(d=>!d)} style={{background:C.card2,border:`1px solid ${C.border}`,borderRadius:8,padding:"5px 9px",fontSize:14,color:C.text}} title={darkMode?"Světlý režim":"Tmavý režim"}>{darkMode?"☀️":"🌙"}</button>
+          <button onClick={()=>setDarkMode(d=>!d)} style={{background:C.card2,border:`1px solid ${C.border}`,borderRadius:8,padding:"5px 9px",fontSize:14,color:C.text}} title={darkMode?T.lightMode:T.darkMode}>{darkMode?"☀️":"🌙"}</button>
+          <button onClick={()=>setLang(l=>l==="cs"?"en":"cs")} style={{background:C.card2,border:`1px solid ${C.border}`,borderRadius:8,padding:"5px 9px",fontSize:11,fontWeight:700,color:C.text}}>{lang==="cs"?"EN":"CS"}</button>
           <UserButton afterSignOutUrl="/"/>
         </div>
       </div>
@@ -832,7 +860,7 @@ export default function App() {
             <SectionTitle icon="🧙‍♂️" title="Buffettův Checklist" sub="8 kritérií Warrena Buffetta pro výběr kvalitních dlouhodobých investic"/>
             <div style={{display:"flex",alignItems:"center",gap:10}}>
               <div style={{fontWeight:800,fontSize:22,color:buffPassed>=6?C.green:buffPassed>=4?C.yellow:C.red}}>{buffPassed}/{bc.length}</div>
-              <div style={{background:buffPassed>=6?C.green+"20":buffPassed>=4?C.yellow+"20":C.red+"20",border:`1px solid ${buffPassed>=6?C.green:buffPassed>=4?C.yellow:C.red}40`,borderRadius:8,padding:"4px 12px",color:buffPassed>=6?C.green:buffPassed>=4?C.yellow:C.red,fontWeight:800,fontSize:13}}>{buffPassed>=6?"Silná volba":buffPassed>=4?"Průměrná":"Rizikové"}</div>
+              <div style={{background:buffPassed>=6?C.green+"20":buffPassed>=4?C.yellow+"20":C.red+"20",border:`1px solid ${buffPassed>=6?C.green:buffPassed>=4?C.yellow:C.red}40`,borderRadius:8,padding:"4px 12px",color:buffPassed>=6?C.green:buffPassed>=4?C.yellow:C.red,fontWeight:800,fontSize:13}}>{buffPassed>=6?T.strongChoice:buffPassed>=4?T.average:T.risky}</div>
             </div>
           </div>
           <div style={{display:"grid",gridTemplateColumns:isMobile?"1fr":"1fr 1fr",gap:8}}>
@@ -849,7 +877,7 @@ export default function App() {
           <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:14,flexWrap:"wrap",gap:8}}>
             <SectionTitle icon="📅" title="Roční Výsledky" sub={`v miliardách ${ccy} · přerušovaně = odhad analytiků`}/>
             <div style={{display:"flex",gap:4}}>
-              {[["revenue","Revenue"],["netIncome","Čistý zisk"],["eps","EPS"]].map(([t,l])=><button key={t} onClick={()=>setFinTab(t)} style={tabSt(t)}>{l}</button>)}
+              {[["revenue",T.revenue],["netIncome",T.netIncome],["eps","EPS"]].map(([t,l])=><button key={t} onClick={()=>setFinTab(t)} style={tabSt(t)}>{l}</button>)}
             </div>
           </div>
           <ResponsiveContainer width="100%" height={210}>
@@ -946,20 +974,20 @@ export default function App() {
           <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:14,flexWrap:"wrap",gap:8}}>
             <SectionTitle icon="📰" title="Nejnovější Zprávy"/>
             <div style={{display:"flex",gap:4}}>
-              {[["all","Vše"],["positive","📈 Pozit."],["negative","📉 Negat."],["neutral","📋 Neutr."]].map(([v,l])=>(
+              {[["all",T.all],["positive",T.pos],["negative",T.neg],["neutral",T.neu]].map(([v,l])=>(
                 <button key={v} onClick={()=>setNewsFilter(v)} style={{background:newsFilter===v?sentClr(v==="all"?null:v)+"25":"transparent",border:`1px solid ${newsFilter===v?sentClr(v==="all"?null:v)+"50":C.border}`,color:newsFilter===v?sentClr(v==="all"?null:v):C.muted,borderRadius:8,padding:"5px 11px",fontSize:11,fontWeight:700,transition:"all .15s"}}>{l}</button>
               ))}
             </div>
           </div>
           <div style={{display:"flex",flexDirection:"column",gap:8}}>
             {filtNews.map((n,i)=>{
-              const hasUrl = n.url&&n.url.startsWith("http")&&n.url.length>10;
+              const hasUrl = n.url&&n.url.startsWith("http")&&n.url.length>15&&!n.url.endsWith("/")&&n.url.includes(".");
               const inner = (
                 <div style={{display:"flex",justifyContent:"space-between",gap:10}}>
                   <div style={{flex:1}}>
-                    <div style={{fontWeight:700,fontSize:12,marginBottom:3,display:"flex",alignItems:"center",gap:6}}>
+                    <div style={{fontWeight:700,fontSize:12,marginBottom:3,display:"flex",alignItems:"center",gap:6,color:C.text}}>
                       {n.sentiment==="positive"?"📈":n.sentiment==="negative"?"📉":"📋"} {n.title}
-                      {hasUrl&&<span style={{color:C.blue,fontSize:10,background:C.blue+"15",borderRadius:5,padding:"1px 6px"}}>↗ číst</span>}
+                      {hasUrl&&<span style={{color:C.blue,fontSize:10,background:C.blue+"15",borderRadius:5,padding:"1px 6px",flexShrink:0}}>{T.read}</span>}
                     </div>
                     {n.summary&&<div style={{color:C.muted,fontSize:11,lineHeight:1.5}}>{n.summary}</div>}
                   </div>
@@ -1020,7 +1048,7 @@ export default function App() {
           </div>
         </div>
 
-        <p style={{color:C.muted,fontSize:10,textAlign:"center",lineHeight:1.6}}>📡 Data: Live web search · ⚠️ Pouze informační charakter – není investiční doporučení.</p>
+        <p style={{color:C.muted,fontSize:10,textAlign:"center",lineHeight:1.6}}>📡 Data: Live web search · ⚠️ {T.disclaimer}</p>
       </div>
     </div>
     </ThemeContext.Provider>
