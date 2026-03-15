@@ -1,5 +1,11 @@
 import { useState, useEffect } from "react";
 import { useAuth, useUser, UserButton } from "@clerk/clerk-react";
+import {
+  AreaChart, Area, BarChart, Bar, LineChart, Line,
+  RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis,
+  XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
+  ComposedChart, Legend, ReferenceLine, Cell
+} from "recharts";
 
 const useIsMobile = () => {
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
@@ -10,12 +16,6 @@ const useIsMobile = () => {
   }, []);
   return isMobile;
 };
-import {
-  AreaChart, Area, BarChart, Bar, LineChart, Line,
-  RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis,
-  XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
-  ComposedChart, Legend, ReferenceLine, Cell
-} from "recharts";
 
 let C = { bg:"#060d1a",card:"#0b1628",card2:"#0f1e35",border:"#1a2d4a",text:"#e2e8f0",muted:"#4e6080",blue:"#3b82f6",green:"#10b981",red:"#ef4444",yellow:"#f59e0b",purple:"#8b5cf6",cyan:"#06b6d4",orange:"#f97316" };
 const CL = { bg:"#f1f5f9",card:"#ffffff",card2:"#f8fafc",border:"#e2e8f0",text:"#0f172a",muted:"#64748b",blue:"#2563eb",green:"#059669",red:"#dc2626",yellow:"#d97706",purple:"#7c3aed",cyan:"#0891b2",orange:"#ea580c" };
@@ -78,7 +78,6 @@ function buildCharts(history, targetPrice, analystLow, analystAvg, analystHigh) 
 }
 
 const Tip = ({active,payload,label}) => {
-  
   if(!active||!payload?.length) return null;
   return <div style={{background:C.card2,border:`1px solid ${C.border}`,borderRadius:10,padding:"10px 14px",boxShadow:"0 8px 32px #00000040"}}>
     {label&&<div style={{color:C.muted,fontSize:11,marginBottom:5}}>{label}</div>}
@@ -87,12 +86,11 @@ const Tip = ({active,payload,label}) => {
 };
 
 const Card = ({children,style={}}) => {
-  
   return <div style={{background:C.card,border:`1px solid ${C.border}`,borderRadius:16,padding:20,boxShadow:"0 2px 12px #00000018",...style}}>{children}</div>;
 };
 
+// ✅ FIX: odstraněna reference na darkMode (neexistuje mimo App)
 const MCard = ({label,value,color}) => {
-  
   const [show,setShow] = useState(false);
   const tip = METRIC_TIPS[label];
   return (
@@ -103,26 +101,19 @@ const MCard = ({label,value,color}) => {
         {tip&&<div style={{color:C.blue,fontSize:9,background:C.blue+"20",borderRadius:"50%",width:13,height:13,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,cursor:"help",fontWeight:700}}>?</div>}
       </div>
       <div style={{color:color||C.text,fontSize:15,fontWeight:700}}>{value||"—"}</div>
-      {show&&tip&&<div style={{position:"absolute",bottom:"calc(100% + 6px)",left:0,zIndex:999,background:darkMode?"#0a1525":C.card,border:`1px solid ${C.blue}50`,borderRadius:10,padding:"10px 13px",fontSize:11,color:C.muted,lineHeight:1.7,width:230,boxShadow:"0 8px 32px #00000080",pointerEvents:"none"}}>{tip}</div>}
+      {show&&tip&&<div style={{position:"absolute",bottom:"calc(100% + 6px)",left:0,zIndex:999,background:C.card,border:`1px solid ${C.blue}50`,borderRadius:10,padding:"10px 13px",fontSize:11,color:C.muted,lineHeight:1.7,width:230,boxShadow:"0 8px 32px #00000080",pointerEvents:"none"}}>{tip}</div>}
     </div>
   );
 };
 
-
-
-
-
 const SectionTitle = ({icon,title,sub}) => {
-  
   return <div style={{marginBottom:14}}>
     <h2 style={{margin:0,fontSize:15,fontWeight:800,color:C.text}}>{icon} {title}</h2>
     {sub&&<p style={{margin:"3px 0 0",color:C.muted,fontSize:11}}>{sub}</p>}
   </div>;
 };
 
-// Analyst price target chart
 const AnalystTargetChart = ({current,low,avg,high,currency,T}) => {
-  
   if(!low||!high||!current||low>=high) return null;
   const upside = avg&&current?((avg-current)/current*100):0;
   const chartData = [
@@ -168,9 +159,7 @@ const AnalystTargetChart = ({current,low,avg,high,currency,T}) => {
   );
 };
 
-// Fear & Greed gauge
 const FearGreedMeter = ({value,label,stocks,T}) => {
-  
   if(!value) return null;
   const color = value<=25?C.red:value<=45?C.orange:value<=55?C.yellow:value<=75?C.cyan:C.green;
   const txt = value<=25?"Extreme Fear 😱":value<=45?"Fear 😟":value<=55?"Neutral 😐":value<=75?"Greed 😏":"Extreme Greed 🤑";
@@ -192,7 +181,6 @@ const FearGreedMeter = ({value,label,stocks,T}) => {
           {label&&<div style={{color:C.muted,fontSize:10,marginTop:2}}>{label}</div>}
         </div>
       </div>
-      {/* Fear & Greed scale explanation */}
       <div style={{marginTop:10,paddingTop:10,borderTop:`1px solid ${C.border}`}}>
         <div style={{display:"flex",gap:3,marginBottom:8,borderRadius:6,overflow:"hidden",height:6}}>
           {[[C.red,"0–25"],[C.orange,"26–45"],[C.yellow,"46–55"],[C.cyan,"56–75"],[C.green,"76–100"]].map(([c,r])=>(
@@ -231,9 +219,7 @@ const FearGreedMeter = ({value,label,stocks,T}) => {
   );
 };
 
-// Score legend popup
 const ScoreLegend = ({onClose}) => {
-  
   return <div style={{position:"fixed",top:0,left:0,right:0,bottom:0,background:"#00000080",zIndex:1000,display:"flex",alignItems:"center",justifyContent:"center"}} onClick={onClose}>
     <div style={{background:C.card,border:`1px solid ${C.border}`,borderRadius:16,padding:24,maxWidth:400,width:"90%",boxShadow:"0 20px 60px #000000a0"}} onClick={e=>e.stopPropagation()}>
       <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:16}}>
@@ -272,18 +258,18 @@ const ScoreLegend = ({onClose}) => {
   </div>;
 };
 
+// ✅ FIX: odstraněna reference na darkMode
 const TechCard = ({label,value,color,tip}) => {
-  
   const [show,setShow] = useState(false);
   return <div style={{background:C.card2,borderRadius:8,padding:"7px 8px",position:"relative"}} onMouseEnter={()=>setShow(true)} onMouseLeave={()=>setShow(false)}>
     <div style={{color:C.muted,fontSize:9,textTransform:"uppercase",letterSpacing:1,marginBottom:2}}>{label}</div>
     <div style={{color:color||C.text,fontSize:12,fontWeight:700}}>{value}</div>
-    {show&&tip&&<div style={{position:"absolute",bottom:"calc(100% + 4px)",left:0,zIndex:999,background:darkMode?"#0a1525":C.card,border:`1px solid ${C.blue}50`,borderRadius:8,padding:"8px 10px",fontSize:10,color:C.muted,lineHeight:1.6,width:180,boxShadow:"0 8px 24px #00000080",pointerEvents:"none"}}>{tip}</div>}
+    {show&&tip&&<div style={{position:"absolute",bottom:"calc(100% + 4px)",left:0,zIndex:999,background:C.card,border:`1px solid ${C.blue}50`,borderRadius:8,padding:"8px 10px",fontSize:10,color:C.muted,lineHeight:1.6,width:180,boxShadow:"0 8px 24px #00000080",pointerEvents:"none"}}>{tip}</div>}
   </div>;
 };
 
+// ✅ FIX: odstraněna reference na darkMode
 const DCFCard = ({label,value,big,color,tip}) => {
-  
   const [show,setShow] = useState(false);
   return <div style={{background:C.card2,borderRadius:10,padding:"9px 11px",position:"relative"}} onMouseEnter={()=>tip&&setShow(true)} onMouseLeave={()=>setShow(false)}>
     <div style={{display:"flex",alignItems:"center",gap:4,marginBottom:2}}>
@@ -291,7 +277,7 @@ const DCFCard = ({label,value,big,color,tip}) => {
       {tip&&<div style={{color:C.blue,fontSize:9,background:C.blue+"20",borderRadius:"50%",width:13,height:13,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,cursor:"help",fontWeight:700}}>?</div>}
     </div>
     <div style={{color:color||C.text,fontSize:big?17:13,fontWeight:800}}>{value}</div>
-    {show&&tip&&<div style={{position:"absolute",bottom:"calc(100% + 4px)",left:0,zIndex:999,background:darkMode?"#0a1525":C.card,border:`1px solid ${C.blue}50`,borderRadius:8,padding:"8px 10px",fontSize:11,color:C.muted,lineHeight:1.6,width:220,boxShadow:"0 8px 24px #00000080",pointerEvents:"none"}}>{tip}</div>}
+    {show&&tip&&<div style={{position:"absolute",bottom:"calc(100% + 4px)",left:0,zIndex:999,background:C.card,border:`1px solid ${C.blue}50`,borderRadius:8,padding:"8px 10px",fontSize:11,color:C.muted,lineHeight:1.6,width:220,boxShadow:"0 8px 24px #00000080",pointerEvents:"none"}}>{tip}</div>}
   </div>;
 };
 
@@ -437,7 +423,6 @@ export default function App() {
   };
 
   if(!loading&&!data) return (
-    
     <div style={{minHeight:"100vh",background:darkMode?`radial-gradient(ellipse at 20% 50%, #0d1f3c 0%, ${C.bg} 60%)`:`radial-gradient(ellipse at 20% 50%, #dbeafe 0%, ${C.bg} 60%)`,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",fontFamily:"system-ui,sans-serif",padding:24}}>
       <style>{`*{box-sizing:border-box}input:focus{outline:none;border-color:${C.blue}!important}button{transition:all .18s;cursor:pointer}button:hover{opacity:.85}button:active{transform:scale(.97)}`}</style>
       <div style={{position:"fixed",top:16,right:20,zIndex:100,display:"flex",gap:8,alignItems:"center"}}>
@@ -483,11 +468,9 @@ export default function App() {
         </div>
       )}
     </div>
-    
   );
 
   if(loading) return (
-    
     <div style={{minHeight:"100vh",background:C.bg,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",fontFamily:"system-ui,sans-serif"}}>
       <style>{`@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.6;transform:scale(.95)}}@keyframes ld{0%{transform:translateX(-100%)}100%{transform:translateX(400%)}}`}</style>
       <img src="/logo.svg" alt="Logo" style={{width:160,height:"auto",marginBottom:18,animation:"pulse 1.8s ease-in-out infinite"}}/>
@@ -497,7 +480,6 @@ export default function App() {
         <div style={{width:"40%",height:"100%",background:`linear-gradient(90deg,transparent,${C.blue},${C.purple},transparent)`,animation:"ld 1.6s ease-in-out infinite"}}/>
       </div>
     </div>
-    
   );
 
   if(!data) return null;
@@ -510,7 +492,6 @@ export default function App() {
   const buffPassed=bc.filter(b=>b.passed).length;
 
   return (
-    
     <div style={{minHeight:"100vh",background:C.bg,fontFamily:"system-ui,sans-serif",color:C.text}}>
       <style>{`*{box-sizing:border-box}::-webkit-scrollbar{width:5px}::-webkit-scrollbar-thumb{background:${C.border};border-radius:3px}button{cursor:pointer}a{text-decoration:none}`}</style>
       {showScoreLegend&&<ScoreLegend onClose={()=>setShowScoreLegend(false)}/>}
@@ -563,7 +544,6 @@ export default function App() {
               <SectionTitle icon="🕸️" title={T.score} sub={T.scoreSub}/>
               <button onClick={()=>setShowScoreLegend(true)} style={{background:C.blue+"20",border:`1px solid ${C.blue}40`,borderRadius:7,padding:"3px 9px",fontSize:10,color:C.blue,fontWeight:700}}>? Legenda</button>
             </div>
-            {/* Big score display */}
             <div style={{display:"flex",alignItems:"center",justifyContent:"center",gap:20,marginBottom:8,padding:"10px 0"}}>
               <div style={{textAlign:"center"}}>
                 <div style={{fontSize:64,fontWeight:900,lineHeight:1,color:vc(data.verdict),textShadow:`0 0 40px ${vc(data.verdict)}60`}}>{(data.score||5).toFixed(1)}</div>
@@ -590,7 +570,6 @@ export default function App() {
                 <Tooltip content={<Tip/>}/>
               </RadarChart>
             </ResponsiveContainer>
-            {/* Category breakdown */}
             <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:5,marginTop:6}}>
               {_radarData.map(d=>(
                 <div key={d.subject} style={{background:C.card2,borderRadius:8,padding:"6px 8px",textAlign:"center"}}>
@@ -616,7 +595,6 @@ export default function App() {
                 </div>
               ))}
             </div>
-            {/* Sector-specific indicators */}
             {(macro.sectorIndicators||[]).length>0&&<>
               <div style={{color:C.muted,fontSize:10,textTransform:"uppercase",letterSpacing:1,marginBottom:8}}>
                 📡 {T.sectorIndicators}  {data.sector}
@@ -771,7 +749,6 @@ export default function App() {
                 <DCFCard key={l} label={l} value={v} big={big} color={c} tip={tip}/>
               ))}
             </div>
-            {/* Visual price vs intrinsic value bar */}
             {dcf.intrinsicValue>0&&pr.current>0&&(()=>{
               const lo = Math.min(pr.current,dcf.intrinsicValue)*0.88;
               const hi = Math.max(pr.current,dcf.intrinsicValue)*1.12;
@@ -783,7 +760,6 @@ export default function App() {
                 <div style={{color:C.muted,fontSize:10,textTransform:"uppercase",letterSpacing:1,marginBottom:10}}>{T.currentVsIntrinsic}</div>
                 <div style={{position:"relative",height:8,borderRadius:4,background:C.card2,marginBottom:24}}>
                   <div style={{position:"absolute",left:`${Math.min(parseFloat(curPct),parseFloat(intrPct))}%`,width:`${Math.abs(parseFloat(intrPct)-parseFloat(curPct))}%`,height:"100%",background:undervalued?C.green+"40":C.red+"40",borderRadius:4}}/>
-                  {/* Current price pin */}
                   <div style={{position:"absolute",left:`${curPct}%`,top:"50%",transform:"translate(-50%,-50%)"}}>
                     <div style={{width:14,height:14,borderRadius:"50%",background:C.blue,border:"2px solid #fff",boxShadow:`0 0 8px ${C.blue}80`}}/>
                     <div style={{position:"absolute",top:16,left:"50%",transform:"translateX(-50%)",whiteSpace:"nowrap",textAlign:"center"}}>
@@ -791,7 +767,6 @@ export default function App() {
                       <div style={{color:C.muted,fontSize:9}}>Aktuální</div>
                     </div>
                   </div>
-                  {/* Intrinsic value pin */}
                   <div style={{position:"absolute",left:`${intrPct}%`,top:"50%",transform:"translate(-50%,-50%)"}}>
                     <div style={{width:14,height:14,borderRadius:3,background:undervalued?C.green:C.red,border:"2px solid #fff",boxShadow:`0 0 8px ${undervalued?C.green:C.red}80`}}/>
                     <div style={{position:"absolute",top:16,left:"50%",transform:"translateX(-50%)",whiteSpace:"nowrap",textAlign:"center"}}>
@@ -810,7 +785,6 @@ export default function App() {
                 <div key={l} style={{flex:1,background:C.card2,borderRadius:9,padding:"8px 10px"}}><div style={{color:C.muted,fontSize:9,textTransform:"uppercase",letterSpacing:1,marginBottom:2}}>{l}</div><div style={{color:c||C.text,fontSize:13,fontWeight:800}}>{v}</div></div>
               ))}
             </div>
-            {/* Sensitivity table */}
             {(data.dcfSensitivity||[]).length>0&&<>
               <div style={{color:C.muted,fontSize:10,textTransform:"uppercase",letterSpacing:1,margin:"14px 0 8px"}}>{T.sensitivity}</div>
               <div style={{overflowX:"auto"}}>
@@ -1062,6 +1036,5 @@ export default function App() {
         <p style={{color:C.muted,fontSize:10,textAlign:"center",lineHeight:1.6}}>📡 Data: Live web search · ⚠️ {T.disclaimer}</p>
       </div>
     </div>
-    
   );
 }
