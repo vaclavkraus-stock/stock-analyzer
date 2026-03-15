@@ -78,20 +78,21 @@ function buildCharts(history, targetPrice, analystLow, analystAvg, analystHigh) 
 }
 
 const Tip = ({active,payload,label}) => {
+  const C = useC();
   if(!active||!payload?.length) return null;
-  return <div style={{background:"#0f1e35",border:`1px solid ${C.border}`,borderRadius:10,padding:"10px 14px",boxShadow:"0 8px 32px #00000060"}}>
+  return <div style={{background:C.card2,border:`1px solid ${C.border}`,borderRadius:10,padding:"10px 14px",boxShadow:"0 8px 32px #00000040"}}>
     {label&&<div style={{color:C.muted,fontSize:11,marginBottom:5}}>{label}</div>}
     {payload.filter(p=>p.value!=null&&p.name!=="low"&&p.name!=="high").map((p,i)=><div key={i} style={{color:p.color||C.text,fontSize:13,fontWeight:600}}>{p.name}: {fmt(p.value)}</div>)}
   </div>;
 };
 
-const Card = ({children,style={}}) => (
-  <div style={{background:C.card,border:`1px solid ${C.border}`,borderRadius:16,padding:20,boxShadow:"0 2px 12px #00000030",...style}}>
-    {children}
-  </div>
-);
+const Card = ({children,style={}}) => {
+  const C = useC();
+  return <div style={{background:C.card,border:`1px solid ${C.border}`,borderRadius:16,padding:20,boxShadow:"0 2px 12px #00000018",...style}}>{children}</div>;
+};
 
 const MCard = ({label,value,color}) => {
+  const C = useC();
   const [show,setShow] = useState(false);
   const tip = METRIC_TIPS[label];
   return (
@@ -107,15 +108,20 @@ const MCard = ({label,value,color}) => {
   );
 };
 
-const SectionTitle = ({icon,title,sub}) => (
-  <div style={{marginBottom:14}}>
-    <h2 style={{margin:0,fontSize:15,fontWeight:800}}>{icon} {title}</h2>
+const ThemeContext = React.createContext(null);
+const useC = () => React.useContext(ThemeContext);
+
+const SectionTitle = ({icon,title,sub}) => {
+  const C = useC();
+  return <div style={{marginBottom:14}}>
+    <h2 style={{margin:0,fontSize:15,fontWeight:800,color:C.text}}>{icon} {title}</h2>
     {sub&&<p style={{margin:"3px 0 0",color:C.muted,fontSize:11}}>{sub}</p>}
-  </div>
-);
+  </div>;
+};
 
 // Analyst price target chart
 const AnalystTargetChart = ({current,low,avg,high,currency}) => {
+  const C = useC();
   if(!low||!high||!current||low>=high) return null;
   const upside = avg&&current?((avg-current)/current*100):0;
   const chartData = [
@@ -131,7 +137,7 @@ const AnalystTargetChart = ({current,low,avg,high,currency}) => {
     if(!active||!payload?.length) return null;
     const item = chartData.find(d=>d.name===label);
     const diff = item&&label!=="📍 Aktuální"?((item.price-current)/current*100):null;
-    return <div style={{background:darkMode?"#0a1525":C.card,border:`1px solid ${C.border}`,borderRadius:10,padding:"10px 14px"}}>
+    return <div style={{background:C.card2,border:`1px solid ${C.border}`,borderRadius:10,padding:"10px 14px"}}>
       <div style={{color:C.muted,fontSize:10,marginBottom:4}}>{label}</div>
       <div style={{color:item?.fill||C.text,fontSize:14,fontWeight:800}}>{currency} {fmt(payload[0].value)}</div>
       {diff!==null&&<div style={{color:diff>=0?C.green:C.red,fontSize:11,marginTop:2}}>{diff>=0?"+":""}{diff.toFixed(1)}% vs. aktuální</div>}
@@ -153,9 +159,7 @@ const AnalystTargetChart = ({current,low,avg,high,currency}) => {
           <YAxis domain={[minVal,maxVal]} tick={{fill:C.muted,fontSize:9}} axisLine={false} tickLine={false} width={52}/>
           <Tooltip content={<CustomTooltip/>}/>
           <Bar dataKey="price" radius={[4,4,0,0]}>
-            {chartData.map((entry,i)=>(
-              <Cell key={i} fill={entry.fill}/>
-            ))}
+            {chartData.map((entry,i)=>(<Cell key={i} fill={entry.fill}/>))}
           </Bar>
         </BarChart>
       </ResponsiveContainer>
@@ -165,6 +169,7 @@ const AnalystTargetChart = ({current,low,avg,high,currency}) => {
 
 // Fear & Greed gauge
 const FearGreedMeter = ({value,label,stocks}) => {
+  const C = useC();
   if(!value) return null;
   const color = value<=25?C.red:value<=45?C.orange:value<=55?C.yellow:value<=75?C.cyan:C.green;
   const txt = value<=25?"Extreme Fear 😱":value<=45?"Fear 😟":value<=55?"Neutral 😐":value<=75?"Greed 😏":"Extreme Greed 🤑";
@@ -226,11 +231,12 @@ const FearGreedMeter = ({value,label,stocks}) => {
 };
 
 // Score legend popup
-const ScoreLegend = ({onClose}) => (
-  <div style={{position:"fixed",top:0,left:0,right:0,bottom:0,background:"#00000080",zIndex:1000,display:"flex",alignItems:"center",justifyContent:"center"}} onClick={onClose}>
+const ScoreLegend = ({onClose}) => {
+  const C = useC();
+  return <div style={{position:"fixed",top:0,left:0,right:0,bottom:0,background:"#00000080",zIndex:1000,display:"flex",alignItems:"center",justifyContent:"center"}} onClick={onClose}>
     <div style={{background:C.card,border:`1px solid ${C.border}`,borderRadius:16,padding:24,maxWidth:400,width:"90%",boxShadow:"0 20px 60px #000000a0"}} onClick={e=>e.stopPropagation()}>
       <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:16}}>
-        <h3 style={{margin:0,fontSize:15,fontWeight:800}}>🕸️ Jak číst skóre (0–10)</h3>
+        <h3 style={{margin:0,fontSize:15,fontWeight:800,color:C.text}}>🕸️ Jak číst skóre (0–10)</h3>
         <button onClick={onClose} style={{background:"none",border:"none",color:C.muted,fontSize:20,cursor:"pointer"}}>×</button>
       </div>
       <div style={{display:"flex",flexDirection:"column",gap:8,marginBottom:16}}>
@@ -262,10 +268,11 @@ const ScoreLegend = ({onClose}) => (
         ))}
       </div>
     </div>
-  </div>
-);
+  </div>;
+};
 
 const TechCard = ({label,value,color,tip}) => {
+  const C = useC();
   const [show,setShow] = useState(false);
   return <div style={{background:C.card2,borderRadius:8,padding:"7px 8px",position:"relative"}} onMouseEnter={()=>setShow(true)} onMouseLeave={()=>setShow(false)}>
     <div style={{color:C.muted,fontSize:9,textTransform:"uppercase",letterSpacing:1,marginBottom:2}}>{label}</div>
@@ -275,6 +282,7 @@ const TechCard = ({label,value,color,tip}) => {
 };
 
 const DCFCard = ({label,value,big,color,tip}) => {
+  const C = useC();
   const [show,setShow] = useState(false);
   return <div style={{background:C.card2,borderRadius:10,padding:"9px 11px",position:"relative"}} onMouseEnter={()=>tip&&setShow(true)} onMouseLeave={()=>setShow(false)}>
     <div style={{display:"flex",alignItems:"center",gap:4,marginBottom:2}}>
@@ -355,9 +363,9 @@ export default function App() {
           model:"claude-sonnet-4-20250514",
           max_tokens:5000,
           tools:[{type:"web_search_20250305",name:"web_search"}],
-          messages:[{role:"user",content:`Search the web for "${t}" stock on ${exchInfo.label} (${exchInfo.hint}) and return data in LOCAL CURRENCY: ${exchInfo.currency}. IMPORTANT: If "${t}" is a short or ambiguous ticker (1-2 letters), first search for the full company name to confirm which company it is (e.g. "S stock NYSE" = SentinelOne, "U stock" = Unity Software). CRITICAL: All prices, targets, intrinsic values must be in ${exchInfo.currency} - do NOT convert to USD. Today is March 2026 - always use the MOST RECENT available data - P/E, EPS, revenue must be current 2025/2026 values, NOT historical. Fill in the "domain" field with the company's main website domain (e.g. "apple.com", "microsoft.com", "cez.cz") for logo display. Do 3 searches: 1) "${t} ${exchInfo.hint} stock price ${exchInfo.currency} current 2026" 2) "${t} analyst price target ${exchInfo.currency} earnings 2026" 3) "${t} stock news March 2026 site:reuters.com OR site:bloomberg.com OR site:cnbc.com OR site:finance.yahoo.com". Return ONLY raw JSON. The "currency" field MUST be "${exchInfo.currency}". Every numeric field must have a real non-zero value based on current data. IMPORTANT: For each news item provide the full direct URL to the specific article from search results.
+          messages:[{role:"user",content:`Search the web for "${t}" stock on ${exchInfo.label} (${exchInfo.hint}) and return data in LOCAL CURRENCY: ${exchInfo.currency}. IMPORTANT: If "${t}" is a short or ambiguous ticker (1-2 letters), first identify the company. CRITICAL: All prices must be in ${exchInfo.currency}. Today is March 2026 - use MOST RECENT data. Fill "domain" with company website (e.g. "apple.com"). For "sectorIndicators" provide 3-4 sector-specific macro indicators most relevant to this company's sector (e.g. for Tech: AI capex spending, cloud growth rate, semiconductor index; for Energy: oil price WTI, OPEC production; for Finance: yield curve, credit spreads; for Healthcare: FDA approvals, drug pipeline) with current values and impact (positive/negative/neutral) and short Czech comment. Do 3 searches: 1) "${t} ${exchInfo.hint} stock price ${exchInfo.currency} current 2026" 2) "${t} analyst price target ${exchInfo.currency} earnings 2026" 3) "${t} stock news March 2026 site:reuters.com OR site:bloomberg.com OR site:cnbc.com OR site:finance.yahoo.com". Return ONLY raw JSON. Currency MUST be "${exchInfo.currency}". Every numeric field must have real non-zero value. For news provide full direct article URLs.
 
-{"name":"","ticker":"${t}","domain":"apple.com","exchange":"${exchInfo.hint}","sector":"","currency":"${exchInfo.currency}","description":"2 věty česky","price":{"current":0,"changePct":0,"marketCap":"","w52High":0,"w52Low":0,"volume":""},"metrics":{"pe":0,"eps":0,"netMargin":0,"grossMargin":0,"roe":0,"beta":0,"dividendYield":0,"debtEquity":0,"freeCashFlowB":0,"revenueGrowthPct":0},"radarScores":{"valuation":5,"growth":5,"profitability":5,"financialHealth":5,"momentum":5,"dividend":5},"annuals":[{"year":"2022","revB":0,"niB":0,"eps":0},{"year":"2023","revB":0,"niB":0,"eps":0},{"year":"2024","revB":0,"niB":0,"eps":0},{"year":"2025","revB":0,"niB":0,"eps":0},{"year":"2026E","revB":null,"niB":null,"eps":null,"estRevB":0,"estNiB":0,"estEps":0}],"quarters":[{"q":"Q3 2025","revB":0,"niB":0,"eps":0,"yoy":0},{"q":"Q4 2025","revB":0,"niB":0,"eps":0,"yoy":0},{"q":"Q1 2026","revB":0,"niB":0,"eps":0,"yoy":0}],"peHistory":[{"year":"2022","pe":0},{"year":"2023","pe":0},{"year":"2024","pe":0},{"year":"2025","pe":0}],"history":[{"date":"Kvě '24","price":0,"sp500":0},{"date":"Srp '24","price":0,"sp500":0},{"date":"Lis '24","price":0,"sp500":0},{"date":"Úno '25","price":0,"sp500":0},{"date":"Čer '25","price":0,"sp500":0},{"date":"Bře '26","price":0,"sp500":0}],"analysts":{"buy":0,"hold":0,"sell":0,"avgTarget":0,"lowTarget":0,"highTarget":0},"dcf":{"intrinsicValue":0,"upside":0,"wacc":0},"dcfSensitivity":[{"wacc":7,"growthRates":[3,5,7,9],"values":[0,0,0,0]},{"wacc":8,"growthRates":[3,5,7,9],"values":[0,0,0,0]},{"wacc":9,"growthRates":[3,5,7,9],"values":[0,0,0,0]},{"wacc":10,"growthRates":[3,5,7,9],"values":[0,0,0,0]}],"technicals":{"ma50":0,"ma200":0,"rsi":0,"support":0,"resistance":0},"earningsCalendar":{"nextDate":"","quarter":"","estimatedEPS":0,"estimatedRevB":0,"lastSurprisePct":0},"earningsHistory":[{"quarter":"Q4 2025","date":"","estimatedEPS":0,"actualEPS":0,"estimatedRevB":0,"actualRevB":0},{"quarter":"Q3 2025","date":"","estimatedEPS":0,"actualEPS":0,"estimatedRevB":0,"actualRevB":0},{"quarter":"Q2 2025","date":"","estimatedEPS":0,"actualEPS":0,"estimatedRevB":0,"actualRevB":0},{"quarter":"Q1 2025","date":"","estimatedEPS":0,"actualEPS":0,"estimatedRevB":0,"actualRevB":0}],"buffettChecklist":[{"criterion":"ROE > 15%","passed":true,"note":""},{"criterion":"Nízký dluh","passed":true,"note":""},{"criterion":"Růst zisku","passed":true,"note":""},{"criterion":"Silný FCF","passed":true,"note":""},{"criterion":"Ekonomický příkop","passed":true,"note":""},{"criterion":"Srozumitelné podnikání","passed":true,"note":""},{"criterion":"Management vlastní akcie","passed":false,"note":""},{"criterion":"P/E pod průměrem","passed":false,"note":""}],"insiders":[{"name":"","role":"","type":"buy","shares":0,"valueM":0,"date":""}],"competitors":[{"ticker":"","name":"","pe":0,"revGrowthPct":0,"netMarginPct":0,"marketCapB":0},{"ticker":"","name":"","pe":0,"revGrowthPct":0,"netMarginPct":0,"marketCapB":0}],"macro":{"fedRate":0,"inflation":0,"sectorYtdPct":0,"sp500YtdPct":0,"outlook":"","sectorFearGreed":50,"sectorFearGreedLabel":"Sentiment sektoru neutrální","sectorTopStocks":["","",""]},"news":[{"title":"","summary":"česky","sentiment":"positive","date":"","source":"","url":"https://"},{"title":"","summary":"česky","sentiment":"negative","date":"","source":"","url":"https://"},{"title":"","summary":"česky","sentiment":"neutral","date":"","source":"","url":"https://"},{"title":"","summary":"česky","sentiment":"positive","date":"","source":"","url":"https://"},{"title":"","summary":"česky","sentiment":"neutral","date":"","source":"","url":"https://"}],"risks":["","",""],"catalysts":["",""],"verdict":"KOUPIT","score":7,"targetPrice":0,"investmentThesis":"5 vět česky","pros":["",""],"cons":["",""]}`}]
+{"name":"","ticker":"${t}","domain":"apple.com","exchange":"${exchInfo.hint}","sector":"","currency":"${exchInfo.currency}","description":"2 věty česky","price":{"current":0,"changePct":0,"marketCap":"","w52High":0,"w52Low":0,"volume":""},"metrics":{"pe":0,"eps":0,"netMargin":0,"grossMargin":0,"roe":0,"beta":0,"dividendYield":0,"debtEquity":0,"freeCashFlowB":0,"revenueGrowthPct":0},"radarScores":{"valuation":5,"growth":5,"profitability":5,"financialHealth":5,"momentum":5,"dividend":5},"annuals":[{"year":"2022","revB":0,"niB":0,"eps":0},{"year":"2023","revB":0,"niB":0,"eps":0},{"year":"2024","revB":0,"niB":0,"eps":0},{"year":"2025","revB":0,"niB":0,"eps":0},{"year":"2026E","revB":null,"niB":null,"eps":null,"estRevB":0,"estNiB":0,"estEps":0}],"quarters":[{"q":"Q3 2025","revB":0,"niB":0,"eps":0,"yoy":0},{"q":"Q4 2025","revB":0,"niB":0,"eps":0,"yoy":0},{"q":"Q1 2026","revB":0,"niB":0,"eps":0,"yoy":0}],"peHistory":[{"year":"2022","pe":0},{"year":"2023","pe":0},{"year":"2024","pe":0},{"year":"2025","pe":0}],"history":[{"date":"Kvě '24","price":0,"sp500":0},{"date":"Srp '24","price":0,"sp500":0},{"date":"Lis '24","price":0,"sp500":0},{"date":"Úno '25","price":0,"sp500":0},{"date":"Čer '25","price":0,"sp500":0},{"date":"Bře '26","price":0,"sp500":0}],"analysts":{"buy":0,"hold":0,"sell":0,"avgTarget":0,"lowTarget":0,"highTarget":0},"dcf":{"intrinsicValue":0,"upside":0,"wacc":0},"dcfSensitivity":[{"wacc":7,"growthRates":[3,5,7,9],"values":[0,0,0,0]},{"wacc":8,"growthRates":[3,5,7,9],"values":[0,0,0,0]},{"wacc":9,"growthRates":[3,5,7,9],"values":[0,0,0,0]},{"wacc":10,"growthRates":[3,5,7,9],"values":[0,0,0,0]}],"technicals":{"ma50":0,"ma200":0,"rsi":0,"support":0,"resistance":0},"earningsCalendar":{"nextDate":"","quarter":"","estimatedEPS":0,"estimatedRevB":0,"lastSurprisePct":0},"earningsHistory":[{"quarter":"Q4 2025","date":"","estimatedEPS":0,"actualEPS":0,"estimatedRevB":0,"actualRevB":0},{"quarter":"Q3 2025","date":"","estimatedEPS":0,"actualEPS":0,"estimatedRevB":0,"actualRevB":0},{"quarter":"Q2 2025","date":"","estimatedEPS":0,"actualEPS":0,"estimatedRevB":0,"actualRevB":0},{"quarter":"Q1 2025","date":"","estimatedEPS":0,"actualEPS":0,"estimatedRevB":0,"actualRevB":0}],"buffettChecklist":[{"criterion":"ROE > 15%","passed":true,"note":""},{"criterion":"Nízký dluh","passed":true,"note":""},{"criterion":"Růst zisku","passed":true,"note":""},{"criterion":"Silný FCF","passed":true,"note":""},{"criterion":"Ekonomický příkop","passed":true,"note":""},{"criterion":"Srozumitelné podnikání","passed":true,"note":""},{"criterion":"Management vlastní akcie","passed":false,"note":""},{"criterion":"P/E pod průměrem","passed":false,"note":""}],"insiders":[{"name":"","role":"","type":"buy","shares":0,"valueM":0,"date":""}],"competitors":[{"ticker":"","name":"","pe":0,"revGrowthPct":0,"netMarginPct":0,"marketCapB":0},{"ticker":"","name":"","pe":0,"revGrowthPct":0,"netMarginPct":0,"marketCapB":0}],"macro":{"fedRate":0,"inflation":0,"sectorYtdPct":0,"sp500YtdPct":0,"outlook":"","sectorFearGreed":50,"sectorFearGreedLabel":"Sentiment sektoru neutrální","sectorTopStocks":["","",""],"sectorIndicators":[{"name":"","value":"","impact":"positive","comment":"česky"},{"name":"","value":"","impact":"neutral","comment":"česky"},{"name":"","value":"","impact":"negative","comment":"česky"}]},"news":[{"title":"","summary":"česky","sentiment":"positive","date":"","source":"","url":"https://"},{"title":"","summary":"česky","sentiment":"negative","date":"","source":"","url":"https://"},{"title":"","summary":"česky","sentiment":"neutral","date":"","source":"","url":"https://"},{"title":"","summary":"česky","sentiment":"positive","date":"","source":"","url":"https://"},{"title":"","summary":"česky","sentiment":"neutral","date":"","source":"","url":"https://"}],"risks":["","",""],"catalysts":["",""],"verdict":"KOUPIT","score":7,"targetPrice":0,"investmentThesis":"5 vět česky","pros":["",""],"cons":["",""]}`}]
         })
       });
       const d=await res.json();
@@ -389,6 +397,7 @@ export default function App() {
   };
 
   if(!loading&&!data) return (
+    <ThemeContext.Provider value={C}>
     <div style={{minHeight:"100vh",background:darkMode?`radial-gradient(ellipse at 20% 50%, #0d1f3c 0%, ${C.bg} 60%)`:`radial-gradient(ellipse at 20% 50%, #dbeafe 0%, ${C.bg} 60%)`,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",fontFamily:"system-ui,sans-serif",padding:24}}>
       <style>{`*{box-sizing:border-box}input:focus{outline:none;border-color:${C.blue}!important}button{transition:all .18s;cursor:pointer}button:hover{opacity:.85}button:active{transform:scale(.97)}`}</style>
       <div style={{position:"fixed",top:16,right:20,zIndex:100,display:"flex",gap:8,alignItems:"center"}}>
@@ -435,11 +444,13 @@ export default function App() {
         </div>
       )}
     </div>
+    </ThemeContext.Provider>
   );
 
   if(loading) return (
+    <ThemeContext.Provider value={C}>
     <div style={{minHeight:"100vh",background:C.bg,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",fontFamily:"system-ui,sans-serif"}}>
-      <style>{`@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.6;transform:scale(.95)}}@keyframes ld{0%{transform:translateX(-100%)}100%{transform:translateX(400%)}}@keyframes dots{0%{content:'.'}33%{content:'..'}66%{content:'...'}`}</style>
+      <style>{`@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.6;transform:scale(.95)}}@keyframes ld{0%{transform:translateX(-100%)}100%{transform:translateX(400%)}}`}</style>
       <div style={{fontSize:50,marginBottom:18,animation:"pulse 1.8s ease-in-out infinite"}}>📊</div>
       <h2 style={{color:C.text,fontSize:20,fontWeight:800,marginBottom:6}}>Analyzuji {ticker}...</h2>
       <LoadingTimer muted={C.muted}/>
@@ -447,6 +458,7 @@ export default function App() {
         <div style={{width:"40%",height:"100%",background:`linear-gradient(90deg,transparent,${C.blue},${C.purple},transparent)`,animation:"ld 1.6s ease-in-out infinite"}}/>
       </div>
     </div>
+    </ThemeContext.Provider>
   );
 
   if(!data) return null;
@@ -459,6 +471,7 @@ export default function App() {
   const buffPassed=bc.filter(b=>b.passed).length;
 
   return (
+    <ThemeContext.Provider value={C}>
     <div style={{minHeight:"100vh",background:C.bg,fontFamily:"system-ui,sans-serif",color:C.text}}>
       <style>{`*{box-sizing:border-box}::-webkit-scrollbar{width:5px}::-webkit-scrollbar-thumb{background:${C.border};border-radius:3px}button{cursor:pointer}a{text-decoration:none}`}</style>
       {showScoreLegend&&<ScoreLegend onClose={()=>setShowScoreLegend(false)}/>}
@@ -552,7 +565,7 @@ export default function App() {
             <SectionTitle icon="🌍" title="Makro Kontext"/>
             <div style={{display:"grid",gridTemplateColumns:isMobile?"1fr":"1fr 1fr",gap:8,marginBottom:10}}>
               {[
-                {l:"Fed Rate",v:`${fmt(macro.fedRate)}%`,tip:macro.fedRate>4?"Vysoké sazby tlačí dolů valuace růstových akcií.":macro.fedRate<2?"Nízké sazby podporují růstové akcie a nemovitosti.":"Sazby v normálním pásmu."},
+                {l:"Fed Rate",v:`${fmt(macro.fedRate)}%`,tip:macro.fedRate>4?"Vysoké sazby tlačí dolů valuace růstových akcií.":macro.fedRate<2?"Nízké sazby podporují růstové akcie.":"Sazby v normálním pásmu."},
                 {l:"Inflace",v:`${fmt(macro.inflation)}%`,tip:macro.inflation>4?"Vysoká inflace snižuje reálné výnosy a tlačí Fed ke zvyšování sazeb.":macro.inflation<2?"Nízká inflace – prostor pro uvolnění měnové politiky.":"Inflace blízko cíle Fedu 2%."},
                 {l:"Sektor YTD",v:pct(macro.sectorYtdPct),c:clr(macro.sectorYtdPct),tip:`Výkonnost sektoru od začátku roku. ${macro.sectorYtdPct>0?"Sektor roste – příznivé prostředí.":"Sektor klesá – sleduj fundamenty firmy."}`},
                 {l:"S&P 500 YTD",v:pct(macro.sp500YtdPct),c:clr(macro.sp500YtdPct),tip:`Výkonnost trhu od začátku roku. ${macro.sp500YtdPct>0?"Býčí trh – risk-on sentiment.":"Medvědí trh – investoři jsou opatrní."}`}
@@ -564,6 +577,26 @@ export default function App() {
                 </div>
               ))}
             </div>
+            {/* Sector-specific indicators */}
+            {(macro.sectorIndicators||[]).length>0&&<>
+              <div style={{color:C.muted,fontSize:10,textTransform:"uppercase",letterSpacing:1,marginBottom:8}}>
+                📡 Klíčové ukazatele pro sektor {data.sector}
+              </div>
+              <div style={{display:"grid",gridTemplateColumns:isMobile?"1fr":"1fr 1fr",gap:6,marginBottom:10}}>
+                {(macro.sectorIndicators||[]).map((ind,i)=>(
+                  <div key={i} style={{background:C.card2,borderRadius:10,padding:"9px 12px",borderLeft:`3px solid ${ind.impact==="positive"?C.green:ind.impact==="negative"?C.red:C.yellow}`}}>
+                    <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:3}}>
+                      <div style={{color:C.muted,fontSize:9,textTransform:"uppercase",letterSpacing:1}}>{ind.name}</div>
+                      <div style={{color:ind.impact==="positive"?C.green:ind.impact==="negative"?C.red:C.yellow,fontSize:9,fontWeight:700,background:(ind.impact==="positive"?C.green:ind.impact==="negative"?C.red:C.yellow)+"15",borderRadius:4,padding:"1px 6px"}}>
+                        {ind.impact==="positive"?"↑ Příznivé":ind.impact==="negative"?"↓ Nepříznivé":"→ Neutrální"}
+                      </div>
+                    </div>
+                    <div style={{color:C.text,fontSize:13,fontWeight:800,marginBottom:2}}>{ind.value}</div>
+                    <div style={{color:C.muted,fontSize:10,lineHeight:1.4}}>{ind.comment}</div>
+                  </div>
+                ))}
+              </div>
+            </>}
             {macro.outlook&&<div style={{background:C.card2,borderRadius:10,padding:"10px 12px",marginBottom:10,fontSize:11,color:C.muted,lineHeight:1.6}}>
               📋 <span style={{color:C.text,fontWeight:700}}>Makro výhled: </span>{macro.outlook}
             </div>}
@@ -806,7 +839,7 @@ export default function App() {
             {bc.map((b,i)=>(
               <div key={i} style={{background:b.passed?C.green+"10":C.red+"08",border:`1px solid ${b.passed?C.green+"30":C.red+"20"}`,borderRadius:11,padding:"10px 14px",display:"flex",gap:10,alignItems:"flex-start"}}>
                 <span style={{fontSize:16,flexShrink:0,marginTop:1}}>{b.passed?"✅":"❌"}</span>
-                <div><div style={{fontWeight:700,fontSize:12,marginBottom:2}}>{b.criterion}</div><div style={{color:C.muted,fontSize:11,lineHeight:1.5}}>{b.note}</div></div>
+                <div><div style={{fontWeight:700,fontSize:12,marginBottom:2,color:C.text}}>{b.criterion}</div><div style={{color:C.muted,fontSize:11,lineHeight:1.5}}>{b.note}</div></div>
               </div>
             ))}
           </div>
@@ -990,5 +1023,6 @@ export default function App() {
         <p style={{color:C.muted,fontSize:10,textAlign:"center",lineHeight:1.6}}>📡 Data: Live web search · ⚠️ Pouze informační charakter – není investiční doporučení.</p>
       </div>
     </div>
+    </ThemeContext.Provider>
   );
 }
