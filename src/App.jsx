@@ -983,29 +983,27 @@ export default function App() {
           <div style={{display:"flex",flexDirection:"column",gap:8}}>
             {filtNews.map((n,i)=>{
               const hasUrl = n.url&&n.url.startsWith("http")&&n.url.length>15&&!n.url.endsWith("/")&&n.url.includes(".");
+              const searchUrl = `https://www.google.com/search?q=${encodeURIComponent((n.title||"")+" "+(n.source||""))}`;
+              const linkUrl = hasUrl ? n.url : searchUrl;
               const inner = (
                 <div style={{display:"flex",justifyContent:"space-between",gap:10}}>
                   <div style={{flex:1}}>
                     <div style={{fontWeight:700,fontSize:12,marginBottom:3,display:"flex",alignItems:"center",gap:6,color:C.text}}>
                       {n.sentiment==="positive"?"📈":n.sentiment==="negative"?"📉":"📋"} {n.title}
-                      {hasUrl&&<span style={{color:C.blue,fontSize:10,background:C.blue+"15",borderRadius:5,padding:"1px 6px",flexShrink:0}}>{T.read}</span>}
+                      <span style={{color:C.blue,fontSize:10,background:C.blue+"15",borderRadius:5,padding:"1px 6px",flexShrink:0}}>{hasUrl?"↗ číst":"↗ hledat"}</span>
                     </div>
                     {n.summary&&<div style={{color:C.muted,fontSize:11,lineHeight:1.5}}>{n.summary}</div>}
                   </div>
                   <div style={{textAlign:"right",minWidth:62,color:C.muted,fontSize:10,flexShrink:0}}><div>{n.source}</div><div style={{marginTop:2}}>{n.date}</div></div>
                 </div>
               );
-              return hasUrl ? (
-                <a key={i} href={n.url} target="_blank" rel="noopener noreferrer"
-                  style={{background:sentClr(n.sentiment)+"0d",borderRadius:11,padding:"11px 14px",borderLeft:`4px solid ${sentClr(n.sentiment)}`,display:"block",cursor:"pointer",transition:"background .15s"}}
+              return (
+                <a key={i} href={linkUrl} target="_blank" rel="noopener noreferrer"
+                  style={{background:sentClr(n.sentiment)+"0d",borderRadius:11,padding:"11px 14px",borderLeft:`4px solid ${sentClr(n.sentiment)}`,display:"block",cursor:"pointer",transition:"background .15s",textDecoration:"none"}}
                   onMouseEnter={e=>e.currentTarget.style.background=sentClr(n.sentiment)+"1a"}
                   onMouseLeave={e=>e.currentTarget.style.background=sentClr(n.sentiment)+"0d"}>
                   {inner}
                 </a>
-              ) : (
-                <div key={i} style={{background:sentClr(n.sentiment)+"0d",borderRadius:11,padding:"11px 14px",borderLeft:`4px solid ${sentClr(n.sentiment)}`}}>
-                  {inner}
-                </div>
               );
             })}
           </div>
