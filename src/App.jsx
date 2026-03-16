@@ -384,9 +384,8 @@ export default function App() {
     if(override) setTicker(override);
     setLoading(true); setError(null); setData(null); setFinTab("revenue"); setNewsFilter("all");
     try{
-      const clerkToken = await getToken();
       const res = await fetch("/api/analyze", {
-        method:"POST",headers:{"Content-Type":"application/json","Authorization":`Bearer ${clerkToken}`},
+        method:"POST",headers:{"Content-Type":"application/json","x-api-secret":import.meta.env.VITE_API_SECRET||""},
         body:JSON.stringify({
           model:"claude-sonnet-4-20250514",
           max_tokens:5000,
@@ -1003,12 +1002,12 @@ export default function App() {
 
         <div style={{display:"grid",gridTemplateColumns:isMobile?"1fr":"1fr 1fr",gap:12}}>
           <Card>
-            <h3 style={{margin:"0 0 12px",fontSize:14,fontWeight:800,color:C.red}}>{T.risks}</h3>
-            {risks.filter(r=>r).map((r,i)=><div key={i} style={{display:"flex",gap:8,marginBottom:7}}><span style={{color:C.red,fontSize:8,marginTop:5,flexShrink:0}}>●</span><span style={{color:C.muted,fontSize:12,lineHeight:1.5}}>{r}</span></div>)}
-          </Card>
-          <Card>
             <h3 style={{margin:"0 0 12px",fontSize:14,fontWeight:800,color:C.green}}>{T.catalysts}</h3>
             {catalysts.filter(c=>c).map((c,i)=><div key={i} style={{display:"flex",gap:8,marginBottom:7}}><span style={{color:C.green,fontSize:8,marginTop:5,flexShrink:0}}>●</span><span style={{color:C.muted,fontSize:12,lineHeight:1.5}}>{c}</span></div>)}
+          </Card>
+          <Card>
+            <h3 style={{margin:"0 0 12px",fontSize:14,fontWeight:800,color:C.red}}>{T.risks}</h3>
+            {risks.filter(r=>r).map((r,i)=><div key={i} style={{display:"flex",gap:8,marginBottom:7}}><span style={{color:C.red,fontSize:8,marginTop:5,flexShrink:0}}>●</span><span style={{color:C.muted,fontSize:12,lineHeight:1.5}}>{r}</span></div>)}
           </Card>
         </div>
 
