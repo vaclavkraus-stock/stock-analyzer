@@ -547,9 +547,19 @@ export default function App() {
               <button onClick={()=>setShowScoreLegend(true)} style={{background:C.blue+"20",border:`1px solid ${C.blue}40`,borderRadius:7,padding:"3px 9px",fontSize:10,color:C.blue,fontWeight:700}}>? Legenda</button>
             </div>
             <div style={{display:"flex",alignItems:"center",justifyContent:"center",gap:20,marginBottom:8,padding:"10px 0"}}>
-              <div style={{textAlign:"center"}}>
-                <div style={{fontSize:64,fontWeight:900,lineHeight:1,color:vc(data.verdict),textShadow:`0 0 40px ${vc(data.verdict)}60`}}>{(data.score||5).toFixed(1)}</div>
-                <div style={{color:C.muted,fontSize:11,marginTop:4}}>z 10 bodů</div>
+              <div style={{textAlign:"center",position:"relative",width:110,height:110,flexShrink:0}}>
+                <svg width="110" height="110" viewBox="0 0 110 110" style={{position:"absolute",top:0,left:0}}>
+                  <circle cx="55" cy="55" r="46" fill="none" stroke={C.border} strokeWidth="8"/>
+                  <circle cx="55" cy="55" r="46" fill="none" stroke={vc(data.verdict)} strokeWidth="8"
+                    strokeLinecap="round"
+                    strokeDasharray={`${((data.score||5)/10)*289} 289`}
+                    strokeDashoffset="72"
+                    style={{filter:`drop-shadow(0 0 8px ${vc(data.verdict)}80)`,transition:"stroke-dasharray 1s ease"}}/>
+                </svg>
+                <div style={{position:"absolute",top:"50%",left:"50%",transform:"translate(-50%,-50%)",textAlign:"center"}}>
+                  <div style={{fontSize:30,fontWeight:900,lineHeight:1,color:vc(data.verdict)}}>{(data.score||5).toFixed(1)}</div>
+                  <div style={{color:C.muted,fontSize:9,marginTop:2}}>z 10</div>
+                </div>
               </div>
               <div style={{display:"flex",flexDirection:"column",gap:6}}>
                 <div style={{background:vc(data.verdict)+"20",border:`1px solid ${vc(data.verdict)}40`,borderRadius:10,padding:"6px 14px",color:vc(data.verdict),fontWeight:900,fontSize:16,textAlign:"center"}}>{data.verdict||"DRŽET"}</div>
