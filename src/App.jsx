@@ -386,7 +386,7 @@ export default function App() {
     try{
       const clerkToken = await getToken();
       const res = await fetch("/api/analyze", {
-        method:"POST",headers:{"Content-Type":"application/json","Authorization":`Bearer ${clerkToken}`},
+        method:"POST",headers:{"Content-Type":"application/json","x-api-key":import.meta.env.VITE_API_SECRET||""},
         body:JSON.stringify({
           model:"claude-sonnet-4-20250514",
           max_tokens:5000,
