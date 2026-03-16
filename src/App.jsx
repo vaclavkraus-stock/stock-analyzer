@@ -391,7 +391,7 @@ export default function App() {
           model:"claude-sonnet-4-20250514",
           max_tokens:5000,
           tools:[{type:"web_search_20250305",name:"web_search"}],
-          messages:[{role:"user",content:`Search web for "${t}" stock on ${exchInfo.label} (${exchInfo.hint}). Currency: ${exchInfo.currency}. Today: March 2026. Do 2 searches: 1) "${t} ${exchInfo.hint} stock price analyst target 2026" 2) "${t} stock news March 2026". Return ONLY raw JSON, no markdown. ALL prices in ${exchInfo.currency}. CRITICAL: radarScores must be REAL scores 1-10 based on actual fundamentals (NOT all 5). investmentThesis must be 8-10 sentences in Czech covering: business model, competitive moat, growth drivers, risks, valuation, macro context, analyst consensus, final verdict. newsSummary = 3-4 sentence Czech summary of all news sentiment and key themes.
+          messages:[{role:"user",content:`Search web for "${t}" stock on ${exchInfo.label} (${exchInfo.hint}). Currency: ${exchInfo.currency}. Today: March 2026. Do 2 searches: 1) "${t} ${exchInfo.hint} stock price analyst target 2026" 2) "${t} stock news March 2026 site:reuters.com OR site:bloomberg.com OR site:cnbc.com OR site:finance.yahoo.com OR site:marketwatch.com". Return ONLY raw JSON, no markdown. ALL prices in ${exchInfo.currency}. CRITICAL: radarScores must be REAL scores 1-10 based on actual fundamentals (NOT all 5). investmentThesis must be 8-10 sentences in Czech covering: business model, competitive moat, growth drivers, risks, valuation, macro context, analyst consensus, final verdict. newsSummary = 6-8 sentences Czech summary covering: overall sentiment, key themes, most important recent events, analyst reactions, risks mentioned, and outlook. CRITICAL for news: url field MUST be a complete working article URL (e.g. https://www.reuters.com/markets/...) - never leave empty, never use just "https://".
 
 {"name":"","ticker":"${t}","domain":"","exchange":"${exchInfo.hint}","sector":"","currency":"${exchInfo.currency}","description":"2 věty česky","price":{"current":0,"changePct":0,"marketCap":"","w52High":0,"w52Low":0,"volume":""},"metrics":{"pe":0,"eps":0,"netMargin":0,"grossMargin":0,"roe":0,"beta":0,"dividendYield":0,"debtEquity":0,"freeCashFlowB":0,"revenueGrowthPct":0},"radarScores":{"valuation":5,"growth":7,"profitability":8,"financialHealth":7,"momentum":6,"dividend":3},"annuals":[{"year":"2022","revB":0,"niB":0,"eps":0},{"year":"2023","revB":0,"niB":0,"eps":0},{"year":"2024","revB":0,"niB":0,"eps":0},{"year":"2025","revB":0,"niB":0,"eps":0},{"year":"2026E","revB":null,"niB":null,"eps":null,"estRevB":0,"estNiB":0,"estEps":0}],"quarters":[{"q":"Q3 2025","revB":0,"niB":0,"eps":0,"yoy":0},{"q":"Q4 2025","revB":0,"niB":0,"eps":0,"yoy":0},{"q":"Q1 2026","revB":0,"niB":0,"eps":0,"yoy":0}],"peHistory":[{"year":"2022","pe":0},{"year":"2023","pe":0},{"year":"2024","pe":0},{"year":"2025","pe":0}],"history":[{"date":"Kvě '24","price":0,"sp500":0},{"date":"Srp '24","price":0,"sp500":0},{"date":"Lis '24","price":0,"sp500":0},{"date":"Úno '25","price":0,"sp500":0},{"date":"Čer '25","price":0,"sp500":0},{"date":"Bře '26","price":0,"sp500":0}],"analysts":{"buy":0,"hold":0,"sell":0,"avgTarget":0,"lowTarget":0,"highTarget":0},"dcf":{"intrinsicValue":0,"upside":0,"wacc":0},"dcfSensitivity":[{"wacc":8,"growthRates":[3,5,7,9],"values":[0,0,0,0]},{"wacc":10,"growthRates":[3,5,7,9],"values":[0,0,0,0]}],"technicals":{"ma50":0,"ma200":0,"rsi":0,"support":0,"resistance":0},"earningsCalendar":{"nextDate":"","quarter":"","estimatedEPS":0,"estimatedRevB":0,"lastSurprisePct":0},"earningsHistory":[{"quarter":"Q4 2025","date":"","estimatedEPS":0,"actualEPS":0,"estimatedRevB":0,"actualRevB":0},{"quarter":"Q3 2025","date":"","estimatedEPS":0,"actualEPS":0,"estimatedRevB":0,"actualRevB":0},{"quarter":"Q2 2025","date":"","estimatedEPS":0,"actualEPS":0,"estimatedRevB":0,"actualRevB":0},{"quarter":"Q1 2025","date":"","estimatedEPS":0,"actualEPS":0,"estimatedRevB":0,"actualRevB":0}],"buffettChecklist":[{"criterion":"ROE > 15%","passed":true,"note":""},{"criterion":"Nízký dluh","passed":true,"note":""},{"criterion":"Růst zisku","passed":true,"note":""},{"criterion":"Silný FCF","passed":true,"note":""},{"criterion":"Ekonomický příkop","passed":true,"note":""},{"criterion":"Srozumitelné podnikání","passed":true,"note":""},{"criterion":"Management vlastní akcie","passed":false,"note":""},{"criterion":"P/E pod průměrem","passed":false,"note":""}],"insiders":[{"name":"","role":"","type":"buy","shares":0,"valueM":0,"date":""}],"competitors":[{"ticker":"","name":"","pe":0,"revGrowthPct":0,"netMarginPct":0,"marketCapB":0},{"ticker":"","name":"","pe":0,"revGrowthPct":0,"netMarginPct":0,"marketCapB":0}],"macro":{"fedRate":0,"inflation":0,"sectorYtdPct":0,"sp500YtdPct":0,"outlook":"","sectorFearGreed":50,"sectorFearGreedLabel":"","sectorTopStocks":["","",""],"sectorIndicators":[{"name":"","value":"","impact":"positive","comment":""},{"name":"","value":"","impact":"neutral","comment":""},{"name":"","value":"","impact":"negative","comment":""}]},"news":[{"title":"","summary":"česky","sentiment":"positive","date":"","source":"","url":""},{"title":"","summary":"česky","sentiment":"negative","date":"","source":"","url":""},{"title":"","summary":"česky","sentiment":"neutral","date":"","source":"","url":""},{"title":"","summary":"česky","sentiment":"positive","date":"","source":"","url":""},{"title":"","summary":"česky","sentiment":"neutral","date":"","source":"","url":""}],"newsSummary":"3-4 věty česky shrnutí zpráv","risks":["","",""],"catalysts":["",""],"verdict":"KOUPIT","score":7,"targetPrice":0,"investmentThesis":"8-10 vět česky","pros":["","",""],"cons":["","",""]}`}]
         })
@@ -982,28 +982,30 @@ export default function App() {
           </div>
           <div style={{display:"flex",flexDirection:"column",gap:8}}>
             {filtNews.map((n,i)=>{
-              const hasUrl = n.url&&n.url.startsWith("http")&&n.url.length>15&&!n.url.endsWith("/")&&n.url.includes(".");
-              const searchUrl = `https://www.google.com/search?q=${encodeURIComponent((n.title||"")+" "+(n.source||""))}`;
-              const linkUrl = hasUrl ? n.url : searchUrl;
+              const hasUrl = n.url&&n.url.startsWith("http")&&n.url.length>20&&!n.url.endsWith("/")&&n.url.includes(".")&&!n.url.endsWith("https://");
               const inner = (
                 <div style={{display:"flex",justifyContent:"space-between",gap:10}}>
                   <div style={{flex:1}}>
                     <div style={{fontWeight:700,fontSize:12,marginBottom:3,display:"flex",alignItems:"center",gap:6,color:C.text}}>
                       {n.sentiment==="positive"?"📈":n.sentiment==="negative"?"📉":"📋"} {n.title}
-                      <span style={{color:C.blue,fontSize:10,background:C.blue+"15",borderRadius:5,padding:"1px 6px",flexShrink:0}}>{hasUrl?"↗ číst":"↗ hledat"}</span>
+                      {hasUrl&&<span style={{color:C.blue,fontSize:10,background:C.blue+"15",borderRadius:5,padding:"1px 6px",flexShrink:0}}>↗ číst</span>}
                     </div>
                     {n.summary&&<div style={{color:C.muted,fontSize:11,lineHeight:1.5}}>{n.summary}</div>}
                   </div>
                   <div style={{textAlign:"right",minWidth:62,color:C.muted,fontSize:10,flexShrink:0}}><div>{n.source}</div><div style={{marginTop:2}}>{n.date}</div></div>
                 </div>
               );
-              return (
-                <a key={i} href={linkUrl} target="_blank" rel="noopener noreferrer"
+              return hasUrl ? (
+                <a key={i} href={n.url} target="_blank" rel="noopener noreferrer"
                   style={{background:sentClr(n.sentiment)+"0d",borderRadius:11,padding:"11px 14px",borderLeft:`4px solid ${sentClr(n.sentiment)}`,display:"block",cursor:"pointer",transition:"background .15s",textDecoration:"none"}}
                   onMouseEnter={e=>e.currentTarget.style.background=sentClr(n.sentiment)+"1a"}
                   onMouseLeave={e=>e.currentTarget.style.background=sentClr(n.sentiment)+"0d"}>
                   {inner}
                 </a>
+              ) : (
+                <div key={i} style={{background:sentClr(n.sentiment)+"0d",borderRadius:11,padding:"11px 14px",borderLeft:`4px solid ${sentClr(n.sentiment)}`}}>
+                  {inner}
+                </div>
               );
             })}
           </div>
