@@ -1,6 +1,7 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { Ratelimit } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis";
+import { createClerkClient } from "@clerk/backend";
 
 const ratelimit = new Ratelimit({
   redis: Redis.fromEnv(),
@@ -15,13 +16,17 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
-  // Jednoduchá ochrana - API secret
-  const apiSecret = req.headers["x-api-secret"];
-  if (apiSecret !== process.env.API_SECRET) {
+  const token = req.headers.authorization?.replace("Bearer ", "");
+  if (!token) {
     return res.status(401).json({ error: "Nepřihlášen." });
   }
+  try {
+    const clerkClient = createClerkClient({ secretKey: process.env.CLERK_SECRET_KEY });
+    await clerkClient.verifyToken(token);
+  } catch {
+    return res.status(401).json({ error: "Neplatný token." });
+  }
 
-  // Rate limiting
   const ip = req.headers["x-forwarded-for"]?.split(",")[0]?.trim() || req.socket?.remoteAddress || "anonymous";
   const { success, limit, remaining, reset } = await ratelimit.limit(ip);
   res.setHeader("X-RateLimit-Limit", limit);
